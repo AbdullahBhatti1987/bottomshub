@@ -59,7 +59,7 @@ export default function Input({
   onBlur, // support external onBlur (e.g., for formatting)
 }) {
   return (
-    <div className={`mb-4 m-1 ${className}`}>
+    <div className={`mb-4 m-1 bg-white rounded-md  ${className}`}>
       {label && (
         <label
           htmlFor={name}

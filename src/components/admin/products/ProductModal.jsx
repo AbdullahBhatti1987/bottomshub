@@ -69,10 +69,7 @@ export default function ProductModal({
       onClose={onClose}
       title={product ? "Edit Product" : "Add New Product"}
     >
-      <form
-        onSubmit={handleSubmit}
-        className="space-y-4 max-h-[75vh] overflow-y-auto pr-2"
-      >
+      <form onSubmit={handleSubmit} className="space-y-4">
         <div>
           <label className="text-sm font-medium text-gray-700">Title</label>
           <Input
@@ -136,31 +133,46 @@ export default function ProductModal({
 
         <div>
           <label className="text-sm font-medium text-gray-700">Image</label>
-          <FileUpload multiple onUploaded={handleImageUpload} />
+          <FileUpload
+            label="Upload product images"
+            onUploaded={(uploadedImages) => {
+              setForm((prev) => ({
+                ...prev,
+                images: uploadedImages,
+              }));
+            }}
+            accept="image/*"
+            multiple={true}
+            preview={true}
+            maxFiles={5}
+          />
 
           {form.images.length > 0 && (
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 mt-3 overflow-y-auto max-h-[150px]">
-              {form.images.map((img, idx) => (
-                <div
-                  key={idx}
-                  className="relative w-full aspect-square border rounded overflow-hidden"
+            <div className="relative grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 mt-3 overflow-visible">
+              <div
+                key={idx}
+                className="relative group w-full aspect-square border rounded overflow-visible"
+              >
+                <Image
+                  src={img}
+                  alt={`Image ${idx}`}
+                  className="w-full h-full object-cover"
+                  width={100}
+                  height={100}
+                />
+                <button
+                  type="button"
+                  onClick={() => handleRemoveImage(idx)}
+                  className="absolute top-0 right-0 bg-red-500 text-white rounded-bl px-1 text-xs z-10"
                 >
-                  <Image
-                    src={img}
-                    alt={`Image ${idx}`}
-                    className="w-full h-full object-cover"
-                    width={100} // required for Next.js <Image>
-                    height={100}
-                  />
-                  <button
-                    type="button"
-                    onClick={() => handleRemoveImage(idx)}
-                    className="absolute top-0 right-0 bg-red-500 text-white rounded-bl px-1 text-xs"
-                  >
-                    ✕
-                  </button>
+                  ✕
+                </button>
+
+                {/* Tooltip / Chit */}
+                <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 text-xs text-white bg-black rounded z-50 opacity-0 group-hover:opacity-100 pointer-events-none whitespace-nowrap">
+                  Image Preview
                 </div>
-              ))}
+              </div>
             </div>
           )}
         </div>

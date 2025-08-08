@@ -1,4 +1,3 @@
-// models/Product.js
 import mongoose from 'mongoose';
 
 const productSchema = new mongoose.Schema(
@@ -8,9 +7,22 @@ const productSchema = new mongoose.Schema(
     description: { type: String, default: '' },
     price: { type: Number, required: true },
     originalPrice: { type: Number, default: 0 },
-    category: { type: String, required: true },
-    tags: [{ type: String }],
-    sizes: [{ type: String }],
+    category: { type: mongoose.Schema.Types.ObjectId, ref: 'Category', required: true },
+    tags: {
+      type: [String],
+      enum: ['new arrival', 'sale'],
+      default: [],
+    },
+    sizes: {
+      type: [String],
+      enum: ['small', 'medium', 'large', 'x-large', 'xx-large'],
+      default: [],
+    },
+    discount: {
+      type: String,
+      enum: ['flat', 'percentage'],
+      default: 'flat',
+    },
     images: [{ type: String, required: true }],
     inStock: { type: Boolean, default: true },
     isFeatured: { type: Boolean, default: false },

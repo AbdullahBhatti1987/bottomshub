@@ -1,46 +1,77 @@
-// app/api/products/route.js
-// import connectDb from '@/lib/connectDb';
-import Product from '@/models/Product';
-import { authenticateUser } from '@/middlewares/auth';
-import responseHelper from '@/lib/responseHelper';
-import { connectDb } from '@/lib/connectDb';
+import { connectDb } from "@/lib/connectDb";
+import responseHelper from "@/lib/responseHelper";
+import Product from "@/models/Product";
+import { uploadImageToCloudinary } from "@/lib/uploadImageToCloudinary";
 
+export const dynamic = "force-dynamic";
 
-export const POST = authenticateUser(async (req, res) => {
+// GET All Products
+export async function GET() {
+  await connectDb();
   try {
-    await connectDb();
+    const products = await Product.find().populate("category").sort({ createdAt: -1 });
+    return responseHelper.success({ data: products }, "Products fetched");
+  } catch (err) {
+    console.error("Admin GET Products Error:", err);
+    return responseHelper.serverError("Failed to fetch products");
+  }
+}
 
+// POST Create Product
+export async function POST(req) {
+  await connectDb();
+
+  try {
     const body = await req.json();
+    const {
+      name,
+      slug,
+      description,
+      price,
+      originalPrice,
+      category,
+      tags,
+      sizes,
+      discount,
+      images,
+      inStock,
+      isFeatured
+    } = body;
 
-    // Basic validation
-    if (!body.name || !body.slug || !body.price || !body.category) {
-      return responseHelper.badRequest(res, 'Missing required fields');
+    if (!name || !slug || !price || !category || !images?.length) {
+      return responseHelper.badRequest("Required fields missing");
     }
 
-    const existing = await Product.findOne({ slug: body.slug });
-    if (existing) {
-      return responseHelper.badRequest(res, 'Slug already exists');
+    // Check duplicate
+    const exists = await Product.findOne({ slug: slug.trim() });
+    if (exists) return responseHelper.badRequest("Product already exists");
+
+    // Upload images to Cloudinary
+    const uploadedImages = [];
+    for (const img of images) {
+      const uploaded = await uploadImageToCloudinary(img, "bottomshub/products");
+      uploadedImages.push(uploaded.url);
     }
 
-    const product = await Product.create(body);
-    return responseHelper.success(res, 'Product created successfully', { product });
+    // Create product
+    const product = await Product.create({
+      name: name.trim(),
+      slug: slug.trim(),
+      description,
+      price,
+      originalPrice,
+      category,
+      tags,
+      sizes,
+      discount,
+      images: uploadedImages,
+      inStock,
+      isFeatured,
+    });
+
+    return responseHelper.success({ data: product }, "Product created");
   } catch (err) {
-    console.error('Product creation error:', err);
-    return responseHelper.badRequest(res, 'Failed to create product');
+    console.error("Admin POST Product Error:", err);
+    return responseHelper.serverError("Failed to create product");
   }
-});
-
-
-
-// GET - Public: Fetch All Products
-export const GET = async (req, res) => {
-  try {
-    await connectDb();
-
-    const products = await Product.find().sort({ createdAt: -1 });
-    return responseHelper.success(res, 'Products fetched successfully', { products });
-  } catch (err) {
-    console.error('Fetch products error:', err);
-    return responseHelper.badRequest(res, 'Failed to fetch products');
-  }
-};
+}

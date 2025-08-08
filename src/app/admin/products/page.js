@@ -15,6 +15,7 @@ import axios from "axios";
 
 export default function AdminProductsPage() {
   const [products, setProducts] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
 
@@ -30,9 +31,38 @@ export default function AdminProductsPage() {
     }
   };
 
+  // Fetch all categories
+  const fetchCategories = async () => {
+    setLoading(true);
+    try {
+      const res = await axios.get(`${BASE_URL}/api/admin/categories`);
+      console.log("Image URL:", res?.data?.data);
+      setCategories(res.data?.data || []);
+    } catch (err) {
+      addToast("Failed to fetch categories", "error");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     fetchProducts();
+    fetchCategories();
   }, []);
+
+  const handleFilter = async (filters) => {
+    setLoading(true);
+    try {
+      const res = await axios.get(`${BASE_URL}/api/admin/products`, {
+        params: filters,
+      });
+      setProducts(res.data?.data || []);
+    } catch (err) {
+      console.error("Error filtering products:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="p-4 space-y-4">
@@ -41,7 +71,7 @@ export default function AdminProductsPage() {
         <Button onClick={() => setModalOpen(true)}>Add Product</Button>
       </div>
 
-      <ProductFilter onSearch={fetchProducts} />
+      <ProductFilter categories={categories} onFilter={handleFilter} />
 
       {loading ? (
         <Loader label="Loading products..." center />
@@ -66,11 +96,10 @@ export default function AdminProductsPage() {
         isOpen={modalOpen}
         onClose={() => setModalOpen(false)}
         onSubmit={(formData) => {
-          console.log("Submitting product:", formData);
-          // TODO: Call your API to submit product here
           setModalOpen(false);
           fetchProducts();
         }}
+        categories={categories} // ✅ Pass this
       />
     </div>
   );
