@@ -1,10 +1,10 @@
 // app/admin/products/page.jsx
 "use client";
 
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { BASE_URL } from "@/lib/axios";
 
-import Button  from "@/components/ui/Button";
+import Button from "@/components/ui/Button";
 import EmptyState from "@/components/ui/EmptyState";
 import Loader from "@/components/ui/Loader";
 
@@ -21,7 +21,7 @@ export default function AdminProductsPage() {
   const fetchProducts = async () => {
     setLoading(true);
     try {
-       const res = await axios.get(`${BASE_URL}/api/admin/products`);
+      const res = await axios.get(`${BASE_URL}/api/admin/products`);
       setProducts(res.data?.data || []);
     } catch (err) {
       console.error("Product fetch error:", err);
@@ -51,7 +51,27 @@ export default function AdminProductsPage() {
         <ProductTable products={products} onRefresh={fetchProducts} />
       )}
 
-      <ProductModal open={modalOpen} setOpen={setModalOpen} onRefresh={fetchProducts} />
+      {/* <ProductModal
+        isOpen={modalOpen}
+        onClose={() => setModalOpen(false)}
+        onSubmit={(formData) => {
+          console.log("Handle Submit:", formData); // You can add your submit logic here
+          setModalOpen(false);
+          fetchProducts();
+        }}
+        categories={[]} // Pass categories if needed
+      /> */}
+
+      <ProductModal
+        isOpen={modalOpen}
+        onClose={() => setModalOpen(false)}
+        onSubmit={(formData) => {
+          console.log("Submitting product:", formData);
+          // TODO: Call your API to submit product here
+          setModalOpen(false);
+          fetchProducts();
+        }}
+      />
     </div>
   );
 }

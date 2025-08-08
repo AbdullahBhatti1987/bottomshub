@@ -45,7 +45,7 @@ export default function ProductFilter({ categories = [], onFilter }) {
           value={filters.category}
           onChange={(value) => setFilters((prev) => ({ ...prev, category: value }))}
         >
-          <SelectItem value="">All Categories</SelectItem>
+          <SelectItem value="" key="all">All Categories</SelectItem>
           {categories.map((cat) => (
             <SelectItem key={cat._id} value={cat._id}>
               {cat.name}

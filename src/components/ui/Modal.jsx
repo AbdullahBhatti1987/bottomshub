@@ -28,9 +28,9 @@ export default function Modal({ isOpen, onClose, title, children }) {
   if (!isOpen) return null;
 
   return createPortal(
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4">
-      <div className="bg-white rounded-lg shadow-lg max-w-lg w-full relative p-6">
-        <div className="flex justify-between items-center mb-4">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-5">
+      <div className="bg-white rounded-lg shadow-lg max-w-2xl w-full relative p-6">
+        <div className="flex justify-between items-center ">
           <h2 className="text-lg font-semibold">{title}</h2>
           <Button variant="ghost" size="sm" onClick={onClose}>
             ✕
@@ -40,7 +40,7 @@ export default function Modal({ isOpen, onClose, title, children }) {
         <div>{children}</div>
 
         <div className="mt-6 text-right">
-          <Button onClick={onClose}>Close</Button>
+          {/* <Button onClick={onClose}>Close</Button> */}
         </div>
       </div>
     </div>,
