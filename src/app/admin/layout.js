@@ -12,13 +12,17 @@ export default function AdminLayout({ children, title = "Dashboard" }) {
       <AdminSidebar collapsed={collapsed} setCollapsed={setCollapsed} />
 
       {/* Main Content Area */}
-      <div
+      {/* <div
         className={`flex flex-col flex-1 transition-all duration-300 ease-in-out ${
           collapsed ? "ml-[80px]" : "ml-[240px]"
         }`}
+      > */}
+      <div
+        className={`flex flex-col flex-1 transition-all duration-300 ease-in-out 
+    ${collapsed ? "lg:ml-[80px]" : "lg:ml-[240px]"} ml-0`}
       >
         {/* Header */}
-        <AdminHeader title={title}  />
+        <AdminHeader title={title} />
 
         {/* Page Content */}
         <main className="flex-1 p-6">{children}</main>
@@ -26,3 +30,4 @@ export default function AdminLayout({ children, title = "Dashboard" }) {
     </div>
   );
 }
+

@@ -1,12 +1,12 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
 
-import ChartBlock from '@/components/admin/dashboard/ChartBlock';
-import EmptyState from '@/components/ui/EmptyState';
-import Loader from '@/components/ui/Loader';
-import axios from 'axios';
-import { BASE_URL } from '@/lib/axios';
+import ChartBlock from "@/components/admin/dashboard/ChartBlock";
+import EmptyState from "@/components/ui/EmptyState";
+import Loader from "@/components/ui/Loader";
+import axios from "axios";
+import { BASE_URL } from "@/lib/axios";
 
 export default function AdminDashboardPage() {
   const [data, setData] = useState(null);
@@ -18,7 +18,7 @@ export default function AdminDashboardPage() {
         const res = await axios.get(`${BASE_URL}/api/admin/analytics/overview`);
         setData(res.data.data);
       } catch (err) {
-        console.error('Dashboard Fetch Error:', err);
+        console.error("Dashboard Fetch Error:", err);
       } finally {
         setLoading(false);
       }
@@ -27,7 +27,7 @@ export default function AdminDashboardPage() {
     fetchOverview();
   }, []);
 
-  if (loading) return <Loader center />;
+  if (loading) return <Loader size={"lg"} center={true} />;
 
   if (!data) return <EmptyState message="No analytics data available." />;
 

@@ -1,3 +1,4 @@
+"use client"
 export default function Toast({ type = "info", message }) {
   const base = "px-4 py-2 rounded text-white shadow-md text-sm";
   let bg = "";

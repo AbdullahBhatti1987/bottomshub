@@ -1,19 +1,27 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import CategoryTable from '@/components/admin/category/CategoryTable';
-import CategoryModal from '@/components/admin/category/CategoryModal';
-import CategoryFilter from '@/components/admin/category/CategoryFilter';
-import Button from '@/components/ui/Button';
-import  toast from '@/components/ui/Toast';
-import { BASE_URL } from '@/lib/axios';
-import axios from 'axios';
+import { useEffect, useState } from "react";
+import CategoryTable from "@/components/admin/category/CategoryTable";
+// import CategoryModal from '@/components/admin/category/CategoryModal';
+import CategoryFilter from "@/components/admin/category/CategoryFilter";
+import Button from "@/components/ui/Button";
+// import  toast from '@/components/ui/Toast';
+import { BASE_URL } from "@/lib/axios";
+import axios from "axios";
+import CategoryModal from "@/components/admin/Category/CategoryModal";
+import { useToastContext } from "@/components/ui/ToastProvider";
+import ConfirmDeleteModal from "@/components/ui/ConfirmDeleteModal";
+import Loader from "@/components/ui/Loader";
 
 export default function CategoriesPage() {
   const [categories, setCategories] = useState([]);
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState("");
   const [filtered, setFiltered] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [categoryToDelete, setCategoryToDelete] = useState(null);
+
+  const { addToast } = useToastContext();
 
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState(null);
@@ -22,10 +30,11 @@ export default function CategoriesPage() {
   const fetchCategories = async () => {
     setLoading(true);
     try {
-      const res = await axios.get(`${BASE_URL}/api/categories`);
+      const res = await axios.get(`${BASE_URL}/api/admin/categories`);
+      console.log("Image URL:", res?.data?.data);
       setCategories(res.data?.data || []);
     } catch (err) {
-      toast.error('Failed to fetch categories');
+      addToast("Failed to fetch categories", "error");
     } finally {
       setLoading(false);
     }
@@ -49,35 +58,51 @@ export default function CategoriesPage() {
   };
 
   const handleEdit = (category) => {
+    console.log("category=>", category);
     setSelectedCategory(category);
     setModalOpen(true);
   };
 
-  const handleDelete = async (id) => {
-    if (!confirm('Are you sure you want to delete this category?')) return;
+  const handleDelete = (id) => {
+    setCategoryToDelete(id);
+    setDeleteModalOpen(true);
+  };
 
+  const confirmDelete = async () => {
     try {
-      await axios.delete(`${BASE_URL}/api/categories/${id}`);
-      toast.success('Category deleted');
+      console.log("category", categoryToDelete);
+      await axios.delete(
+        `${BASE_URL}/api/admin/categories/${categoryToDelete}`
+      );
+      addToast("Category deleted", "success");
       fetchCategories();
     } catch (err) {
-      toast.error('Failed to delete category');
+      addToast("Failed to delete category", "error");
+    } finally {
+      setDeleteModalOpen(false);
+      setCategoryToDelete(null);
     }
   };
 
   const handleSubmit = async (data) => {
     try {
       if (selectedCategory) {
-        await axios.put(`${BASE_URL}/api/categories/${selectedCategory._id}`, data);
-        toast.success('Category updated');
+        console.log("data", data);
+        console.log("selectedCategory", selectedCategory);
+        const res = await axios.put(
+          `${BASE_URL}/api/admin/categories/${selectedCategory._id}`,
+          data
+        );
+        addToast("Category updated", "success");
       } else {
-        await axios.post(`${BASE_URL}/api/categories`, data);
-        toast.success('Category created');
+        const res = await axios.post(`${BASE_URL}/api/admin/categories`, data);
+        console.log("res", res);
+        addToast("Category created", "success");
       }
       setModalOpen(false);
       fetchCategories();
     } catch (err) {
-      toast.error('Failed to save category');
+      addToast("Failed to save category", "error");
     }
   };
 
@@ -91,7 +116,7 @@ export default function CategoriesPage() {
       <CategoryFilter search={search} setSearch={setSearch} />
 
       {loading ? (
-        <div className="text-center py-10 text-gray-500">Loading...</div>
+        <Loader />
       ) : (
         <CategoryTable
           categories={filtered}
@@ -99,6 +124,12 @@ export default function CategoriesPage() {
           onDelete={handleDelete}
         />
       )}
+      <ConfirmDeleteModal
+        isOpen={deleteModalOpen}
+        onClose={() => setDeleteModalOpen(false)}
+        onConfirm={confirmDelete}
+        itemName={categoryToDelete?.name}
+      />
 
       <CategoryModal
         isOpen={modalOpen}

@@ -30,9 +30,9 @@ export default function CategoryTable({ categories = [], onEdit, onDelete }) {
           {categories.map((cat) => (
             <tr key={cat._id} className="border-t">
               <td className="px-4 py-2">
-                {cat.image && (
+                {cat?.imageUrl && (
                   <Image
-                    src={cat.image}
+                    src={cat.thumbnailUrl}
                     alt={cat.name}
                     width={40}
                     height={40}

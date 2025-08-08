@@ -16,8 +16,8 @@ import {
 
 export const sidebarLinks = [
   { label: "Dashboard", href: "/admin/dashboard", icon: <Home size={18} /> },
-  { label: "Products", href: "/admin/products", icon: <ShoppingCart size={18} /> },
   { label: "Categories", href: "/admin/categories", icon: <List size={18} /> },
+  { label: "Products", href: "/admin/products", icon: <ShoppingCart size={18} /> },
   { label: "Brands", href: "/admin/brands", icon: <Tag size={18} /> },
   { label: "Orders", href: "/admin/orders", icon: <ClipboardList size={18} /> },
   { label: "Customers", href: "/admin/customers", icon: <Users size={18} /> },

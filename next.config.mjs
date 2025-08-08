@@ -2,8 +2,16 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   experimental: {
-    serverActions: {}  // ✅ should be an object, not true or boolean
-  }
+    serverActions: {}, // ✅ should be an object, not true or boolean
+  },
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "res.cloudinary.com",
+      },
+    ],
+  },
 };
 
 export default nextConfig;
