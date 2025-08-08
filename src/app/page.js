@@ -1,10 +1,9 @@
-"use client";
-import AdminLayout from "@/components/layout/AdminLayout";
+import React from 'react'
 
-export default function AdminDashboard() {
+function page() {
   return (
-    <AdminLayout title="Orders">
-      <div>All orders will be listed here.</div>
-    </AdminLayout>
-  );
+    <div>page</div>
+  )
 }
+
+export default page

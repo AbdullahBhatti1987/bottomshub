@@ -7,14 +7,14 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { sidebarLinks } from "@/lib/constants/sidebarLinks";
 
-export default function AdminHeader({ title = "Dashboard" }) {
+
+export default function AdminHeader({ title = "Dashboard",  }) {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const pathname = usePathname();
 
   return (
     <>
-      {/* Header */}
-      <header className="sticky top-0 left-0 right-0 z-30 bg-white border-b border-gray-200 px-6 py-3 flex items-center justify-between">
+      <header className="sticky top-0 left-0 right-0 z-30 bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between">
         {/* Left - Toggle & Title */}
         <div className="flex items-center gap-4">
           <button
@@ -52,9 +52,6 @@ export default function AdminHeader({ title = "Dashboard" }) {
       {/* Drawer (Sidebar on small screens) */}
       {drawerOpen && (
         <div className="fixed inset-0 z-40 flex lg:hidden">
-          {" "}
-          {/* lg:hidden ✅ */}
-          {/* Backdrop */}
           <div
             className="fixed inset-0 bg-black/50"
             onClick={() => setDrawerOpen(false)}

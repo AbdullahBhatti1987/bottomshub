@@ -1,11 +1,12 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import axios from '@/lib/axios';
 
 import ChartBlock from '@/components/admin/dashboard/ChartBlock';
 import EmptyState from '@/components/ui/EmptyState';
 import Loader from '@/components/ui/Loader';
+import axios from 'axios';
+import { BASE_URL } from '@/lib/axios';
 
 export default function AdminDashboardPage() {
   const [data, setData] = useState(null);
@@ -14,7 +15,7 @@ export default function AdminDashboardPage() {
   useEffect(() => {
     const fetchOverview = async () => {
       try {
-        const res = await axios.get('/api/admin/analytics/overview');
+        const res = await axios.get(`${BASE_URL}/api/admin/analytics/overview`);
         setData(res.data.data);
       } catch (err) {
         console.error('Dashboard Fetch Error:', err);
