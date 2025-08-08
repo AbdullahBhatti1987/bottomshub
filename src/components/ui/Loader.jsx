@@ -12,7 +12,7 @@ export default function Loader({ label = "Loading...", size = "md", center = fal
       <span
         className={`animate-spin rounded-full border-t-transparent border-solid ${spinnerSize} border-blue-600`}
       />
-      {label && <span className="text-sm text-gray-700">{label}</span>}
+      {/* {label && <span className="ml-2 text-sm text-gray-700">{label}</span>} */}
     </div>
   );
 }

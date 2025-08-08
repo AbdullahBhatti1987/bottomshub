@@ -1,8 +1,9 @@
 // app/api/products/route.js
-import connectDb from '@/lib/connectDb';
+// import connectDb from '@/lib/connectDb';
 import Product from '@/models/Product';
 import { authenticateUser } from '@/middlewares/auth';
 import responseHelper from '@/lib/responseHelper';
+import { connectDb } from '@/lib/connectDb';
 
 
 export const POST = authenticateUser(async (req, res) => {

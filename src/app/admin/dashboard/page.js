@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { format } from "date-fns";
 import axios from "axios";
 import { BASE_URL } from "@/lib/axios";
+import Loader from "@/components/ui/Loader";
 
 export default function AdminOverviewPage() {
   const [overview, setOverview] = useState(null);
@@ -23,7 +24,7 @@ export default function AdminOverviewPage() {
     fetchOverview();
   }, []);
 
-  if (loading) return <p className="p-4">Loading...</p>;
+  if (loading) return <Loader center />;
 
   return (
     <div className="p-6 space-y-8">
