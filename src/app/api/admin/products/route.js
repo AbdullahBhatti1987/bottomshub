@@ -5,102 +5,49 @@ import { uploadImageToCloudinary } from "@/lib/uploadImageToCloudinary";
 
 export const dynamic = "force-dynamic";
 
-// GET All Products
-export async function GET() {
+// // GET All Products
+//   export async function GET(req, context) {
+//     const { params } = await context;
+//   await connectDb();
+//   try {
+//     const products = await Product.find()
+//       .populate("category")
+//       .sort({ createdAt: -1 });
+//     return responseHelper.success({ data: products }, "Products fetched");
+//   } catch (err) {
+//     console.error("Admin GET Products Error:", err);
+//     return responseHelper.serverError("Failed to fetch products");
+//   }
+// }
+
+export async function GET(req, context) {
   await connectDb();
+
   try {
-    const products = await Product.find()
+    const url = new URL(req.url);
+    const search = url.searchParams.get("search") || "";
+    const category = url.searchParams.get("category") || "";
+
+    const query = {};
+
+    if (search) {
+      query.name = { $regex: search, $options: "i" }; // case-insensitive search
+    }
+
+    if (category) {
+      query.category = category;
+    }
+
+    const products = await Product.find(query)
       .populate("category")
       .sort({ createdAt: -1 });
+
     return responseHelper.success({ data: products }, "Products fetched");
   } catch (err) {
     console.error("Admin GET Products Error:", err);
     return responseHelper.serverError("Failed to fetch products");
   }
 }
-
-// POST Create Product// POST Create Product
-// export async function POST(req) {
-//   await connectDb();
-
-//   try {
-//     const body = await req.json();
-//     const {
-//       name,
-//       slug,
-//       description,
-//       price,
-//       originalPrice,
-//       category,
-//       tags,
-//       sizes,
-//       discount,
-//       images,
-//       inStock,
-//       isFeatured,
-//     } = body;
-
-//     // Field-specific validation
-//     const missingFields = [];
-//     if (!name) missingFields.push("name");
-//     if (!slug) missingFields.push("slug");
-//     if (!price) missingFields.push("price");
-//     if (!category) missingFields.push("category");
-//     if (!images?.length) missingFields.push("images");
-
-//     if (missingFields.length > 0) {
-//       return responseHelper.badRequest({
-//         message: "Some required fields are missing",
-//         missingFields, // e.g., ["name", "images"]
-//       });
-//     }
-
-//     // Check duplicate
-//     const exists = await Product.findOne({ slug: slug.trim() });
-//     if (exists) {
-//       return responseHelper.badRequest({
-//         message: "Product already exists with this slug",
-//         field: "slug",
-//       });
-//     }
-
-//     // Upload images to Cloudinary
-//     // Uploaded images array me objects hongi with main image and thumbnail URL
-//     const uploadedImages = [];
-//     for (const img of images) {
-//       const uploaded = await uploadImageToCloudinary(
-//         img,
-//         "bottomshub/products"
-//       );
-//       // uploaded will have { url, thumbnailUrl }
-//       uploadedImages.push({
-//         url: uploaded.url,
-//         thumbnailUrl: uploaded.thumbnailUrl,
-//       });
-//     }
-
-//     // Create product
-//     const product = await Product.create({
-//       name: name.trim(),
-//       slug: slug.trim(),
-//       description,
-//       price,
-//       originalPrice,
-//       category,
-//       tags,
-//       sizes,
-//       discount,
-//       images: uploadedImages,
-//       inStock,
-//       isFeatured,
-//     });
-
-//     return responseHelper.success({ data: product }, "Product created");
-//   } catch (err) {
-//     console.error("Admin POST Product Error:", err);
-//     return responseHelper.serverError("Failed to create product");
-//   }
-// }
 
 export async function POST(req) {
   await connectDb();

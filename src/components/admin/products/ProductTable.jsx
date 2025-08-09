@@ -191,7 +191,7 @@ export default function ProductTable({ products = [],  onEdit, onDelete }) {
             <TableRow key={p._id}>
               <TableCell>
                 <img
-                  src={p.imageUrl?.[0] || "/avatar.png"}
+                  src={p.images[0]?.thumbnailUrl || "/avatar.png"}
                   alt={p.name}
                   className="w-12 h-12 object-cover rounded"
                 />
@@ -199,7 +199,7 @@ export default function ProductTable({ products = [],  onEdit, onDelete }) {
               <TableCell>{p.name}</TableCell>
               <TableCell>{p.slug}</TableCell>
               <TableCell truncate={30}>{p.description}</TableCell>
-              <TableCell>Rs {p.price}</TableCell>
+              <TableCell>{p.price}</TableCell>
               {/* <TableCell>{p.originalPrice || "-"}</TableCell> */}
               <TableCell>{p.category?.name || "-"}</TableCell>
               {/* <TableCell>{p.tags?.join(", ")}</TableCell> */}

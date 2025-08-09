@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useEffect, useState } from "react";
@@ -70,9 +69,10 @@ export default function AdminProductsPage() {
   // ✅ Add Product / Update Product
   const handleSubmit = async (formData) => {
     try {
-      console.log("📤 Sending product data:", formData);
+      // console.log("📤 Sending product data:", formData);
       if (selectedProduct) {
         // Update product
+        // console.log("selectedProduct", selectedProduct._id);
         await axios.put(
           `${BASE_URL}/api/admin/products/${selectedProduct._id}`,
           formData
@@ -105,14 +105,12 @@ export default function AdminProductsPage() {
     }
   };
 
-
-
   const handleDelete = (id) => {
     setProductToDelete(id);
     setDeleteModalOpen(true);
   };
 
-    const confirmDelete = async (id) => {
+  const confirmDelete = async (id) => {
     if (!confirm("Are you sure you want to delete this product?")) return;
     try {
       await axios.delete(`${BASE_URL}/api/admin/products/${id}`);
@@ -121,8 +119,6 @@ export default function AdminProductsPage() {
       console.error("Delete error:", err);
     }
   };
-
-
 
   return (
     <div className="p-4 space-y-4">
@@ -142,7 +138,7 @@ export default function AdminProductsPage() {
 
       {loading ? (
         <Loader />
-      ) : products.length > 0 ? (
+      ) : (
         <ProductTable
           products={products}
           onRefresh={fetchProducts}
@@ -152,8 +148,6 @@ export default function AdminProductsPage() {
           }}
           onDelete={handleDelete}
         />
-      ) : (
-        <EmptyState message="No products found" />
       )}
       <ConfirmDeleteModal
         isOpen={deleteModalOpen}
