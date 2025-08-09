@@ -1,6 +1,6 @@
 "use client";
 
-import Modal from "./Modal"; // Reuse your existing Modal component
+import Modal from "./Modal"; 
 import Button from "./Button";
 
 export default function ConfirmDeleteModal({ isOpen, onClose, onConfirm, itemName = "item" }) {

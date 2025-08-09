@@ -9,7 +9,9 @@ export const dynamic = "force-dynamic";
 export async function GET() {
   await connectDb();
   try {
-    const products = await Product.find().populate("category").sort({ createdAt: -1 });
+    const products = await Product.find()
+      .populate("category")
+      .sort({ createdAt: -1 });
     return responseHelper.success({ data: products }, "Products fetched");
   } catch (err) {
     console.error("Admin GET Products Error:", err);
@@ -17,7 +19,89 @@ export async function GET() {
   }
 }
 
-// POST Create Product
+// POST Create Product// POST Create Product
+// export async function POST(req) {
+//   await connectDb();
+
+//   try {
+//     const body = await req.json();
+//     const {
+//       name,
+//       slug,
+//       description,
+//       price,
+//       originalPrice,
+//       category,
+//       tags,
+//       sizes,
+//       discount,
+//       images,
+//       inStock,
+//       isFeatured,
+//     } = body;
+
+//     // Field-specific validation
+//     const missingFields = [];
+//     if (!name) missingFields.push("name");
+//     if (!slug) missingFields.push("slug");
+//     if (!price) missingFields.push("price");
+//     if (!category) missingFields.push("category");
+//     if (!images?.length) missingFields.push("images");
+
+//     if (missingFields.length > 0) {
+//       return responseHelper.badRequest({
+//         message: "Some required fields are missing",
+//         missingFields, // e.g., ["name", "images"]
+//       });
+//     }
+
+//     // Check duplicate
+//     const exists = await Product.findOne({ slug: slug.trim() });
+//     if (exists) {
+//       return responseHelper.badRequest({
+//         message: "Product already exists with this slug",
+//         field: "slug",
+//       });
+//     }
+
+//     // Upload images to Cloudinary
+//     // Uploaded images array me objects hongi with main image and thumbnail URL
+//     const uploadedImages = [];
+//     for (const img of images) {
+//       const uploaded = await uploadImageToCloudinary(
+//         img,
+//         "bottomshub/products"
+//       );
+//       // uploaded will have { url, thumbnailUrl }
+//       uploadedImages.push({
+//         url: uploaded.url,
+//         thumbnailUrl: uploaded.thumbnailUrl,
+//       });
+//     }
+
+//     // Create product
+//     const product = await Product.create({
+//       name: name.trim(),
+//       slug: slug.trim(),
+//       description,
+//       price,
+//       originalPrice,
+//       category,
+//       tags,
+//       sizes,
+//       discount,
+//       images: uploadedImages,
+//       inStock,
+//       isFeatured,
+//     });
+
+//     return responseHelper.success({ data: product }, "Product created");
+//   } catch (err) {
+//     console.error("Admin POST Product Error:", err);
+//     return responseHelper.serverError("Failed to create product");
+//   }
+// }
+
 export async function POST(req) {
   await connectDb();
 
@@ -33,27 +117,61 @@ export async function POST(req) {
       tags,
       sizes,
       discount,
-      images,
+      images, // base64 images or URLs from client
       inStock,
-      isFeatured
+      isFeatured,
     } = body;
 
-    if (!name || !slug || !price || !category || !images?.length) {
-      return responseHelper.badRequest("Required fields missing");
+    // Validation
+    const missingFields = [];
+    if (!name) missingFields.push("name");
+    if (!slug) missingFields.push("slug");
+    if (!price) missingFields.push("price");
+    if (!category) missingFields.push("category");
+    if (!images?.length) missingFields.push("images");
+
+    if (missingFields.length > 0) {
+      return responseHelper.badRequest({
+        message: "Some required fields are missing",
+        missingFields,
+      });
     }
 
-    // Check duplicate
+    // Duplicate slug check
     const exists = await Product.findOne({ slug: slug.trim() });
-    if (exists) return responseHelper.badRequest("Product already exists");
+    if (exists) {
+      return responseHelper.badRequest({
+        message: "Product already exists with this slug",
+        field: "slug",
+      });
+    }
 
-    // Upload images to Cloudinary
+    // Upload images and thumbnails to Cloudinary
     const uploadedImages = [];
     for (const img of images) {
-      const uploaded = await uploadImageToCloudinary(img, "bottomshub/products");
-      uploadedImages.push(uploaded.url);
+      const uploaded = await uploadImageToCloudinary(
+        img,
+        "bottomshub/products"
+      );
+      uploadedImages.push({
+        url: uploaded.url,
+        thumbnailUrl: uploaded.thumbnailUrl,
+      });
     }
 
-    // Create product
+    for (const img of images) {
+      const uploaded = await uploadImageToCloudinary(
+        img,
+        "bottomshub/products"
+      );
+      console.log("Uploaded image info:", uploaded);
+      uploadedImages.push({
+        url: uploaded.url,
+        thumbnailUrl: uploaded.thumbnailUrl,
+      });
+    }
+
+    // Create new product with images array of objects
     const product = await Product.create({
       name: name.trim(),
       slug: slug.trim(),
@@ -64,7 +182,7 @@ export async function POST(req) {
       tags,
       sizes,
       discount,
-      images: uploadedImages,
+      images: uploadedImages, // <-- IMPORTANT: directly pass array of {url, thumbnailUrl}
       inStock,
       isFeatured,
     });

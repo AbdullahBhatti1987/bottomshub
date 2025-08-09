@@ -1,7 +1,7 @@
 import { connectDb } from "@/lib/connectDb";
 import responseHelper from "@/lib/responseHelper";
 import Category from "@/models/Category";
-
+import { uploadImageToCloudinary } from "@/lib/uploadImageToCloudinary";
 export const dynamic = "force-dynamic";
 
 export async function GET() {
@@ -17,7 +17,6 @@ export async function GET() {
 
 
 
-import { uploadImageToCloudinary } from "@/lib/uploadImageToCloudinary";
 
 export async function POST(req) {
   await connectDb();
