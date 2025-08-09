@@ -13,32 +13,6 @@ export default function AdminSidebar({
 }) {
   const pathname = usePathname();
 
-  // const renderLinks = () =>
-  //   sidebarLinks.map((item) => {
-  //     const isActive = pathname === item.href;
-  //     return (
-  //       <Link
-  //         key={item.href}
-  //         href={item.href}
-  //         className={`flex items-center gap-3 px-4 py-2 rounded-md text-sm font-medium transition-all duration-200 ${
-  //           isActive
-  //             ? "bg-black text-white"
-  //             : "text-gray-700 hover:bg-gray-100 hover:text-black"
-  //         }`}
-  //         onClick={() => drawerOpen && setDrawerOpen(false)} // auto-close on mobile
-  //       >
-  //         <span className="min-w-[24px]">{item.icon}</span>
-  //         <span
-  //           className={`whitespace-nowrap transition-all duration-200 ${
-  //             collapsed ? "opacity-0 w-0" : "opacity-100 w-auto"
-  //           } overflow-hidden`}
-  //         >
-  //           {item.label}
-  //         </span>
-  //       </Link>
-  //     );
-  //   });
-
   const renderLinks = () =>
     sidebarLinks.map((item) => {
       const isActive = pathname === item.href;
@@ -68,9 +42,11 @@ export default function AdminSidebar({
 
           {/* Tooltip on icon hover when collapsed */}
           {collapsed && (
-            <div className="absolute left-full top-1/2 -translate-y-1/2 ml-2 hidden group-hover:block bg-black text-white text-xs px-2 py-1 rounded shadow-lg whitespace-nowrap z-50">
+            <div className="absolute left-full top-1/2 -translate-y-1/2 ml-2 hidden group-hover:block bg-black/80 text-white text-xs px-2 py-1 rounded shadow-lg whitespace-nowrap z-50">
               {item.label}
             </div>
+
+           
           )}
         </div>
       );
@@ -78,7 +54,6 @@ export default function AdminSidebar({
 
   return (
     <>
-      {/* Desktop sidebar */}
       <aside
         className={`hidden lg:flex fixed top-0 left-0 z-40 h-screen border-r border-gray-200 bg-white flex-col transition-all duration-300 ease-in-out ${
           collapsed ? "w-[80px]" : "w-[240px]"

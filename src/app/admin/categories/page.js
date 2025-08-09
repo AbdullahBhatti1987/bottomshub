@@ -17,7 +17,7 @@ export default function CategoriesPage() {
   const [categories, setCategories] = useState([]);
   const [search, setSearch] = useState("");
   const [filtered, setFiltered] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [categoryToDelete, setCategoryToDelete] = useState(null);
 
@@ -135,6 +135,7 @@ export default function CategoriesPage() {
         isOpen={modalOpen}
         onClose={() => setModalOpen(false)}
         onSubmit={handleSubmit}
+         disabled={loading}
         category={selectedCategory}
       />
     </div>

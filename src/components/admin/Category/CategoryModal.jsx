@@ -12,6 +12,7 @@ export default function CategoryModal({
   onClose,
   onSubmit,
   category = null,
+  loading,
 }) {
   const [form, setForm] = useState({
     name: "",
@@ -74,6 +75,7 @@ export default function CategoryModal({
             value={form.name}
             onChange={handleChange}
             required
+         disabled={loading}
           />
         </div>
 
@@ -84,6 +86,7 @@ export default function CategoryModal({
             value={form.slug}
             onChange={handleChange}
             readOnly
+            disabled={loading}
           />
         </div>
         <div>
@@ -94,6 +97,7 @@ export default function CategoryModal({
             onChange={handleChange}
             placeholder="Enter category description..."
             rows={4}
+            disabled={loading}
           />
         </div>
 
@@ -102,14 +106,22 @@ export default function CategoryModal({
             label="Category Image"
             onChange={(img) => setForm({ ...form, image: img })}
             maxFiles={1}
+            disabled={loading}
           />
         </div>
 
         <div className="flex justify-end gap-2 pt-4">
-          <Button type="button" variant="outline" onClick={onClose}>
+          <Button
+            disabled={loading}
+            type="button"
+            variant="outline"
+            onClick={onClose}
+          >
             Cancel
           </Button>
-          <Button type="submit">{category ? "Update" : "Create"}</Button>
+          <Button ldisabled={loading} type="submit">
+            {category ? "Update" : "Create"}
+          </Button>
         </div>
       </form>
     </Modal>

@@ -80,6 +80,7 @@ export default function FileUpload({
   accept = "image/*",
   multiple = false,
   preview = true,
+  disabled = false,
   maxFiles = 1,
 }) {
   const inputRef = useRef(null);
@@ -140,6 +141,7 @@ export default function FileUpload({
           multiple={maxFiles > 1}
           hidden
           onChange={(e) => handleFiles(e.target.files)}
+        disabled={disabled}
         />
       </div>
 
