@@ -1,5 +1,5 @@
 // models/Otp.js
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
 const otpSchema = new mongoose.Schema(
   {
@@ -8,13 +8,13 @@ const otpSchema = new mongoose.Schema(
       required: true,
     },
     otp: {
-      type: String, // will store bcrypt hashed OTP
+      type: String, 
       required: true,
     },
     expireAt: {
       type: Date,
-      default: Date.now,
-      index: { expires: '5m' }, // Auto-delete after 5 minutes
+      default: () => new Date(Date.now() + 30 * 60 * 1000), // 30 minutes from now
+      index: { expires: 0 }, // expire exactly at expireAt
     },
   },
   {
@@ -22,4 +22,4 @@ const otpSchema = new mongoose.Schema(
   }
 );
 
-export default mongoose.models.Otp || mongoose.model('Otp', otpSchema);
+export default mongoose.models.Otp || mongoose.model("Otp", otpSchema);

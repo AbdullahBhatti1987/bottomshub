@@ -8,7 +8,7 @@ import {
   CardContent,
 } from '@/components/ui/card';
 
-export default function AdminDashboardPage() {
+export default function ChartBox() {
   const salesData = [
     { month: 'Jan', sales: 1000 },
     { month: 'Feb', sales: 1600 },
@@ -43,7 +43,7 @@ export default function AdminDashboardPage() {
   ];
 
   return (
-      <div className="p-6 grid grid-cols-1 md:grid-cols-5 gap-6">
+      <div className=" grid grid-cols-1 md:grid-cols-5 gap-6">
         {/* Sales Overview (60%) */}
         <div className="col-span-1 md:col-span-3">
           <Card>

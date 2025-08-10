@@ -4,7 +4,6 @@ import React, { useEffect, useState } from "react";
 import { BASE_URL } from "@/lib/axios";
 
 import Button from "@/components/ui/Button";
-import EmptyState from "@/components/ui/EmptyState";
 import Loader from "@/components/ui/Loader";
 
 import ProductTable from "@/components/admin/products/ProductTable";
@@ -28,7 +27,7 @@ export default function AdminProductsPage() {
     setLoading(true);
     try {
       const res = await axios.get(`${BASE_URL}/api/admin/products`);
-      console.log("res", res);
+      // console.log("res", res);
       setProducts(res.data?.data || []);
     } catch (err) {
       console.error("Product fetch error:", err);

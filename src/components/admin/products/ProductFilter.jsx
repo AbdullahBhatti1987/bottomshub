@@ -33,7 +33,6 @@ export default function ProductFilter({ categories = [], onFilter }) {
   };
 
   return (
-
     <form
       onSubmit={handleFilter}
       className="w-full flex flex-col md:flex-row gap-4 items-end mb-6"

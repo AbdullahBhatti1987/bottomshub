@@ -1,11 +1,11 @@
-import { connectDb } from "@/lib/connectDb";
+
 import responseHelper from "@/lib/responseHelper";
 import Category from "@/models/Category";
 import { uploadImageToCloudinary } from "@/lib/uploadImageToCloudinary";
 export const dynamic = "force-dynamic";
 
 export async function GET() {
-  await connectDb();
+ 
   try {
     const categories = await Category.find().sort({ createdAt: -1 });
     return responseHelper.success({ data: categories }, "Categories fetched");

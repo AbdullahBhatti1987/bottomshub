@@ -1,3 +1,4 @@
+// api/admin/order/[id]/invoice/route.js
 import connectDb from '@/lib/connectDb';
 import { authenticateUser } from '@/middlewares/auth';
 import Order from '@/models/Order';

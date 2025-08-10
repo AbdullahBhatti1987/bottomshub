@@ -21,9 +21,10 @@ const userSchema = new mongoose.Schema(
       enum: ['admin', 'customer'],
       default: 'customer',
     },
-    address: {
-      type: String,
-      default: '',
+    
+    isVerified: {
+      type: Boolean,
+      default: false,
     },
   },
   {

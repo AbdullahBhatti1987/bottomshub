@@ -1,23 +1,99 @@
-// src/app/api/auth/send-otp/route.js
-import connectDb from '@/lib/connectDb';
-import Otp from '@/models/Otp';
-import bcrypt from 'bcryptjs';
-import responseHelper from '@/lib/responseHelper';
+// // src/app/api/auth/send-otp/route.js
+// import { connectDb } from "@/lib/connectDb";
+// import Otp from "@/models/Otp";
+// import bcrypt from "bcryptjs";
+// import responseHelper from "@/lib/responseHelper";
+// import { sendSMS } from "@/lib/sendSMS";
 
-export default async function handler(req, res) {
+// export async function POST(req) {
+//   await connectDb();
+
+//   const { mobile } = await req.json();
+
+//   if (!mobile) {
+//     return responseHelper.badRequest("Mobile number is required");
+//   }
+
+//   // Format mobile (Pakistan case)
+//   let formattedMobile = mobile;
+//   if (!mobile.startsWith("+")) {
+//     formattedMobile = "+92" + mobile.replace(/^0/, "");
+//   }
+
+//   const otpValue = Math.floor(100000 + Math.random() * 900000).toString();
+//   const hashedOtp = await bcrypt.hash(otpValue, 10);
+
+//   await Otp.create({ mobile: formattedMobile, otp: hashedOtp });
+
+//   // Send SMS using Twilio
+//   const smsRes = await sendSMS({
+//     mobile: formattedMobile,
+//     message: `Your OTP is ${otpValue}`,
+//   });
+
+//   if (!smsRes.success) {
+//     console.error("Failed to send OTP SMS:", smsRes.error);
+//     return responseHelper.serverError("Failed to send OTP SMS");
+//   }
+
+//   return responseHelper.success({ message: "OTP sent successfully" });
+// }
+
+// src/app/api/auth/send-otp/route.js
+import { connectDb } from "@/lib/connectDb";
+import Otp from "@/models/Otp";
+import bcrypt from "bcryptjs";
+import responseHelper from "@/lib/responseHelper";
+import { sendSMS } from "@/lib/sendSMS";
+import User from "@/models/User";
+
+export async function POST(req) {
   await connectDb();
 
-  if (req.method !== 'POST') return responseHelper.methodNotAllowed(res);
+  try {
+    const { mobile } = await req.json();
 
-  const { mobile } = req.body;
-  if (!mobile) return responseHelper.badRequest(res, 'Mobile number is required');
+    if (!mobile) {
+      return responseHelper.badRequest("Mobile number is required");
+    }
 
-  const otpValue = Math.floor(100000 + Math.random() * 900000).toString();
-  const hashedOtp = await bcrypt.hash(otpValue, 10);
+    const user = await User.findOne({ mobile });
 
-  await Otp.create({ mobile, otp: hashedOtp });
+    if (user) {
+      return responseHelper.badRequest("User already exists with this mobile number");
+    }
 
-  console.log(`👉 OTP for ${mobile}: ${otpValue}`); // Replace with SMS integration later
+    // Pakistan format => +92XXXXXXXXXX
+    let formattedMobile = mobile;
+    if (!mobile.startsWith("+")) {
+      formattedMobile = "+92" + mobile.replace(/^0/, "");
+    }
 
-  return responseHelper.success(res, 'OTP sent successfully');
+    // Generate OTP
+    const otpValue = Math.floor(100000 + Math.random() * 900000).toString();
+    const hashedOtp = await bcrypt.hash(otpValue, 10);
+
+    // Save OTP in DB
+    await Otp.create({ mobile: formattedMobile, otp: hashedOtp });
+
+    // Send SMS
+    const smsRes = await sendSMS({
+      mobile: formattedMobile,
+      message: `Your OTP is ${otpValue}`,
+    });
+
+    console.log("Twilio sendSMS response:", smsRes);
+
+    // Some helpers return success: true, some return status or sid — check both
+    if (!smsRes || smsRes.success === false) {
+      return responseHelper.serverError("Failed to send OTP SMS");
+    }
+
+    return responseHelper.success({
+      message: "OTP sent successfully",
+    });
+  } catch (error) {
+    console.error("Send OTP Error:", error);
+    return responseHelper.serverError("Something went wrong while sending OTP");
+  }
 }

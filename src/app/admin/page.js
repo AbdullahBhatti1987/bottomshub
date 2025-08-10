@@ -7,6 +7,7 @@ import EmptyState from "@/components/ui/EmptyState";
 import Loader from "@/components/ui/Loader";
 import axios from "axios";
 import { BASE_URL } from "@/lib/axios";
+import ChartBox from "@/components/admin/dashboard/ChartBox";
 
 export default function AdminDashboardPage() {
   const [data, setData] = useState(null);
@@ -32,12 +33,15 @@ export default function AdminDashboardPage() {
   if (!data) return <EmptyState message="No analytics data available." />;
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-      <ChartBlock title="Sales Overview" data={data.salesChart} />
-      <ChartBlock title="Orders Overview" data={data.ordersChart} />
-      <ChartBlock title="Revenue Trend" data={data.revenueChart} />
-      <ChartBlock title="Users Joined" data={data.usersChart} />
-      <ChartBlock title="Top Categories" data={data.categoryChart} />
+    <div className="grid gap-6">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        <ChartBlock title="Sales Overview" data={data.salesChart} />
+        <ChartBlock title="Orders Overview" data={data.ordersChart} />
+        <ChartBlock title="Revenue Trend" data={data.revenueChart} />
+        <ChartBlock title="Users Joined" data={data.usersChart} />
+        <ChartBlock title="Top Categories" data={data.categoryChart} />
+      </div>
+      <ChartBox />
     </div>
   );
 }
