@@ -54,8 +54,13 @@ export function TableHead({ children }) {
 //   );
 // }
 
-
-export function TableCell({ children, className = "", truncate = 0, ...rest }) {
+export function TableCell({
+  children,
+  className = "",
+  truncate = 0,
+  fixedHeight = "h-12",
+  ...rest
+}) {
   let content = children;
 
   if (truncate > 0 && typeof children === "string") {
@@ -67,8 +72,9 @@ export function TableCell({ children, className = "", truncate = 0, ...rest }) {
 
   return (
     <td
-      className={`px-4 py-2 text-gray-800 whitespace-nowrap ${className}`}
-      {...rest}  // <-- Spread remaining props here, including colSpan
+      className={`px-4 py-2 text-gray-800 whitespace-nowrap overflow-hidden ${fixedHeight} ${className}`}
+      {...rest} // <-- Spread remaining props here, including colSpan
+      style={{ maxWidth: "250px" }} // optional max width for better truncation
     >
       {content}
     </td>

@@ -154,7 +154,7 @@ export default function OrdersTable({ orders = [], onView, onDelete }) {
 
 
   return (
-    <div className="border rounded-md overflow-x-auto">
+    <div className="border border-gray-300 rounded-md overflow-x-auto bg-white shadow-sm">
       <Table>
         <TableHeader>
           <TableRow>

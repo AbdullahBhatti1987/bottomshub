@@ -8,7 +8,7 @@ import Button from "@/components/ui/Button";
 // import  toast from '@/components/ui/Toast';
 import { BASE_URL } from "@/lib/axios";
 import axios from "axios";
-import CategoryModal from "@/components/admin/Category/CategoryModal";
+import CategoryModal from "@/components/admin/category/CategoryModal";
 import { useToastContext } from "@/components/ui/ToastProvider";
 import ConfirmDeleteModal from "@/components/ui/ConfirmDeleteModal";
 import Loader from "@/components/ui/Loader";

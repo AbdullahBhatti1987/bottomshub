@@ -88,7 +88,7 @@ import Image from "next/image";
 
 export default function CategoryTable({ categories = [], onEdit, onDelete }) {
   return (
-    <div className="overflow-x-auto border rounded-lg bg-white shadow-sm">
+    <div className="border border-gray-300 rounded-md overflow-x-auto bg-white shadow-sm">
       <Table>
         <TableHeader>
           <TableRow>
@@ -116,8 +116,8 @@ export default function CategoryTable({ categories = [], onEdit, onDelete }) {
                   <Image
                     src={cat.thumbnailUrl}
                     alt={cat.name}
-                    width={40}
-                    height={40}
+                    width={30}
+                    height={30}
                     className="rounded-md object-cover"
                   />
                 )}

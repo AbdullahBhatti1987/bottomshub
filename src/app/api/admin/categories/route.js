@@ -29,15 +29,17 @@ export async function POST(req) {
       return responseHelper.badRequest("Name and image are required");
     }
 
+    // Check if category already exists
+    const exists = await Category.findOne({ name: name.trim() });
+    if (exists) return responseHelper.badRequest("Category already exists");
+
+
     // Upload image to Cloudinary
     const { url: imageUrl, thumbnailUrl } = await uploadImageToCloudinary(
       image,
       "bottomshub/categories"
     );
 
-    // Check if category already exists
-    const exists = await Category.findOne({ name: name.trim() });
-    if (exists) return responseHelper.badRequest("Category already exists");
 
     // Create new category
     const category = await Category.create({

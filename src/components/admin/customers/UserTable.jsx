@@ -9,13 +9,13 @@ import {
 import { formatDate } from "@/lib/date";
 import { Trash2, Pencil } from "lucide-react";
 
-
-export default function UserTable({ users, onEdit, onDelete }) {
+export default function UserTable({currentPage, users,pageSize, onEdit, onDelete }) {
   return (
-    <div className="border rounded-md overflow-x-auto">
+    <div className="border border-gray-300 rounded-md overflow-x-auto bg-white shadow-sm">
       <Table>
         <TableHeader>
           <TableRow>
+            <TableHead>S.No</TableHead>
             <TableHead>Name</TableHead>
             <TableHead>Mobile</TableHead>
             <TableHead>Email</TableHead>
@@ -25,15 +25,18 @@ export default function UserTable({ users, onEdit, onDelete }) {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {users.map((u) => (
+          {users.map((u, index) => (
             <TableRow key={u._id}>
+              <TableCell>
+                {(currentPage - 1) * pageSize + (index + 1)}
+              </TableCell>
               <TableCell>{u.name}</TableCell>
               <TableCell>{u.mobile}</TableCell>
               <TableCell>{u.email}</TableCell>
               <TableCell>{u.role}</TableCell>
-               <TableCell className="text-gray-500">
-                              {formatDate(u?.createdAt)}
-                            </TableCell>
+              <TableCell className="text-gray-500">
+                {formatDate(u?.createdAt)}
+              </TableCell>
               <TableCell className="text-center space-x-2">
                 <button
                   onClick={() => onEdit(u)}

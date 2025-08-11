@@ -50,13 +50,14 @@
 import { connectDb } from "@/lib/connectDb";
 import Brand from "@/models/Brand";
 import responseHelper from "@/lib/responseHelper";
-import { uploadImageToCloudinary } from "@/lib/cloudinary"; // Make sure this path is correct
+import { uploadImageToCloudinary } from "@/lib/uploadImageToCloudinary";
+// import { uploadImageToCloudinary } from "@/lib/cloudinary"; // Make sure this path is correct
 
 export async function GET() {
   await connectDb();
   try {
     const brands = await Brand.find({ isActive: true });
-    return responseHelper.success(brands);
+    return responseHelper.successArray(brands);
   } catch (error) {
     console.error("Fetch Brands Error:", error);
     return responseHelper.serverError("Failed to fetch brands");
@@ -90,19 +91,21 @@ export async function POST(req) {
     // );
     // console.log("Cloudinary Upload Result:", { imageUrl, thumbnailUrl });
 
-    const uploadResult = await uploadImageToCloudinary(
+    const { url, thumbnailUrl } = await uploadImageToCloudinary(
       logo,
       "bottomshub/brands"
     );
-    console.log("Upload Result:", uploadResult);
+    console.log("url:", url);
+    console.log("thumbnailUrl:", thumbnailUrl);
 
     const brand = await Brand.create({
       name: name.trim(),
-      logo: imageUrl,
+      logo: url,
       description,
       thumbnail: thumbnailUrl,
       isActive: true,
     });
+    console.log("Created Brand:", brand);
 
     return responseHelper.success(brand, "Brand created successfully");
   } catch (error) {

@@ -79,7 +79,6 @@
 // //   );
 // // }
 
-
 // // export default function ProductTable({ products = [], onRefresh }) {
 // //   const handleDelete = async (id) => {
 // //     if (!confirm("Are you sure you want to delete this product?")) return;
@@ -90,7 +89,6 @@
 // //       console.error("Delete error:", err);
 // //     }
 // //   };
-
 
 // export default function ProductTable({ products }) {
 //   return (
@@ -149,8 +147,6 @@
 //   );
 // }
 
-
-
 import {
   Table,
   TableHeader,
@@ -161,12 +157,9 @@ import {
 } from "@/components/ui/Table";
 import { Pencil, Trash2 } from "lucide-react";
 
-
-export default function ProductTable({ products = [],  onEdit, onDelete }) {
-
-
+export default function ProductTable({ products = [], onEdit, onDelete }) {
   return (
-    <div className="border rounded-md overflow-x-auto">
+    <div className="border border-gray-300 rounded-md overflow-x-auto bg-white shadow-sm">
       <Table>
         <TableHeader>
           <TableRow>
@@ -193,7 +186,9 @@ export default function ProductTable({ products = [],  onEdit, onDelete }) {
                 <img
                   src={p.images[0]?.thumbnailUrl || "/avatar.png"}
                   alt={p.name}
-                  className="w-12 h-12 object-cover rounded"
+                  width={30}
+                  height={30}
+                  className="rounded-md object-contain"
                 />
               </TableCell>
               <TableCell>{p.name}</TableCell>
@@ -210,8 +205,8 @@ export default function ProductTable({ products = [],  onEdit, onDelete }) {
               {/* <TableCell>
                 {new Date(p.createdAt).toLocaleDateString()}
               </TableCell> */}
-              
-               <TableCell className="text-center space-x-2">
+
+              <TableCell className="text-center space-x-2">
                 <button
                   onClick={() => onEdit(p)}
                   className="inline-flex items-center justify-center  w-8 h-8 rounded-md border border-gray-300 text-gray-600 hover:bg-gray-300 transition"

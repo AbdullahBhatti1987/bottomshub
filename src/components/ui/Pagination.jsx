@@ -1,55 +1,157 @@
-"use client";
+// import { useState, useRef, useEffect } from "react";
+// import Button from "./Button";
 
-export default function Pagination({ currentPage, totalPages, onPageChange }) {
-  if (totalPages <= 1) return null;
+// export default function Pagination({ page, pages, total, limit, onLimitChange, onPageChange }) {
+//   const [open, setOpen] = useState(false);
+//   const dropdownRef = useRef(null);
 
-  const handleClick = (page) => {
-    if (page !== currentPage && page >= 1 && page <= totalPages) {
-      onPageChange(page);
-    }
-  };
+//   const options = [5, 10, 15, 20, 50, 100];
 
-  const renderPages = () => {
-    const pages = [];
+//   // Close dropdown if clicked outside
+//   useEffect(() => {
+//     function handleClickOutside(e) {
+//       if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+//         setOpen(false);
+//       }
+//     }
+//     document.addEventListener("mousedown", handleClickOutside);
+//     return () => document.removeEventListener("mousedown", handleClickOutside);
+//   }, []);
 
-    for (let i = 1; i <= totalPages; i++) {
-      pages.push(
-        <button
-          key={i}
-          onClick={() => handleClick(i)}
-          className={`px-3 py-1 rounded border text-sm ${
-            i === currentPage
-              ? "bg-black text-white border-black"
-              : "bg-white text-gray-700 border-gray-300 hover:bg-gray-100"
-          }`}
-        >
-          {i}
-        </button>
-      );
-    }
+//   return (
+//     <div className="mt-4 flex items-center justify-between flex-wrap gap-3">
+//       {/* Rows per page */}
+//       <div className="flex items-center gap-2 relative" ref={dropdownRef}>
+//         <span className="text-sm text-gray-600">Rows per page:</span>
+//         <button
+//           className="border border-gray-300 rounded-md px-3 py-1 bg-white shadow-sm text-sm flex items-center justify-between w-20"
+//           onClick={() => setOpen((prev) => !prev)}
+//         >
+//           {limit}
+//           <span className={`ml-2 transition-transform ${open ? "rotate-180" : ""}`}>▼</span>
+//         </button>
 
-    return pages;
-  };
+//         {open && (
+//           <ul className="absolute bottom-full mb-1 left-0 w-20 bg-white border border-gray-300 rounded-md shadow-lg z-50">
+//             {options.map((opt) => (
+//               <li
+//                 key={opt}
+//                 className={`px-3 py-1 cursor-pointer hover:bg-gray-100 text-sm ${
+//                   opt === limit ? "bg-gray-200 font-medium" : ""
+//                 }`}
+//                 onClick={() => {
+//                   onLimitChange(opt);
+//                   setOpen(false);
+//                 }}
+//               >
+//                 {opt}
+//               </li>
+//             ))}
+//           </ul>
+//         )}
+//       </div>
+
+//       {/* Prev / Next buttons */}
+//       <div className="flex gap-2">
+//         <Button
+//           variant="success"
+//           disabled={page <= 1}
+//           onClick={() => onPageChange(page - 1)}
+//         >
+//           Prev
+//         </Button>
+//         <Button
+//           variant="success"
+//           disabled={page >= pages}
+//           onClick={() => onPageChange(page + 1)}
+//         >
+//           Next
+//         </Button>
+//       </div>
+
+//       {/* Total info */}
+//       <div className="text-sm text-gray-600">
+//         Total: {total} — Page {page} / {pages}
+//       </div>
+//     </div>
+//   );
+// }
+
+
+
+import { useState, useRef, useEffect } from "react";
+import Button from "./Button";
+
+export default function Pagination({ page, pages, total, limit, onLimitChange, onPageChange }) {
+  const [open, setOpen] = useState(false);
+  const dropdownRef = useRef(null);
+  const options = [10, 15, 20, 50, 100];
+
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+        setOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   return (
-    <div className="flex items-center justify-center gap-2 mt-6">
-      <button
-        onClick={() => handleClick(currentPage - 1)}
-        disabled={currentPage === 1}
-        className="px-3 py-1 border rounded text-sm disabled:opacity-50"
-      >
-        Previous
-      </button>
+    <div className="mt-4 flex items-center justify-between flex-wrap gap-3">
+      {/* Rows per page */}
+      <div className="flex items-center gap-2 relative" ref={dropdownRef}>
+        <span className="text-sm text-gray-600">Rows per page:</span>
+        <button
+          className="border border-gray-300 rounded-md px-3 py-1 bg-white shadow-sm text-sm flex items-center justify-between w-20"
+          onClick={() => setOpen((prev) => !prev)}
+        >
+          {limit}
+          <span className={`ml-2 transition-transform ${open ? "rotate-180" : ""}`}>▼</span>
+        </button>
 
-      {renderPages()}
+        {open && (
+          <ul className="absolute bottom-full mb-1 left-0 w-20 bg-white border border-gray-300 rounded-md shadow-lg z-50">
+            {options.map((opt) => (
+              <li
+                key={opt}
+                className={`px-3 py-1 cursor-pointer hover:bg-gray-100 text-sm ${
+                  opt === limit ? "bg-gray-200 font-medium" : ""
+                }`}
+                onClick={() => {
+                  onLimitChange(opt);
+                  setOpen(false);
+                }}
+              >
+                {opt}
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
 
-      <button
-        onClick={() => handleClick(currentPage + 1)}
-        disabled={currentPage === totalPages}
-        className="px-3 py-1 border rounded text-sm disabled:opacity-50"
-      >
-        Next
-      </button>
+      {/* Pagination Buttons */}
+      <div className="flex gap-2">
+        <Button
+          variant="success"
+          disabled={page <= 1}
+          onClick={() => onPageChange(page - 1)}
+        >
+          Prev
+        </Button>
+        <Button
+          variant="success"
+          disabled={page >= pages}
+          onClick={() => onPageChange(page + 1)}
+        >
+          Next
+        </Button>
+      </div>
+
+      {/* Total Info */}
+      <div className="text-sm text-gray-600">
+        Total: {total} — Page {page} / {pages}
+      </div>
     </div>
   );
 }
