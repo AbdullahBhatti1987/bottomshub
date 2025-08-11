@@ -13,6 +13,7 @@ const ORDER_STATUSES = [
   "shipped",
   "delivered",
   "canceled",
+  "returned",
 ];
 
 export default function OrderFilter({ onFilter }) {
@@ -27,7 +28,7 @@ export default function OrderFilter({ onFilter }) {
     setFilters({ ...filters, [e.target.name]: e.target.value });
   };
 
-  const handleFilter = (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     onFilter(filters);
   };
@@ -40,7 +41,7 @@ export default function OrderFilter({ onFilter }) {
 
   return (
     <form
-      onSubmit={handleFilter}
+      onSubmit={handleSubmit}
       className="w-full flex flex-col md:flex-row gap-4 items-end mb-6"
     >
       <div className="flex-1">
@@ -59,7 +60,7 @@ export default function OrderFilter({ onFilter }) {
           onChange={(value) => {
             const newFilters = { ...filters, status: value };
             setFilters(newFilters);
-            onFilter(newFilters); // immediate filter on status change
+            onFilter(newFilters);
           }}
         >
           {ORDER_STATUSES.map((status) => (

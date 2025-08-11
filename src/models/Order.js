@@ -1,34 +1,22 @@
 import mongoose from 'mongoose';
 
 const orderItemSchema = new mongoose.Schema({
-  category: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Category',
-    required: true,
-  },
-  product: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Product',
-    required: true,
-  },
+  category: { type: mongoose.Schema.Types.ObjectId, ref: 'Category', required: true },
+  product: { type: mongoose.Schema.Types.ObjectId, ref: 'Product', required: true },
   quantity: { type: Number, required: true, min: 1 },
   selectedSize: { type: String },
-  priceAtPurchase: { type: Number, required: true }, // price at time of order
-  name: { type: String, required: true },            // product name snapshot
-  image: { type: String },                            // product image snapshot (URL)
+  priceAtPurchase: { type: Number, required: true },
+  name: { type: String, required: true },
+  image: { type: String },
 });
 
 const orderSchema = new mongoose.Schema(
   {
-    user: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'User',
-      required: true,
-    },
+    user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
     items: {
       type: [orderItemSchema],
       required: true,
-      validate: v => Array.isArray(v) && v.length > 0,  // Ensure items array not empty
+      validate: v => Array.isArray(v) && v.length > 0,
     },
     shippingAddress: {
       fullName: { type: String, required: true },
@@ -39,38 +27,17 @@ const orderSchema = new mongoose.Schema(
       country: { type: String, default: 'Pakistan' },
       phone: { type: String, required: true },
     },
-    paymentMethod: {
-      type: String,
-      enum: ['COD', 'Stripe', 'EasyPaisa'],
-      required: true,
-    },
-    paymentStatus: {
-      type: String,
-      enum: ['pending', 'paid', 'failed'],
-      default: 'pending',
-    },
+    paymentMethod: { type: String, enum: ['COD', 'Stripe', 'EasyPaisa'], required: true },
+    paymentStatus: { type: String, enum: ['pending', 'paid', 'failed'], default: 'pending' },
     orderStatus: {
       type: String,
       enum: ['pending', 'confirmed', 'processing', 'shipped', 'delivered', 'canceled'],
       default: 'pending',
     },
-    totalAmount: {
-      type: Number,
-      required: true,
-      min: 0,
-    },
-    coupon: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Coupon',
-      default: null,
-    },
-    notes: {
-      type: String,
-      default: '',
-    },
-    paidAt: {
-      type: Date,
-    },
+    totalAmount: { type: Number, required: true, min: 0 },
+    coupon: { type: mongoose.Schema.Types.ObjectId, ref: 'Coupon', default: null },
+    notes: { type: String, default: '' },
+    paidAt: { type: Date },
   },
   { timestamps: true }
 );

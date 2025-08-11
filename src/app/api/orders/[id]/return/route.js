@@ -1,20 +1,35 @@
-// api/admin/order/[id]/return/route.js
-
-import { connectDb } from '@/lib/connectDb';
+import connectDb from '@/lib/connectDb';
 import Order from '@/models/Order';
-import responseHelper from '@/lib/responseHelper';
-import { auth } from '@/middlewares/auth';
+import responseHelper from '@/helpers/responseHelper';
 
-export async function POST(req, { params }) {
+export async function PUT(request, { params }) {
   await connectDb();
-  const user = await auth(req);
-  if (!user) return responseHelper.unauthorized();
 
-  const order = await Order.findOne({ _id: params.id, user: user._id });
-  if (!order) return responseHelper.notFound('Order not found');
+  const { id } = params;
+  if (!id.match(/^[0-9a-fA-F]{24}$/)) {
+    return responseHelper.badRequest('Invalid order ID');
+  }
 
-  order.status = 'return_requested';
-  await order.save();
+  try {
+    const order = await Order.findById(id);
+    if (!order) {
+      return responseHelper.badRequest('Order not found');
+    }
 
-  return responseHelper.ok({ message: 'Return requested' });
+    if (order.orderStatus !== 'delivered') {
+      return responseHelper.badRequest('Return only allowed after delivery');
+    }
+
+    const { returnReason = '' } = await request.json();
+
+    order.orderStatus = 'returned';
+    order.returnReason = returnReason;
+    order.returnRequestDate = new Date();
+
+    await order.save();
+
+    return responseHelper.success({ order }, 'Return requested successfully');
+  } catch (err) {
+    return responseHelper.serverError(err.message);
+  }
 }

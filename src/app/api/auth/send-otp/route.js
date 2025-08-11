@@ -51,7 +51,9 @@ export async function POST(req) {
   await connectDb();
 
   try {
+    console.log("Received request to send OTP", req);
     const { mobile } = await req.json();
+    console.log("mobile", mobile);
 
     if (!mobile) {
       return responseHelper.badRequest("Mobile number is required");

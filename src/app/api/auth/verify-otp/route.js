@@ -9,12 +9,12 @@ export async function POST(req) {
 
   try {
     const { mobile, otp, name, email } = await req.json();
-    // console.log("Verify OTP request received:", {
-    //   mobile,
-    //   otp,
-    //   name,
-    //   email,
-    // });
+    console.log("Verify OTP request received:", {
+      mobile,
+      otp,
+      name,
+      email,
+    });
 
     if (!mobile || !otp || !name || !email) {
       return responseHelper.badRequest("Mobile, OTP, Name, Email are required");

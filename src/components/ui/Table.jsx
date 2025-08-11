@@ -35,11 +35,29 @@ export function TableHead({ children }) {
   );
 }
 
-// components/ui/table.jsx
-export function TableCell({ children, className = "", truncate = 0 }) {
+// // components/ui/table.jsx
+// export function TableCell({ children, className = "", truncate = 0 }) {
+//   let content = children;
+
+//   // If truncate > 0 and the content is a string, trim it
+//   if (truncate > 0 && typeof children === "string") {
+//     content =
+//       children.length > truncate
+//         ? `${children.slice(0, truncate)}...`
+//         : children;
+//   }
+
+//   return (
+//     <td className={`px-4 py-2 text-gray-800 whitespace-nowrap ${className}`}>
+//       {content}
+//     </td>
+//   );
+// }
+
+
+export function TableCell({ children, className = "", truncate = 0, ...rest }) {
   let content = children;
 
-  // If truncate > 0 and the content is a string, trim it
   if (truncate > 0 && typeof children === "string") {
     content =
       children.length > truncate
@@ -48,7 +66,10 @@ export function TableCell({ children, className = "", truncate = 0 }) {
   }
 
   return (
-    <td className={`px-4 py-2 text-gray-800 whitespace-nowrap ${className}`}>
+    <td
+      className={`px-4 py-2 text-gray-800 whitespace-nowrap ${className}`}
+      {...rest}  // <-- Spread remaining props here, including colSpan
+    >
       {content}
     </td>
   );

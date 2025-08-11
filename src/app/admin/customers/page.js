@@ -134,7 +134,6 @@
 //   );
 // }
 
-
 "use client";
 
 import { useEffect, useState } from "react";
@@ -150,6 +149,7 @@ import ConfirmDeleteModal from "@/components/ui/ConfirmDeleteModal";
 import { useToastContext } from "@/components/ui/ToastProvider";
 
 import { BASE_URL } from "@/lib/axios";
+import OTPModal from "@/components/auth/OTPModal";
 
 export default function AdminUsersPage() {
   const [users, setUsers] = useState([]);
@@ -161,6 +161,10 @@ export default function AdminUsersPage() {
 
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [userToDelete, setUserToDelete] = useState(null);
+  const [pendingUserData, setPendingUserData] = useState(null);
+
+  const [otpModalOpen, setOtpModalOpen] = useState(false);
+  const [mobileForOtp, setMobileForOtp] = useState("");
 
   const { addToast } = useToastContext();
 
@@ -214,14 +218,42 @@ export default function AdminUsersPage() {
         );
         addToast("User updated successfully", "success");
       } else {
-        await axios.post(`${BASE_URL}/api/admin/customers`, formData);
-        addToast("User created successfully", "success");
+        console.log("Updating user:", formData);
+
+        await axios.post(`${BASE_URL}/api/auth/send-otp`, {
+          mobile: formData.mobile,
+        });
+        // await axios.post(`${BASE_URL}/api/admin/customers`, formData);
+        addToast("OTP Send Successfully", "success");
+        // addToast("User created successfully", "success");
+        setPendingUserData(formData);
+        setMobileForOtp(formData.mobile);
+        setOtpModalOpen(true);
       }
       setModalOpen(false);
       setSelectedUser(null);
       fetchUsers();
     } catch (err) {
       addToast("Error saving user", "error");
+    }
+  };
+
+  const handleVerifyOtp = async (otp) => {
+    try {
+      await axios.post(`${BASE_URL}/api/auth/verify-otp`, {
+        mobile: mobileForOtp,
+        otp,
+        name: pendingUserData?.name,
+        email: pendingUserData?.email,
+        // add any other fields you need
+      });
+
+      addToast("OTP verified successfully", "success");
+      setOtpModalOpen(false);
+      setPendingUserData(null);
+      fetchUsers(); // optionally refresh users list
+    } catch (err) {
+      addToast("OTP verification failed", "error");
     }
   };
 
@@ -276,6 +308,13 @@ export default function AdminUsersPage() {
         onClose={() => setDeleteModalOpen(false)}
         onConfirm={confirmDelete}
         itemName={userToDelete?.name}
+      />
+
+      <OTPModal
+        isOpen={otpModalOpen}
+        onClose={() => setOtpModalOpen(false)}
+        onVerify={handleVerifyOtp}
+        mobile={mobileForOtp}
       />
 
       <UserModal

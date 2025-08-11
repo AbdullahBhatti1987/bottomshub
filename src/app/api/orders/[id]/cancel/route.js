@@ -1,31 +1,33 @@
-// api/admin/order/[id]/cancel/route.js
 import connectDb from '@/lib/connectDb';
-import { authenticateUser } from '@/middlewares/auth';
-import responseHelper from '@/lib/responseHelper';
 import Order from '@/models/Order';
+import responseHelper from '@/helpers/responseHelper';
 
-export const PUT = authenticateUser(async (req, res, { params }) => {
+export async function PUT(request, { params }) {
   await connectDb();
 
   const { id } = params;
-  const userId = req.userId;
-
-  const order = await Order.findById(id);
-
-  if (!order) {
-    return responseHelper.badRequest(res, 'Order not found.');
+  if (!id.match(/^[0-9a-fA-F]{24}$/)) {
+    return responseHelper.badRequest('Invalid order ID');
   }
 
-  if (order.user.toString() !== userId) {
-    return responseHelper.unauthorized(res, 'You can only cancel your own orders.');
+  try {
+    const order = await Order.findById(id);
+    if (!order) {
+      return responseHelper.badRequest('Order not found');
+    }
+
+    if (['shipped', 'delivered', 'canceled', 'returned'].includes(order.orderStatus)) {
+      return responseHelper.badRequest(`Cannot cancel order in status: ${order.orderStatus}`);
+    }
+
+    const { cancelReason = '' } = await request.json();
+
+    order.orderStatus = 'canceled';
+    order.cancelReason = cancelReason;
+    await order.save();
+
+    return responseHelper.success({ order }, 'Order canceled successfully');
+  } catch (err) {
+    return responseHelper.serverError(err.message);
   }
-
-  if (['shipped', 'delivered'].includes(order.status)) {
-    return responseHelper.badRequest(res, 'Order cannot be cancelled at this stage.');
-  }
-
-  order.status = 'cancelled';
-  await order.save();
-
-  return responseHelper.success(res, 'Order cancelled successfully.', { order });
-});
+}
