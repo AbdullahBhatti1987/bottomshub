@@ -29,7 +29,7 @@ export default function Button({
     default: "bg-black text-white hover:bg-gray-800",
     ghost: "bg-gray-300 text-black hover:bg-gray-100",
     destructive: "bg-red-600 text-white hover:bg-red-700",
-    success: "bg-green-600 text-white hover:bg-green-700",
+    success: "bg-gray-400 text-white hover:bg-gray-600",
     // aap yahan aur bhi variants add kar sakte hain
   };
 

@@ -111,7 +111,7 @@ export default function Pagination({ page, pages, total, limit, onLimitChange, o
         </button>
 
         {open && (
-          <ul className="absolute bottom-full mb-1 left-0 w-20 bg-white border border-gray-300 rounded-md shadow-lg z-50">
+          <ul className="absolute bottom-full mb-1 left-27 w-20 bg-white border border-gray-300 rounded-md shadow-lg z-50">
             {options.map((opt) => (
               <li
                 key={opt}
