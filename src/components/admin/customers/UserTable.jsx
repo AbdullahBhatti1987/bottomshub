@@ -1,35 +1,57 @@
+import {
+  Table,
+  TableHeader,
+  TableBody,
+  TableRow,
+  TableHead,
+  TableCell,
+} from "@/components/ui/Table";
+import { formatDate } from "@/lib/date";
+import { Trash2, Pencil } from "lucide-react";
+
+
 export default function UserTable({ users, onEdit, onDelete }) {
   return (
-    <table className="table-auto w-full border">
-      <thead>
-        <tr className="bg-gray-200">
-          <th className="p-2">Name</th>
-          <th className="p-2">Mobile</th>
-          <th className="p-2">Email</th>
-          <th className="p-2">Role</th>
-          <th className="p-2">Verified</th>
-          <th className="p-2">Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        {users.map((u) => (
-          <tr key={u._id} className="border-t">
-            <td className="p-2">{u.name}</td>
-            <td className="p-2">{u.mobile}</td>
-            <td className="p-2">{u.email}</td>
-            <td className="p-2">{u.role}</td>
-            <td className="p-2">{u.isVerified ? "✅" : "❌"}</td>
-            <td className="p-2 flex gap-2">
-              <button className="text-blue-500" onClick={() => onEdit(u)}>
-                Edit
-              </button>
-              <button className="text-red-500" onClick={() => onDelete(u)}>
-                Delete
-              </button>
-            </td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
+    <div className="border rounded-md overflow-x-auto">
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead>Name</TableHead>
+            <TableHead>Mobile</TableHead>
+            <TableHead>Email</TableHead>
+            <TableHead>Role</TableHead>
+            <TableHead>Created</TableHead>
+            <TableHead>Actions</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {users.map((u) => (
+            <TableRow key={u._id}>
+              <TableCell>{u.name}</TableCell>
+              <TableCell>{u.mobile}</TableCell>
+              <TableCell>{u.email}</TableCell>
+              <TableCell>{u.role}</TableCell>
+               <TableCell className="text-gray-500">
+                              {formatDate(u?.createdAt)}
+                            </TableCell>
+              <TableCell className="text-center space-x-2">
+                <button
+                  onClick={() => onEdit(u)}
+                  className="inline-flex items-center justify-center  w-8 h-8 rounded-md border border-gray-300 text-gray-600 hover:bg-gray-300 transition"
+                >
+                  <Pencil size={16} />
+                </button>
+                <button
+                  onClick={() => onDelete(u._id)}
+                  className="inline-flex items-center justify-center  w-8 h-8 rounded-md border border-gray-300 text-gray-600 hover:bg-gray-300 transition"
+                >
+                  <Trash2 size={16} />
+                </button>
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </div>
   );
 }

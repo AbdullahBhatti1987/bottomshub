@@ -8,7 +8,7 @@ export async function GET() {
   try {
     const users = await User.find().sort({ createdAt: -1 });
     console.log("Fetched users:", users);
-    return responseHelper.success(users);
+    return responseHelper.successArray(users);
   } catch (error) {
     return responseHelper.serverError("Failed to fetch users");
   }

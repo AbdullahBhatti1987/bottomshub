@@ -1,57 +1,133 @@
 "use client";
+
 import { useState, useEffect } from "react";
+import Modal from "@/components/ui/Modal";
+import Input from "@/components/ui/Input";
 import Button from "@/components/ui/Button";
 
-export default function UserModal({ isOpen, onClose, onSubmit, user }) {
-  const [form, setForm] = useState({ name: "", mobile: "", email: "", role: "customer" });
+export default function UserModal({ isOpen, onClose, onSubmit, user = null, loading }) {
+  const [form, setForm] = useState({
+    name: "",
+    mobile: "",
+    email: "",
+    role: "customer",
+  });
 
   useEffect(() => {
     if (user) {
-      setForm(user);
+      setForm({
+        name: user.name || "",
+        mobile: user.mobile || "",
+        email: user.email || "",
+        role: user.role || "customer",
+      });
     } else {
       setForm({ name: "", mobile: "", email: "", role: "customer" });
     }
   }, [user]);
 
-  if (!isOpen) return null;
+  const handleChange = (e) => {
+    setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    // Basic validation example
+    if (!form.name.trim()) {
+      alert("Name is required");
+      return;
+    }
+    if (!form.email.trim()) {
+      alert("Email is required");
+      return;
+    }
+    if (!form.mobile.trim()) {
+      alert("Mobile is required");
+      return;
+    }
+
+    onSubmit(form);
+  };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center">
-      <div className="bg-white p-6 rounded-lg w-96">
-        <h2 className="text-lg font-bold mb-4">{user ? "Edit User" : "Add User"}</h2>
-        <input
-          placeholder="Name"
-          value={form.name}
-          onChange={(e) => setForm({ ...form, name: e.target.value })}
-          className="w-full mb-2 border p-2"
-        />
-        <input
-          placeholder="Mobile"
-          value={form.mobile}
-          onChange={(e) => setForm({ ...form, mobile: e.target.value })}
-          className="w-full mb-2 border p-2"
-        />
-        <input
-          placeholder="Email"
-          value={form.email}
-          onChange={(e) => setForm({ ...form, email: e.target.value })}
-          className="w-full mb-2 border p-2"
-        />
-        <select
-          value={form.role}
-          onChange={(e) => setForm({ ...form, role: e.target.value })}
-          className="w-full mb-4 border p-2"
-        >
-          <option value="customer">Customer</option>
-          <option value="admin">Admin</option>
-        </select>
-        <div className="flex justify-end gap-2">
-          <Button variant="secondary" onClick={onClose}>
+    <Modal isOpen={isOpen} onClose={onClose} title={user ? "Edit User" : "Add New User"}>
+      <form onSubmit={handleSubmit} className="space-y-4 mt-4">
+        <div>
+          <label className="text-sm font-medium text-gray-700" htmlFor="name">
+            Name
+          </label>
+          <Input
+            id="name"
+            name="name"
+            value={form.name}
+            onChange={handleChange}
+            disabled={loading}
+            required
+          />
+        </div>
+
+        <div>
+          <label className="text-sm font-medium text-gray-700" htmlFor="mobile">
+            Mobile
+          </label>
+          <Input
+            id="mobile"
+            name="mobile"
+            value={form.mobile}
+            onChange={handleChange}
+            disabled={loading}
+            required
+          />
+        </div>
+
+        <div>
+          <label className="text-sm font-medium text-gray-700" htmlFor="email">
+            Email
+          </label>
+          <Input
+            id="email"
+            name="email"
+            type="email"
+            value={form.email}
+            onChange={handleChange}
+            disabled={loading}
+            required
+          />
+        </div>
+
+        <div>
+          <label className="text-sm font-medium text-gray-700" htmlFor="role">
+            Role
+          </label>
+          <select
+            id="role"
+            name="role"
+            value={form.role}
+            onChange={handleChange}
+            disabled={loading}
+            className="w-full rounded border border-gray-300 p-2"
+          >
+            <option value="customer">Customer</option>
+            <option value="admin">Admin</option>
+            {/* Add more roles if needed */}
+          </select>
+        </div>
+
+        <div className="flex justify-end gap-2 pt-4">
+          <Button
+            type="button"
+            variant="outline"
+            onClick={onClose}
+            disabled={loading}
+          >
             Cancel
           </Button>
-          <Button onClick={() => onSubmit(form)}>Save</Button>
+          <Button type="submit" disabled={loading}>
+            {user ? "Update" : "Create"}
+          </Button>
         </div>
-      </div>
-    </div>
+      </form>
+    </Modal>
   );
 }

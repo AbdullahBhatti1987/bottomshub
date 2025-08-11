@@ -124,7 +124,7 @@ export default function CategoryTable({ categories = [], onEdit, onDelete }) {
               </TableCell>
               <TableCell className="capitalize">{cat.name}</TableCell>
               <TableCell className="text-gray-500">{cat.slug}</TableCell>
-              <TableCell className="text-gray-500" truncate={50}>
+              <TableCell className="text-gray-500" truncate={30}>
                 {cat.description}
               </TableCell>
               <TableCell className="text-gray-500">
