@@ -1,16 +1,16 @@
-
 "use client";
 
 import React, { useState, useRef, useEffect } from "react";
 import { ChevronDown } from "lucide-react";
 
-export function Select({ name, value, onChange, children, required }) {
+export function Select({ label, name, value, onChange, children, required }) {
   const [open, setOpen] = useState(false);
   const dropdownRef = useRef(null);
 
   const childArray = React.Children.toArray(children);
   const selectedLabel =
-    childArray.find((child) => child.props.value === value)?.props.children || "Select";
+    childArray.find((child) => child.props.value === value)?.props.children ||
+    "Select";
 
   // ✅ Close on outside click
   useEffect(() => {
@@ -25,7 +25,12 @@ export function Select({ name, value, onChange, children, required }) {
   }, []);
 
   return (
-    <div className="relative mb-4 m-1" ref={dropdownRef}>
+    <div className="relative  w-full" ref={dropdownRef}>
+      {label && (
+        <label className="block text-sm font-medium mb-1 text-gray-700">
+          {label}
+        </label>
+      )}
       <button
         type="button"
         className="w-full flex items-center justify-between px-3 py-2 text-left border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-black border-gray-300 bg-white"
@@ -33,7 +38,9 @@ export function Select({ name, value, onChange, children, required }) {
       >
         <span>{selectedLabel}</span>
         <ChevronDown
-          className={`w-4 h-4 ml-2 transition-transform ${open ? "rotate-180" : ""}`}
+          className={`w-4 h-4 ml-2 transition-transform ${
+            open ? "rotate-180" : ""
+          }`}
         />
       </button>
 

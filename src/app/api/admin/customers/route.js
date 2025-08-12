@@ -16,7 +16,7 @@
 
 
 
-// src/app/api/admin/users/route.js
+// src/app/api/admin/customers/route.js
 import { connectDb } from "@/lib/connectDb";
 import User from "@/models/User";
 import responseHelper from "@/lib/responseHelper";

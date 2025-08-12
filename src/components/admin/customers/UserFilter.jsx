@@ -29,7 +29,7 @@ export default function UserFilter({  onFilter }) {
   return (
     <form
       onSubmit={handleFilter}
-      className="w-full flex flex-col md:flex-row gap-4 items-end mb-6"
+      className="w-full flex flex-row gap-4 items-end  "
     >
       <div className="flex-1">
         <Input
@@ -42,7 +42,7 @@ export default function UserFilter({  onFilter }) {
 
      
 
-      <div className="flex gap-2 items-end mb-4">
+      <div className="flex gap-2 items-end ">
         <Button type="submit" variant="primary">
           Filter
         </Button>

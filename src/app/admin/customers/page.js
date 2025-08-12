@@ -7,12 +7,13 @@ import UserTable from "@/components/admin/customers/UserTable";
 import UserModal from "@/components/admin/customers/UserModal";
 import UserFilter from "@/components/admin/customers/UserFilter";
 import Button from "@/components/ui/Button";
-import Loader from "@/components/ui/Loader";
 import ConfirmDeleteModal from "@/components/ui/ConfirmDeleteModal";
 import { useToastContext } from "@/components/ui/ToastProvider";
 import { BASE_URL } from "@/lib/axios";
 import OTPModal from "@/components/auth/OTPModal";
 import Pagination from "@/components/ui/Pagination";
+import ReportDownloader from "@/components/ui/ReportDownload";
+import { TableSkeletonBody } from "@/components/ui/TableSkeletonBody";
 
 export default function AdminUsersPage() {
   const [users, setUsers] = useState([]);
@@ -87,6 +88,8 @@ export default function AdminUsersPage() {
   };
 
   const handleSubmit = async (formData) => {
+    setLoading(true);
+
     try {
       if (selectedUser) {
         await axios.put(
@@ -106,12 +109,16 @@ export default function AdminUsersPage() {
       setModalOpen(false);
       setSelectedUser(null);
       fetchUsers(pageInfo.page, filters);
+      setLoading(false);
     } catch (err) {
       addToast("Error saving user", "error");
+      setLoading(false);
     }
   };
 
   const handleVerifyOtp = async (otp) => {
+    setLoading(true);
+
     try {
       await axios.post(`${BASE_URL}/api/auth/verify-otp`, {
         mobile: mobileForOtp,
@@ -124,8 +131,10 @@ export default function AdminUsersPage() {
       setOtpModalOpen(false);
       setPendingUserData(null);
       fetchUsers(pageInfo.page, filters);
+      setLoading(false);
     } catch (err) {
       addToast("OTP verification failed", "error");
+      setLoading(false);
     }
   };
 
@@ -154,7 +163,7 @@ export default function AdminUsersPage() {
   };
 
   return (
-    <div className="p-4">
+    <div className="p-4 space-y-4">
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-xl font-semibold">Users</h2>
         <Button
@@ -166,25 +175,28 @@ export default function AdminUsersPage() {
           Add User
         </Button>
       </div>
+      <div className="grid lg:grid-cols-2 grid-cols-1 gap-4">
+        <UserFilter onFilter={handleFilter} />
+        <ReportDownloader />
+      </div>
 
-      <UserFilter onFilter={handleFilter} />
-
-      {loading ? (
-        <Loader />
-      ) : (
-        <UserTable
-          currentPage={pageInfo.page}
-          pageSize={limit}
-          users={filteredUsers}
-          onEdit={(user) => {
-            setSelectedUser(user);
-            setModalOpen(true);
-          }}
-          onDelete={handleDelete}
-        />
-      )}
-
-      {/* Pagination always visible */}
+      <UserTable
+        currentPage={pageInfo.page}
+        pageSize={limit}
+        users={filteredUsers}
+        loading={loading}
+        onView={(user) => {
+          setSelectedUser(user);
+          setLoading(true);
+          setModalOpen(true);
+        }}
+        onEdit={(user) => {
+          setSelectedUser(user);
+          setModalOpen(true);
+        }}
+        onDelete={handleDelete}
+      />
+      {loading && <TableSkeletonBody totalColumns={6} rows={5} />}
       <Pagination
         page={pageInfo.page}
         pages={pageInfo.pages}
@@ -217,10 +229,12 @@ export default function AdminUsersPage() {
         isOpen={modalOpen}
         onClose={() => {
           setModalOpen(false);
+          setLoading(false);
           setSelectedUser(null);
         }}
         onSubmit={handleSubmit}
         user={selectedUser}
+        loading={loading}
       />
     </div>
   );

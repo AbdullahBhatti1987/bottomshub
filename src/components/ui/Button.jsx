@@ -47,9 +47,11 @@ export default function Button({
       onClick={onClick}
       className={`
         rounded
+         whitespace-nowrap
         ${variantClasses[variant] || variantClasses.default}
         ${sizeClasses[size] || sizeClasses.md}
         disabled:opacity-50
+        w-fit
         ${className}
       `}
     >
