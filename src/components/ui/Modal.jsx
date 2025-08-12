@@ -12,6 +12,7 @@ export default function Modal({
   children,
   showFooter = false,
   footerContent = null,
+  maxWidth,
 }) {
 
 
@@ -34,7 +35,7 @@ export default function Modal({
 
   return createPortal(
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4">
-      <div className="bg-white rounded-lg shadow-lg w-full max-w-2xl max-h-[90vh] flex flex-col overflow-hidden">
+      <div className={`bg-white rounded-lg shadow-lg w-full ${maxWidth ? 'max-w-lg' : 'max-w-2xl'} max-h-[90vh] flex flex-col overflow-hidden`}>
         {/* Header */}
         <div className="flex items-center justify-between px-5 py-4 border-b">
           <h2 className="text-lg font-semibold">{title}</h2>

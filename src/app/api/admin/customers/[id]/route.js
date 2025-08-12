@@ -7,8 +7,9 @@ export async function GET(req, { params }) {
   await connectDb();
   try {
     const user = await User.findById(params.id);
+    console.log("user", user);
     if (!user) return responseHelper.notFound("User not found");
-    return responseHelper.success(user);
+    return successArray(user);
   } catch (error) {
     return responseHelper.serverError("Failed to fetch user");
   }
@@ -26,13 +27,27 @@ export async function PUT(req, { params }) {
   }
 }
 
-export async function DELETE(req, { params }) {
+export async function DELETE(req, context) {
+  console.log("Deleting user with ID:", context);
+  const { id } = await context.params;
+
+  console.log("Deleting user with ID:", id);
+
   await connectDb();
+
   try {
-    const deleted = await User.findByIdAndDelete(params.id);
-    if (!deleted) return responseHelper.notFound("User not found");
-    return responseHelper.success("User deleted");
+    if (!id) {
+      return responseHelper.badRequest("Invalid user selected");
+    }
+    const deleted = await User.findByIdAndDelete(id);
+
+    if (!deleted) {
+      return responseHelper.notFound("User not found");
+    }
+
+    return responseHelper.success("User deleted successfully");
   } catch (error) {
-    return responseHelper.serverError("Failed to delete user");
+    console.error(error);
+    return responseHelper.serverError("Something went wrong");
   }
 }

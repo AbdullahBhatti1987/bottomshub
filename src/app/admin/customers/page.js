@@ -18,6 +18,9 @@ export default function AdminUsersPage() {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
 
+  const [filteredUsers, setFilteredUsers] = useState([]);
+  const [search, setSearch] = useState("");
+
   const [pageInfo, setPageInfo] = useState({ page: 1, pages: 1, total: 0 });
   const [filters, setFilters] = useState({ search: "", role: "" });
 
@@ -36,6 +39,14 @@ export default function AdminUsersPage() {
   // API call
   const [limit, setLimit] = useState(10);
 
+  // Search effect
+  useEffect(() => {
+    const result = users.filter((u) =>
+      u.name?.toLowerCase().includes(search.toLowerCase())
+    );
+    setFilteredUsers(result);
+  }, [search, users]);
+
   const fetchUsers = async (
     page = 1,
     filterState = filters,
@@ -43,26 +54,20 @@ export default function AdminUsersPage() {
   ) => {
     setLoading(true);
     try {
-      const params = { page, limit, ...filterState };
+      const params = { page, limit: pageLimit, ...filterState };
       const { data } = await axios.get(`${BASE_URL}/api/admin/customers`, {
         params,
       });
-      setUsers(data.users);
-      setPageInfo({ page: data.page, pages: data.pages, total: data.total });
 
-      if (Array.isArray(data) && data.length > 0) {
-        const startIndex = (page - 1) * pageLimit;
-        const endIndex = startIndex + pageLimit;
-        setUsers(data.slice(startIndex, endIndex));
-        setPageInfo({
-          page,
-          pages: Math.ceil(data.length / pageLimit),
-          total: data.length,
-        });
-      } else {
-        setUsers([]);
-        setPageInfo({ page: 1, pages: 1, total: 0 });
-      }
+      console.log("Fetched users:", data);
+      const { users, pagination } = data;
+
+      setUsers(users);
+      setPageInfo({
+        page: pagination.currentPage,
+        pages: pagination.totalPages,
+        total: pagination.totalCount,
+      });
     } catch (err) {
       console.error(err);
       addToast("Failed to load users", "error");
@@ -73,12 +78,12 @@ export default function AdminUsersPage() {
 
   useEffect(() => {
     fetchUsers(pageInfo.page, filters, limit);
-  }, [pageInfo.page, filters]);
+  }, [pageInfo.page, filters, limit]);
 
   // Handle filters
   const handleFilter = (newFilters) => {
     setFilters(newFilters);
-    setPageInfo((prev) => ({ ...prev, page: 1 })); // reset to first page
+    setPageInfo((prev) => ({ ...prev, page: 1 }));
   };
 
   const handleSubmit = async (formData) => {
@@ -130,8 +135,15 @@ export default function AdminUsersPage() {
   };
 
   const confirmDelete = async () => {
+    console.log("Deleting user:", userToDelete);
+    // addToast("userToDelete", userToDelete);
+    if (!userToDelete) {
+      addToast("Invalid user selected", "error");
+      return;
+    }
+
     try {
-      await axios.delete(`${BASE_URL}/api/admin/customers/${userToDelete._id}`);
+      await axios.delete(`${BASE_URL}/api/admin/customers/${userToDelete}`);
       addToast("User deleted successfully", "success");
       setDeleteModalOpen(false);
       setUserToDelete(null);
@@ -163,7 +175,7 @@ export default function AdminUsersPage() {
         <UserTable
           currentPage={pageInfo.page}
           pageSize={limit}
-          users={users}
+          users={filteredUsers}
           onEdit={(user) => {
             setSelectedUser(user);
             setModalOpen(true);
@@ -177,17 +189,13 @@ export default function AdminUsersPage() {
         page={pageInfo.page}
         pages={pageInfo.pages}
         total={pageInfo.total}
-        currentPage={pageInfo.page}
-        pageSize={limit}
         limit={limit}
         onLimitChange={(newLimit) => {
           setLimit(newLimit);
-          fetchUsers(1, filters, newLimit);
           setPageInfo((prev) => ({ ...prev, page: 1 }));
         }}
         onPageChange={(p) => {
           setPageInfo((prev) => ({ ...prev, page: p }));
-          fetchUsers(p, filters, limit);
         }}
       />
 

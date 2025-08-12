@@ -62,17 +62,17 @@ export default function AdminSidebar({
         <div className="flex items-center justify-between h-16 px-4 border-b border-gray-200">
           {!collapsed && (
             <h1 className="text-xl font-bold text-gray-900 tracking-tight">
-              BTH Admin
+              Bottom's Hub
             </h1>
           )}
           <button
             onClick={() => setCollapsed(!collapsed)}
-            className="text-gray-500 hover:text-black transition-transform duration-300"
+            className="text-gray-500 hover:text-black transition-transform duration-300 ml-1 p-2  rounded-full"
           >
             <ChevronLeft
               size={20}
               className={`transform transition-transform duration-300 ${
-                collapsed ? "rotate-180" : ""
+                collapsed ? "rotate-180 font-bold text-xl " : ""
               }`}
             />
           </button>
