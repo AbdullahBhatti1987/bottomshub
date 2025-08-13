@@ -1,19 +1,19 @@
-import { connectDb } from '@/lib/connectDb';
-import responseHelper from '@/lib/responseHelper';
-import Category from '@/models/Category';
+import { connectDb } from "@/lib/connectDb";
+import responseHelper from "@/lib/responseHelper";
+import Category from "@/models/Category";
 import { uploadImageToCloudinary } from "@/lib/uploadImageToCloudinary";
 
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 
 export async function GET(req, { params }) {
   await connectDb();
   try {
     const category = await Category.findById(params.categoryId);
-    if (!category) return responseHelper.badRequest('Category not found');
-    return responseHelper.success({ data: category }, 'Category fetched');
+    if (!category) return responseHelper.badRequest("Category not found");
+    return responseHelper.success({ data: category }, "Category fetched");
   } catch (err) {
-    console.error('Admin GET Category Error:', err);
-    return responseHelper.serverError('Failed to fetch category');
+    console.error("Admin GET Category Error:", err);
+    return responseHelper.serverError("Failed to fetch category");
   }
 }
 export async function PUT(req, { params }) {
@@ -22,7 +22,7 @@ export async function PUT(req, { params }) {
   try {
     const body = await req.json();
     const { name, slug, description, image } = body;
-      
+
     // Fetch existing category first
     const category = await Category.findById(params.categoryId);
     if (!category) return responseHelper.badRequest("Category not found");
@@ -64,16 +64,18 @@ export async function PUT(req, { params }) {
   }
 }
 
+export async function DELETE(req, context) {
+  console.log("Deleting category with ID:", context);
+  const { categoryId } = await context.params;
 
-
-export async function DELETE(req, { params }) {
+  console.log("Deleting category with ID:", categoryId);
   await connectDb();
   try {
-    const deleted = await Category.findByIdAndDelete(params.categoryId);
-    if (!deleted) return responseHelper.badRequest('Category not found');
-    return responseHelper.success({ data: deleted }, 'Category deleted');
+    const deleted = await Category.findByIdAndDelete(categoryId);
+    if (!deleted) return responseHelper.badRequest("Category not found");
+    return responseHelper.success({ data: deleted }, "Category deleted");
   } catch (err) {
-    console.error('Admin DELETE Category Error:', err);
-    return responseHelper.serverError('Failed to delete category');
+    console.error("Admin DELETE Category Error:", err);
+    return responseHelper.serverError("Failed to delete category");
   }
 }

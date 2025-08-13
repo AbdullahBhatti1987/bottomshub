@@ -280,8 +280,8 @@ export default function CategoriesPage() {
     }
   };
 
-  const handleDelete = (category) => {
-    setCategoryToDelete(category);
+  const handleDelete = () => {
+    setCategoryToDelete();
     setDeleteModalOpen(true);
   };
 
@@ -290,9 +290,11 @@ export default function CategoriesPage() {
       addToast("Invalid category selected", "error");
       return;
     }
+
+    console.log(categoryToDelete);
     try {
       await axios.delete(
-        `${BASE_URL}/api/admin/categories/${categoryToDelete._id}`
+        `${BASE_URL}/api/admin/categories/${categoryToDelete}`
       );
       addToast("Category deleted successfully", "success");
       setDeleteModalOpen(false);
