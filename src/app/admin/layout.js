@@ -49,7 +49,7 @@ export default function AdminLayout({ children, title = "Dashboard" }) {
         </div>
 
         {/* Scrollable content area */}
-        <main className="flex-1 overflow-auto pt-4">
+        <main className="flex-1 overflow-auto p-4">
           {children}
         </main>
       </div>
