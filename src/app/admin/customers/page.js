@@ -5,7 +5,7 @@ import axios from "axios";
 
 import UserTable from "@/components/admin/customers/UserTable";
 import UserModal from "@/components/admin/customers/UserModal";
-import UserFilter from "@/components/admin/customers/UserFilter";
+import SearchFilter from "@/components/admin/customers/SearchFilter";
 import Button from "@/components/ui/Button";
 import ConfirmDeleteModal from "@/components/ui/ConfirmDeleteModal";
 import { useToastContext } from "@/components/ui/ToastProvider";
@@ -163,7 +163,7 @@ export default function AdminUsersPage() {
   };
 
   return (
-    <div className="p-4 space-y-4">
+    <div className=" space-y-4">
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-xl font-semibold">Users</h2>
         <Button
@@ -175,9 +175,10 @@ export default function AdminUsersPage() {
           Add User
         </Button>
       </div>
+
       <div className="grid lg:grid-cols-2 grid-cols-1 gap-4">
-        <UserFilter onFilter={handleFilter} />
-        <ReportDownloader />
+        <SearchFilter onFilter={handleFilter} />
+        <ReportDownloader endpoint="customers" />
       </div>
 
       <UserTable

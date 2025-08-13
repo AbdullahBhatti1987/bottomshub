@@ -3,9 +3,8 @@
 import { useState } from "react";
 import Input from "@/components/ui/Input";
 import Button from "@/components/ui/Button";
-import { Select, SelectItem } from "@/components/ui/Select";
 
-export default function UserFilter({  onFilter }) {
+export default function SearchFilter({  onFilter }) {
   const [filters, setFilters] = useState({
     search: "",
   

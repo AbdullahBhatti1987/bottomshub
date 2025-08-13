@@ -89,6 +89,7 @@
 
 import { jsPDF } from "jspdf";
 import autoTable from "jspdf-autotable";
+import Papa from "papaparse";
 
 export function formatMobile(mobile) {
   if (!mobile) return "";
@@ -127,11 +128,16 @@ export async function generateReport({
   ),
   styles: { fontSize: 7, cellPadding: 4, textColor: 0 },
   headStyles: { fillColor: [229, 231, 235], halign: "center" },
-  columnStyles: {
-    0: { halign: "center" },
-    3: { halign: "center" },
-    4: { halign: "center" },
-  },
+  // columnStyles: {
+  //   0: { halign: "center" },
+  //   3: { halign: "center" },
+  //   4: { halign: "center" },
+  // },
+  columnStyles: columns.reduce((styles, col, index) => {
+  styles[index] = { halign: col.align || "center" }; 
+  return styles;
+}, {}),
+
   didDrawCell: function (dataArg) {
     const { cell } = dataArg;
     doc.setDrawColor(0);
