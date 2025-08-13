@@ -135,9 +135,7 @@ export default function AdminProductsPage() {
 
       <ProductFilter categories={categories} onFilter={handleFilter} />
 
-      {loading ? (
-        <Loader />
-      ) : (
+    
         <ProductTable
           products={products}
           onRefresh={fetchProducts}
@@ -147,7 +145,6 @@ export default function AdminProductsPage() {
           }}
           onDelete={handleDelete}
         />
-      )}
       <ConfirmDeleteModal
         isOpen={deleteModalOpen}
         onClose={() => setDeleteModalOpen(false)}

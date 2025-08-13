@@ -175,7 +175,6 @@
 //   );
 // }
 
-
 "use client";
 
 import { useEffect, useState } from "react";
@@ -196,6 +195,7 @@ export default function CategoriesPage() {
   const [categories, setCategories] = useState([]);
   const [filteredCategories, setFilteredCategories] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [viewMode, setViewMode] = useState(false);
 
   const [search, setSearch] = useState("");
   const [filters, setFilters] = useState({ search: "" });
@@ -246,13 +246,11 @@ export default function CategoriesPage() {
 
   // Search effect
   useEffect(() => {
-  const result = (categories || []).filter((c) =>
-    c.name?.toLowerCase().includes(search.toLowerCase())
-  );
-  setFilteredCategories(result);
-}, [search, categories]);
-
-
+    const result = (categories || []).filter((c) =>
+      c.name?.toLowerCase().includes(search.toLowerCase())
+    );
+    setFilteredCategories(result);
+  }, [search, categories]);
 
   const handleFilter = (newFilters) => {
     setFilters(newFilters);
@@ -275,9 +273,9 @@ export default function CategoriesPage() {
       setModalOpen(false);
       setSelectedCategory(null);
       fetchCategories(pageInfo.page, filters, limit);
+      setLoading(false);
     } catch (err) {
       addToast("Error saving category", "error");
-    } finally {
       setLoading(false);
     }
   };
@@ -312,6 +310,7 @@ export default function CategoriesPage() {
         <Button
           onClick={() => {
             setSelectedCategory(null);
+            setViewMode(false);
             setModalOpen(true);
           }}
         >
@@ -325,9 +324,17 @@ export default function CategoriesPage() {
       </div>
 
       <CategoryTable
+        currentPage={pageInfo.page}
+        pageSize={limit}
         categories={filteredCategories}
+        onView={(category) => {
+          setSelectedCategory(category);
+          setViewMode(true);
+          setModalOpen(true);
+        }}
         onEdit={(category) => {
           setSelectedCategory(category);
+          setViewMode(false);
           setModalOpen(true);
         }}
         onDelete={handleDelete}
@@ -359,11 +366,14 @@ export default function CategoriesPage() {
         isOpen={modalOpen}
         onClose={() => {
           setModalOpen(false);
+          setLoading(false);
           setSelectedCategory(null);
+          setViewMode(false);
         }}
         onSubmit={handleSubmit}
         category={selectedCategory}
         loading={loading}
+        viewMode={viewMode}
       />
     </div>
   );

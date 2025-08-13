@@ -5,7 +5,14 @@ import Modal from "@/components/ui/Modal";
 import Input from "@/components/ui/Input";
 import Button from "@/components/ui/Button";
 
-export default function UserModal({ isOpen, onClose, onSubmit, user = null, loading }) {
+export default function UserModal({
+  isOpen,
+  onClose,
+  onSubmit,
+  user = null,
+  loading,
+  viewMode = false,
+}) {
   const [form, setForm] = useState({
     name: "",
     mobile: "",
@@ -51,7 +58,17 @@ export default function UserModal({ isOpen, onClose, onSubmit, user = null, load
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title={user ? "Edit User" : "Add New User"}>
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      title={
+        viewMode
+          ? "View User"
+          : user
+          ? "Edit User"
+          : "Add New User"
+      }
+    >
       <form onSubmit={handleSubmit} className="space-y-4 mt-4">
         <div>
           <label className="text-sm font-medium text-gray-700" htmlFor="name">
@@ -62,7 +79,7 @@ export default function UserModal({ isOpen, onClose, onSubmit, user = null, load
             name="name"
             value={form.name}
             onChange={handleChange}
-            disabled={loading}
+            disabled={loading || viewMode}
             required
           />
         </div>
@@ -76,7 +93,7 @@ export default function UserModal({ isOpen, onClose, onSubmit, user = null, load
             name="mobile"
             value={form.mobile}
             onChange={handleChange}
-            disabled={loading}
+            disabled={loading || viewMode}
             required
           />
         </div>
@@ -91,7 +108,7 @@ export default function UserModal({ isOpen, onClose, onSubmit, user = null, load
             type="email"
             value={form.email}
             onChange={handleChange}
-            disabled={loading}
+            disabled={loading || viewMode}
             required
           />
         </div>
@@ -105,7 +122,7 @@ export default function UserModal({ isOpen, onClose, onSubmit, user = null, load
             name="role"
             value={form.role}
             onChange={handleChange}
-            disabled={loading}
+            disabled={loading || viewMode}
             className="w-full rounded border border-gray-300 p-2"
           >
             <option value="customer">Customer</option>
@@ -116,14 +133,14 @@ export default function UserModal({ isOpen, onClose, onSubmit, user = null, load
 
         <div className="flex justify-end gap-2 pt-4">
           <Button
+            disabled={loading || viewMode}
             type="button"
             variant="outline"
             onClick={onClose}
-            disabled={loading}
           >
             Cancel
           </Button>
-          <Button type="submit" disabled={loading}>
+          <Button disabled={loading || viewMode} type="submit">
             {user ? "Update" : "Create"}
           </Button>
         </div>

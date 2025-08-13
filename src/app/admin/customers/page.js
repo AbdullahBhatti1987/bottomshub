@@ -18,6 +18,7 @@ import { TableSkeletonBody } from "@/components/ui/TableSkeletonBody";
 export default function AdminUsersPage() {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [viewMode, setViewMode] = useState(false);
 
   const [filteredUsers, setFilteredUsers] = useState([]);
   const [search, setSearch] = useState("");
@@ -169,6 +170,7 @@ export default function AdminUsersPage() {
         <Button
           onClick={() => {
             setSelectedUser(null);
+            setViewMode(false);
             setModalOpen(true);
           }}
         >
@@ -188,11 +190,12 @@ export default function AdminUsersPage() {
         loading={loading}
         onView={(user) => {
           setSelectedUser(user);
-          setLoading(true);
+          setViewMode(true);
           setModalOpen(true);
         }}
         onEdit={(user) => {
           setSelectedUser(user);
+          setViewMode(false);
           setModalOpen(true);
         }}
         onDelete={handleDelete}
@@ -230,12 +233,13 @@ export default function AdminUsersPage() {
         isOpen={modalOpen}
         onClose={() => {
           setModalOpen(false);
-          setLoading(false);
+          setViewMode(false);
           setSelectedUser(null);
         }}
         onSubmit={handleSubmit}
         user={selectedUser}
         loading={loading}
+        viewMode={viewMode}
       />
     </div>
   );

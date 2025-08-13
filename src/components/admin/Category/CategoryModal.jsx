@@ -13,6 +13,7 @@ export default function CategoryModal({
   onSubmit,
   category = null,
   loading,
+  viewMode = false,
 }) {
   const [form, setForm] = useState({
     name: "",
@@ -65,7 +66,13 @@ export default function CategoryModal({
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      title={category ? "Edit Category" : "Add New Category"}
+      title={
+        viewMode
+          ? "View Category"
+          : category
+          ? "Edit Category"
+          : "Add New Category"
+      }
     >
       <form onSubmit={handleSubmit} className="space-y-4 mt-4">
         <div>
@@ -75,7 +82,7 @@ export default function CategoryModal({
             value={form.name}
             onChange={handleChange}
             required
-         disabled={loading}
+           disabled={loading || viewMode} 
           />
         </div>
 
@@ -86,7 +93,7 @@ export default function CategoryModal({
             value={form.slug}
             onChange={handleChange}
             readOnly
-            disabled={loading}
+            disabled={loading || viewMode}
           />
         </div>
         <div>
@@ -97,7 +104,7 @@ export default function CategoryModal({
             onChange={handleChange}
             placeholder="Enter category description..."
             rows={4}
-            disabled={loading}
+            disabled={loading || viewMode}
           />
         </div>
 
@@ -106,20 +113,20 @@ export default function CategoryModal({
             label="Category Image"
             onChange={(img) => setForm({ ...form, image: img })}
             maxFiles={1}
-            disabled={loading}
+            disabled={loading || viewMode}
           />
         </div>
 
         <div className="flex justify-end gap-2 pt-4">
           <Button
-            disabled={loading}
+            disabled={loading || viewMode}
             type="button"
             variant="outline"
             onClick={onClose}
           >
             Cancel
           </Button>
-          <Button ldisabled={loading} type="submit">
+          <Button disabled={loading || viewMode} type="submit">
             {category ? "Update" : "Create"}
           </Button>
         </div>

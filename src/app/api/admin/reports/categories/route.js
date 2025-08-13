@@ -75,7 +75,7 @@ export async function GET(req) {
     const columns = [
       { key: "SrNo", label: "Sr No", align: "center" },
       { key: "Name", align: "left" },
-      { key: "Slug" },
+      { key: "Slug", align: "left" },
       { key: "Description", align: "left" },
       { key: "Image", align: "center", styles: { cellWidth: 25 } },
       { key: "Thumbnail", align: "center", styles: { cellWidth: 25 } },
