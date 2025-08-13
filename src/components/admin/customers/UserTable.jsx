@@ -78,7 +78,7 @@ export default function UserTable({
   pageSize,
   onEdit,
   onDelete,
-  onView
+  onView,
 }) {
   const [sortConfig, setSortConfig] = useState({ key: "", direction: "asc" });
 
@@ -135,7 +135,14 @@ export default function UserTable({
               >
                 Email
               </TableHead>
-
+             <TableHead
+                sortable
+                sortKey="role"
+                sortConfig={sortConfig}
+                onSort={handleSort}
+              >
+                Role
+              </TableHead>
               <TableHead
                 sortable
                 sortKey="createdAt"
@@ -144,7 +151,14 @@ export default function UserTable({
               >
                 Created
               </TableHead>
-              <TableHead>Actions</TableHead>
+              <TableHead
+                sortable
+                sortKey="role"
+                sortConfig={sortConfig}
+                onSort={handleSort}
+              >
+                Actions
+              </TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -156,12 +170,18 @@ export default function UserTable({
                 <TableCell>{u.name}</TableCell>
                 <TableCell>{u.mobile}</TableCell>
                 <TableCell>{u.email}</TableCell>
+                <TableCell>{u.role}</TableCell>
                 <TableCell className="text-gray-500">
                   {formatDate(u?.createdAt)}
                 </TableCell>
 
                 <TableCell className="text-center space-x-2">
-                  <ButtonsGroup data={u} onEdit={onEdit} onDelete={onDelete} onView={onView} />
+                  <ButtonsGroup
+                    data={u}
+                    onEdit={onEdit}
+                    onDelete={onDelete}
+                    onView={onView}
+                  />
                 </TableCell>
               </TableRow>
             ))}

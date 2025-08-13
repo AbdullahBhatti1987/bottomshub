@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import Button from "@/components/ui/Button";
 import { Select, SelectItem } from "@/components/ui/Select";
 import DatePicker from "@/components/ui/DatePicker";
 import { BASE_URL } from "@/lib/axios";
@@ -16,15 +15,13 @@ export default function ReportDownloader() {
   const { addToast } = useToastContext();
 
   const handleDownload = async () => {
-
     console.log("Downloading report...");
     console.log("fileType:", fileType);
     console.log("fromDate:", fromDate);
     console.log("toDate:", toDate);
-    
 
     if (!fromDate || !toDate) {
-      alert("Please select date range!");
+      addToast("Please select date range!", "error");
       return;
     }
 
@@ -36,6 +33,7 @@ export default function ReportDownloader() {
           responseType: "blob",
         }
       );
+      console.log("Response received:", res);
 
       if (res.status !== 200) {
         addToast("Failed to generate report", "error");
@@ -44,6 +42,9 @@ export default function ReportDownloader() {
 
       // res.data is already a Blob
       const blob = res.data;
+      const csvText = await blob.text();
+      console.log(csvText);
+      console.log("Blob created:", blob);
       const url = window.URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = url;
@@ -76,8 +77,8 @@ export default function ReportDownloader() {
       </div>
 
       {/* Date Pickers */}
-      <DatePicker value={fromDate} onChange={setFromDate} />
-      <DatePicker value={toDate} onChange={setToDate} />
+      <DatePicker value={fromDate} onChange={setFromDate} placeholder={"From Date"} />
+      <DatePicker value={toDate} onChange={setToDate} placeholder={"To Date"}/>
 
       {/* Download Button */}
       <div className="flex items-center  w-full ">

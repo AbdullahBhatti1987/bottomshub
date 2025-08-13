@@ -1,10 +1,14 @@
-// // /app/api/admin/reports/customers/route.js
-// import { NextResponse } from "next/server";
 // import { jsPDF } from "jspdf";
-// import { Parser } from "json2csv";
+// import autoTable from "jspdf-autotable";
 // import User from "@/models/User";
 // import { connectDb } from "@/lib/connectDb";
 // import responseHelper from "@/lib/responseHelper";
+
+// function formatMobile(mobile) {
+//   if (!mobile) return "";
+//   const cleaned = mobile.replace("+92", "0");
+//   return cleaned.slice(0, 4) + "-" + cleaned.slice(4);
+// }
 
 // export async function GET(req) {
 //   try {
@@ -16,29 +20,23 @@
 //     const to = searchParams.get("to");
 
 //     if (!from || !to) {
-//       return NextResponse.json(
-//         { error: "from and to dates are required" },
-//         { status: 400 }
-//       );
+//       return responseHelper.badRequest("from and to dates are required");
 //     }
 
-//     // Parse dates for querying
 //     const fromDate = new Date(from);
 //     const toDate = new Date(to);
-//     // Set toDate end of the day for inclusive filtering
 //     toDate.setHours(23, 59, 59, 999);
 
-//     // Fetch users registered in date range
 //     const users = await User.find({
 //       role: "customer",
 //       createdAt: { $gte: fromDate, $lte: toDate },
-//     }).select("name email mobile createdAt -_id"); // role excluded
+//     }).select("name email mobile createdAt -_id");
 
 //     const data = users.map((u, i) => ({
 //       SrNo: i + 1,
 //       Name: u.name,
 //       Email: u.email,
-//       Mobile: u.mobile,
+//       Mobile: formatMobile(u.mobile),
 //       RegisteredOn: u.createdAt.toISOString().split("T")[0],
 //     }));
 
@@ -53,20 +51,136 @@
 //     let ext;
 
 //     if (type === "pdf") {
-//       const doc = new jsPDF();
-//       doc.text(`Customer Report from ${from} to ${to}`, 10, 10);
-//       data.forEach((item, i) => {
-//         const line = `${item.SrNo}. ${item.Name} | ${item.Email} | ${item.Mobile} | ${item.RegisteredOn}`;
-//         doc.text(line, 10, 20 + i * 10);
+//       const doc = new jsPDF({
+//         orientation: "portrait",
+//         unit: "pt",
+//         format: "a4",
 //       });
+
+//       const pageWidth = doc.internal.pageSize.getWidth();
+
+//       // --- Logo + Company Name ---
+//       const logoSize = 40;
+//       // Dummy rectangle as logo placeholder
+//       doc.setFillColor(200);
+//       doc.rect(40, 20, logoSize, logoSize, "F");
+//       doc.setFontSize(12);
+//       doc.setFont("helvetica", "bold");
+//       doc.text("Bottom's Hub", 90, 45);
+
+//       // --- Heading ---
+//       doc.setFontSize(12); // half size
+//       doc.setFont("helvetica", "bold");
+//       doc.text("Customer Report", pageWidth / 2, 40, { align: "center" });
+
+//       // --- Report time ---
+//       doc.setFontSize(6); // half size
+//       const now = new Date();
+//       doc.text(
+//         `From: ${from} To: ${to} | Generated: ${now.toLocaleString()}`,
+//         pageWidth / 2,
+//         50,
+//         { align: "center" }
+//       );
+
+//       // --- Table ---
+//       autoTable(doc, {
+//         startY: 70,
+//         head: [["Sr No", "Name", "Email", "Mobile", "Registered On"]],
+//         body: data.map((d) => [
+//           d.SrNo,
+//           d.Name,
+//           d.Email,
+//           d.Mobile,
+//           d.RegisteredOn,
+//         ]),
+//         styles: { fontSize: 7, cellPadding: 4, textColor: 0 },
+//         headStyles: {
+//           fillColor: [229, 231, 235], // gray-200
+//           textColor: 0,
+//           halign: "center",
+//         },
+//         columnStyles: {
+//           0: { halign: "center" },
+//           1: { halign: "left", overflow: "linebreak" },
+//           2: { halign: "left", overflow: "linebreak" }, // email wrap
+//           3: { halign: "center" },
+//           4: { halign: "center" },
+//         },
+//         tableWidth: "auto", // auto stretch
+//         lineWidth: 0.25, // border thickness
+//         alternateRowStyles: { fillColor: 255 },
+//         didDrawCell: function (dataArg) {
+//           // draw border manually
+//           const { cell } = dataArg;
+//           doc.setDrawColor(0);
+//           doc.setLineWidth(0.25);
+//           doc.rect(cell.x, cell.y, cell.width, cell.height);
+//         },
+//         didDrawPage: function (dataArg) {
+//           const pageCount = doc.internal.getNumberOfPages();
+//           const pageCurrent = doc.internal.getCurrentPageInfo().pageNumber;
+//           doc.setFontSize(8);
+//           doc.setFont("helvetica", "normal");
+
+//           // Left bottom: total customers
+//           doc.text(
+//             `Total: ${data.length} customers`,
+//             dataArg.settings.margin.left,
+//             doc.internal.pageSize.getHeight() - 10
+//           );
+
+//           // Right bottom: page numbers
+//           doc.text(
+//             `Page ${pageCurrent} of ${pageCount}`,
+//             doc.internal.pageSize.getWidth() - dataArg.settings.margin.right,
+//             doc.internal.pageSize.getHeight() - 10,
+//             { align: "right" }
+//           );
+//         },
+//       });
+
 //       buffer = doc.output("arraybuffer");
 //       mimeType = "application/pdf";
 //       ext = "pdf";
 //     } else if (type === "csv") {
-//       const parser = new Parser({
-//         fields: ["SrNo", "Name", "Email", "Mobile", "RegisteredOn"],
+//       // --- Prepare header rows ---
+//       const now = new Date();
+//       const headerRows = [
+//         ["Bottom's Hub"], // Company Name / Logo placeholder
+//         [`From: ${from} To: ${to} | Generated: ${now.toLocaleString()}`],
+//         [], // blank row before table
+//       ];
+
+//       // --- Table columns ---
+//       const tableHeader = ["Sr No", "Name", "Email", "Mobile", "Registered On"];
+
+//       // Prepare table body
+//       const tableBody = data.map((d, index) => {
+//         const mobileFormatted = d.Mobile
+//           ? d.Mobile.replace("+92", "0").replace(/(\d{4})(\d{7})/, "$1-$2")
+//           : "";
+//         return [
+//           d.Sr_No !== undefined ? d.Sr_No : index + 1, // fallback if Sr_No missing
+//           d.Name || "",
+//           d.Email || "",
+//           mobileFormatted,
+//           d.RegisteredOn || "",
+//         ];
 //       });
-//       const csv = parser.parse(data);
+
+//       // Merge header + table
+//       const csvData = [...headerRows, tableHeader, ...tableBody];
+
+//       // Convert to CSV manually
+//       const csv = csvData
+//         .map((row) =>
+//           row
+//             .map((cell) => `"${cell !== undefined ? cell : ""}"`) // wrap in quotes
+//             .join(",")
+//         )
+//         .join("\r\n");
+
 //       buffer = new TextEncoder().encode(csv);
 //       mimeType = "text/csv";
 //       ext = "csv";
@@ -74,7 +188,8 @@
 //       return responseHelper.badRequest("Invalid file type");
 //     }
 
-//     return new NextResponse(buffer, {
+//     return new Response(buffer, {
+//       status: 200,
 //       headers: {
 //         "Content-Type": mimeType,
 //         "Content-Disposition": `attachment; filename=customer-report.${ext}`,
@@ -89,11 +204,10 @@
 // }
 
 
-import { jsPDF } from "jspdf";
-import { Parser } from "json2csv";
 import User from "@/models/User";
 import { connectDb } from "@/lib/connectDb";
 import responseHelper from "@/lib/responseHelper";
+import { generateReport } from "@/lib/ReportGenerator";
 
 export async function GET(req) {
   try {
@@ -112,11 +226,17 @@ export async function GET(req) {
     const toDate = new Date(to);
     toDate.setHours(23, 59, 59, 999);
 
+    // --- Fetch users ---
     const users = await User.find({
       role: "customer",
       createdAt: { $gte: fromDate, $lte: toDate },
     }).select("name email mobile createdAt -_id");
 
+    if (!users.length) {
+      return responseHelper.notFound("No customer data found for selected dates");
+    }
+
+    // --- Map to report data ---
     const data = users.map((u, i) => ({
       SrNo: i + 1,
       Name: u.name,
@@ -125,36 +245,23 @@ export async function GET(req) {
       RegisteredOn: u.createdAt.toISOString().split("T")[0],
     }));
 
-    if (data.length === 0) {
-      // Use badRequest or serverError or custom response (404 not found)
-      return responseHelper.badRequest("No customer data found for selected dates");
-    }
+    const columns = [
+      { key: "SrNo", label: "Sr No" },
+      { key: "Name" },
+      { key: "Email" },
+      { key: "Mobile" },
+      { key: "RegisteredOn", label: "Registered On" },
+    ];
 
-    let buffer;
-    let mimeType;
-    let ext;
-
-    if (type === "pdf") {
-      const doc = new jsPDF();
-      doc.text(`Customer Report from ${from} to ${to}`, 10, 10);
-      data.forEach((item, i) => {
-        const line = `${item.SrNo}. ${item.Name} | ${item.Email} | ${item.Mobile} | ${item.RegisteredOn}`;
-        doc.text(line, 10, 20 + i * 10);
-      });
-      buffer = doc.output("arraybuffer");
-      mimeType = "application/pdf";
-      ext = "pdf";
-    } else if (type === "csv") {
-      const parser = new Parser({
-        fields: ["SrNo", "Name", "Email", "Mobile", "RegisteredOn"],
-      });
-      const csv = parser.parse(data);
-      buffer = new TextEncoder().encode(csv);
-      mimeType = "text/csv";
-      ext = "csv";
-    } else {
-      return responseHelper.badRequest("Invalid file type");
-    }
+    // --- Generate PDF/CSV ---
+    const { buffer, mimeType, ext } = await generateReport({
+      data,
+      columns,
+      reportType: type,
+      from,
+      to,
+      companyName: "Bottom's Hub",
+    });
 
     return new Response(buffer, {
       status: 200,
@@ -165,66 +272,6 @@ export async function GET(req) {
     });
   } catch (err) {
     console.error(err);
-    return responseHelper.serverError(
-      "Something went wrong while generating report"
-    );
+    return responseHelper.serverError("Something went wrong while generating report");
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-// export async function GET(req) {
-//   try {
-//     const { searchParams } = new URL(req.url);
-//     const type = searchParams.get("type");
-//     const from = searchParams.get("from");
-//     const to = searchParams.get("to");
-
-//     // TODO: Fetch your DB data here based on from/to
-//     const data = [
-//       { name: "John Doe", amount: 200, date: "2025-08-01" },
-//       { name: "Jane Smith", amount: 300, date: "2025-08-05" },
-//     ];
-
-//     let buffer;
-//     let mimeType;
-//     let ext;
-
-//     if (type === "pdf") {
-//       const doc = new jsPDF();
-//       doc.text(`Report from ${from} to ${to}`, 10, 10);
-//       data.forEach((item, i) => {
-//         doc.text(`${i + 1}. ${item.name} - $${item.amount}`, 10, 20 + i * 10);
-//       });
-//       buffer = doc.output("arraybuffer");
-//       mimeType = "application/pdf";
-//       ext = "pdf";
-//     } else if (type === "csv") {
-//       const parser = new Parser();
-//       const csv = parser.parse(data);
-//       buffer = new TextEncoder().encode(csv);
-//       mimeType = "text/csv";
-//       ext = "csv";
-//     } else {
-//       return NextResponse.json({ error: "Invalid file type" }, { status: 400 });
-//     }
-
-//     return new NextResponse(buffer, {
-//       headers: {
-//         "Content-Type": mimeType,
-//         "Content-Disposition": `attachment; filename=report.${ext}`,
-//       },
-//     });
-//   } catch (err) {
-//     console.error(err);
-//     return NextResponse.json({ error: "Something went wrong" }, { status: 500 });
-//   }
-// }
