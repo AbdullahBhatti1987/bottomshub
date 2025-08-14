@@ -1,3 +1,5 @@
+// src/app/api/admin/orders/[id]/route.js
+
 import connectDb from '@/lib/connectDb';
 import { authenticateAdmin } from '@/middlewares/auth';
 import responseHelper from '@/lib/responseHelper';

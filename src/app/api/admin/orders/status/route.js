@@ -1,5 +1,7 @@
+// src/app/api/admin/orders/status/route.js
+
 import connectDb from '@/lib/connectDb';
-import { authenticateAdmin } from '@/middlewares/auth'; // ensure only admin/seller
+import { authenticateAdmin } from '@/middlewares/auth';
 import responseHelper from '@/lib/responseHelper';
 import Order from '@/models/Order';
 
