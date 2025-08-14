@@ -106,17 +106,7 @@ export async function POST(req) {
       });
     }
 
-    for (const img of images) {
-      const uploaded = await uploadImageToCloudinary(
-        img,
-        "bottomshub/products"
-      );
-      console.log("Uploaded image info:", uploaded);
-      uploadedImages.push({
-        url: uploaded.url,
-        thumbnailUrl: uploaded.thumbnailUrl,
-      });
-    }
+
 
     // Create new product with images array of objects
     const product = await Product.create({
