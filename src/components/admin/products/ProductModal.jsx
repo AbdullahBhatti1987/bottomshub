@@ -198,7 +198,6 @@ import { Select, SelectItem } from "@/components/ui/Select";
 import Button from "@/components/ui/Button";
 import FileUpload from "@/components/ui/FileUpload";
 import Checkbox from "@/components/ui/Checkbox";
-import Loadable from "next/dist/shared/lib/loadable.shared-runtime";
 import Loader from "@/components/ui/Loader";
 
 export default function ProductModal({
@@ -206,6 +205,7 @@ export default function ProductModal({
   onClose,
   onSubmit,
   loading,
+  viewMode,
   categories = [],
   product = null,
 }) {
@@ -216,7 +216,7 @@ export default function ProductModal({
     price: "",
     originalPrice: "",
     category: "",
-    tags: [],
+    tags: "",
     sizes: [],
     discount: "flat",
     images: [],
@@ -234,7 +234,10 @@ export default function ProductModal({
         price: product.price || "",
         originalPrice: product.originalPrice || "",
         category: product.category?._id || product.category || "",
-        tags: product.tags || [],
+        // Ensure tag is string (take first if array)
+        tags: Array.isArray(product.tags)
+          ? product.tags[0]
+          : product.tags || "",
         sizes: product.sizes || [],
         discount: product.discount || "",
         images: product.images || [],
@@ -301,7 +304,9 @@ export default function ProductModal({
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      title={product ? "Edit Product" : "Add New Product"}
+      title={
+        viewMode ? "View Product" : product ? "Edit Product" : "Add New Product"
+      }
     >
       <form onSubmit={handleSubmit} className="space-y-4">
         {/* Name */}
@@ -311,6 +316,7 @@ export default function ProductModal({
             label="Product Name"
             name="name"
             value={form.name}
+            disabled={loading || viewMode}
             onChange={(e) => setForm({ ...form, name: e.target.value })}
             required
           />
@@ -322,6 +328,7 @@ export default function ProductModal({
           <Input
             name="slug"
             value={form.slug}
+            disabled={loading || viewMode}
             onChange={handleChange}
             required
           />
@@ -335,6 +342,7 @@ export default function ProductModal({
           <Textarea
             name="description"
             value={form.description}
+            disabled={loading || viewMode}
             onChange={handleChange}
           />
         </div>
@@ -349,6 +357,7 @@ export default function ProductModal({
             type="number"
             name="price"
             value={form.price}
+            disabled={loading || viewMode}
             onChange={(e) => setForm({ ...form, price: e.target.value })}
             min="0"
             step="0.01"
@@ -365,6 +374,7 @@ export default function ProductModal({
             type="number"
             name="originalPrice"
             value={form.originalPrice}
+            disabled={loading || viewMode}
             onChange={handleChange}
             min={0}
             step="0.01"
@@ -377,6 +387,7 @@ export default function ProductModal({
           <Select
             name="category"
             value={form.category}
+            disabled={loading || viewMode}
             onChange={(value) => handleSelectChange("category", value)}
             required
           >
@@ -392,16 +403,26 @@ export default function ProductModal({
         </div>
 
         {/* Tags */}
+        {/* Tags */}
         <div>
-          <label className="text-sm font-medium text-gray-700">Tags</label>
-          <Select
-            multiple
-            value={form.tags}
-            onChange={(value) => handleSelectChange("tags", value)}
-          >
-            <SelectItem value="new arrival">New Arrival</SelectItem>
-            <SelectItem value="sale">Sale</SelectItem>
-          </Select>
+          <label className="text-sm font-medium text-gray-700">Tag</label>
+          {viewMode ? (
+            <p className="p-2 border rounded capitalize">
+              {form.tags}
+            </p>
+          ) : (
+            <Select
+              value={form.tags || ""}
+              disabled={loading}
+              onChange={(value) =>
+                setForm((prev) => ({ ...prev, tags: value }))
+              }
+              required
+            >
+              <SelectItem value="new arrival">New Arrival</SelectItem>
+              <SelectItem value="sale">Sale</SelectItem>
+            </Select>
+          )}
         </div>
 
         {/* Sizes */}
@@ -414,6 +435,7 @@ export default function ProductModal({
               <Checkbox
                 key={size}
                 label={size}
+                disabled={loading || viewMode}
                 value={size.toLowerCase()}
                 checked={form.sizes.includes(size.toLowerCase())}
                 onChange={(val, isChecked) => {
@@ -443,12 +465,17 @@ export default function ProductModal({
             {["flat", "percentage", "buy1get1"].map((type) => (
               <label
                 key={type}
-                className="flex items-center gap-2 cursor-pointer capitalize"
+                className={`flex items-center gap-2 cursor-pointer capitalize ${
+                  loading || viewMode
+                    ? "opacity-50 cursor-not-allowed pointer-events-none"
+                    : ""
+                }`}
               >
                 <input
                   type="radio"
                   name="discountType"
                   value={type}
+                  disabled={loading || viewMode}
                   checked={form.discount === type}
                   onChange={(e) =>
                     setForm((prev) => ({ ...prev, discount: e.target.value }))
@@ -469,6 +496,7 @@ export default function ProductModal({
             onChange={(_, isChecked) =>
               setForm({ ...form, inStock: isChecked })
             }
+            disabled={loading || viewMode}
           />
           <Checkbox
             label="Featured"
@@ -477,6 +505,7 @@ export default function ProductModal({
             onChange={(_, isChecked) =>
               setForm({ ...form, isFeatured: isChecked })
             }
+            disabled={loading || viewMode}
           />
         </div>
 
@@ -502,15 +531,22 @@ export default function ProductModal({
             multiple={true}
             preview={true}
             maxFiles={5}
+            disabled={loading || viewMode}
           />
         </div>
 
         {/* Actions */}
         <div className="flex justify-end gap-2 pt-4">
-          <Button type="button" onClick={onClose}>
+          <Button
+            type="button"
+            onClick={onClose}
+            disabled={loading || viewMode}
+          >
             Cancel
           </Button>
-          <Button type="submit">{product ? "Update" : "Create"}</Button>
+          <Button type="submit" disabled={loading || viewMode}>
+            {product ? "Update" : "Create"}
+          </Button>
         </div>
       </form>
       {loading && <Loader />}

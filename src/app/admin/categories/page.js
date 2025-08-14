@@ -280,18 +280,20 @@ export default function CategoriesPage() {
     }
   };
 
-  const handleDelete = () => {
-    setCategoryToDelete();
+  const handleDelete = (category) => {
+    setCategoryToDelete(category);
     setDeleteModalOpen(true);
   };
 
   const confirmDelete = async () => {
+    console.log("categoryToDelete", categoryToDelete);
     if (!categoryToDelete) {
       addToast("Invalid category selected", "error");
       return;
     }
 
     console.log(categoryToDelete);
+  
     try {
       await axios.delete(
         `${BASE_URL}/api/admin/categories/${categoryToDelete}`
@@ -300,8 +302,12 @@ export default function CategoriesPage() {
       setDeleteModalOpen(false);
       setCategoryToDelete(null);
       fetchCategories(pageInfo.page, filters, limit);
+       setLoading(false);
+      return;
     } catch (err) {
       addToast("Failed to delete category", "error");
+       setLoading(false);
+      return;
     }
   };
 
@@ -329,6 +335,7 @@ export default function CategoriesPage() {
         currentPage={pageInfo.page}
         pageSize={limit}
         categories={filteredCategories}
+        loading={loading}
         onView={(category) => {
           setSelectedCategory(category);
           setViewMode(true);

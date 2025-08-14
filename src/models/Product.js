@@ -13,10 +13,11 @@ const productSchema = new mongoose.Schema(
       required: true,
     },
     tags: {
-      type: [String],
-      enum: ["new arrival", "sale"],
-      default: [],
+      type: String, // single string instead of array
+      enum: ["new arrival", "sale"], // only allow these two
+      default: "new arrival", // ya "" agar default empty chahiye
     },
+
     sizes: {
       type: [String],
       enum: ["small", "medium", "large", "x-large", "xx-large"],

@@ -92,7 +92,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { ChevronDown } from "lucide-react";
 
-export function Select({ label, name, value, onChange, children, required }) {
+export function Select({ label, name, value, onChange, children, required, disabled }) {
   const [open, setOpen] = useState(false);
   const [highlightedIndex, setHighlightedIndex] = useState(-1);
   const dropdownRef = useRef(null);
@@ -162,6 +162,10 @@ export function Select({ label, name, value, onChange, children, required }) {
       <button
         type="button"
         ref={buttonRef}
+        disabled={disabled}
+        required={required}
+
+        
         className="w-full flex items-center justify-between px-3 py-2 text-left border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-black border-gray-300 bg-white"
         onClick={() => setOpen(!open)}
         onKeyDown={handleKeyDown}

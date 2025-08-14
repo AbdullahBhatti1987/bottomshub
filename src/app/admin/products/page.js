@@ -12,11 +12,19 @@ import axios from "axios";
 import { useToastContext } from "@/components/ui/ToastProvider";
 import ConfirmDeleteModal from "@/components/ui/ConfirmDeleteModal";
 import ReportDownloader from "@/components/ui/ReportDownload";
+import { TableSkeletonBody } from "@/components/ui/TableSkeletonBody";
 
 export default function AdminProductsPage() {
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
+  const [filteredProducts, setFilteredProducts] = useState([]);
+
+  const [viewMode, setViewMode] = useState(false);
+  const [pageInfo, setPageInfo] = useState({ page: 1, pages: 1, total: 0 });
+  const [limit, setLimit] = useState(10);
   const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState("");
+  const [filters, setFilters] = useState({ search: "" });
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
@@ -40,7 +48,7 @@ export default function AdminProductsPage() {
   const fetchCategories = async () => {
     try {
       const res = await axios.get(`${BASE_URL}/api/admin/categories`);
-      console.log("Categories fetched:", res?.data?.categories);
+      // console.log("Categories fetched:", res?.data?.categories);
       setCategories(res?.data?.categories || []);
     } catch (err) {
       addToast("Failed to fetch categories", "error");
@@ -49,8 +57,15 @@ export default function AdminProductsPage() {
 
   useEffect(() => {
     fetchProducts();
-    fetchCategories();
-  }, []);
+    fetchCategories(pageInfo.page, filters, limit);
+  }, [pageInfo.page, filters, limit]);
+
+  useEffect(() => {
+    const result = (products || []).filter((p) =>
+      p.name?.toLowerCase().includes(search.toLowerCase())
+    );
+    setFilteredProducts(result);
+  }, [search, products, categories]);
 
   const handleFilter = async (filters) => {
     setLoading(true);
@@ -89,8 +104,7 @@ export default function AdminProductsPage() {
       setModalOpen(false);
       setSelectedProduct(null);
       fetchProducts();
-        setLoading(false);
-
+      setLoading(false);
     } catch (err) {
       console.error("Error saving product:", err);
 
@@ -104,27 +118,40 @@ export default function AdminProductsPage() {
 
         addToast(fullMessage, "error");
         setLoading(false);
-
       } else {
         addToast("An unexpected error occurred", "error");
         setLoading(false);
-
       }
     }
   };
 
-  const handleDelete = (id) => {
-    setProductToDelete(id);
+  const handleDelete = (product) => {
+    setProductToDelete(product);
     setDeleteModalOpen(true);
   };
 
-  const confirmDelete = async (id) => {
-    if (!confirm("Are you sure you want to delete this product?")) return;
+  const confirmDelete = async () => {
+    setLoading(true);
+    console.log("productToDelete", productToDelete);
+    if (!productToDelete) {
+      addToast("Invalid product selected", "error");
+      return;
+    }
+
+    console.log(productToDelete);
+
     try {
-      await axios.delete(`${BASE_URL}/api/admin/products/${id}`);
-      onRefresh();
+      await axios.delete(`${BASE_URL}/api/admin/products/${productToDelete}`);
+      addToast("Products deleted successfully", "success");
+      setDeleteModalOpen(false);
+      setProductToDelete(null);
+      fetchProducts(pageInfo.page, filters, limit);
+      setLoading(false);
+      return;
     } catch (err) {
-      console.error("Delete error:", err);
+      addToast("Failed to delete product", "error");
+      setLoading(false);
+      return;
     }
   };
 
@@ -148,14 +175,23 @@ export default function AdminProductsPage() {
       </div>
 
       <ProductTable
-        products={products}
+        products={filteredProducts}
         onRefresh={fetchProducts}
+        loading={loading}
         onEdit={(product) => {
           setSelectedProduct(product);
+          setViewMode(false); // edit mode -> not view only
+          setModalOpen(true);
+        }}
+        onView={(product) => {
+          setSelectedProduct(product);
+          setViewMode(true); // view only
           setModalOpen(true);
         }}
         onDelete={handleDelete}
       />
+      {loading && <TableSkeletonBody totalColumns={6} rows={5} />}
+
       <ConfirmDeleteModal
         isOpen={deleteModalOpen}
         onClose={() => setDeleteModalOpen(false)}
@@ -173,6 +209,7 @@ export default function AdminProductsPage() {
         categories={categories}
         product={selectedProduct}
         loading={loading}
+        viewMode={viewMode}
       />
     </div>
   );

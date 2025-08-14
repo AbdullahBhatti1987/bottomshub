@@ -6,6 +6,7 @@ import Input from "@/components/ui/Input";
 import FileUpload from "@/components/ui/FileUpload";
 import Button from "@/components/ui/Button";
 import Textarea from "@/components/ui/Textarea";
+import Loader from "@/components/ui/Loader";
 
 export default function CategoryModal({
   isOpen,
@@ -131,6 +132,7 @@ export default function CategoryModal({
           </Button>
         </div>
       </form>
+      {loading && <Loader />}
     </Modal>
   );
 }

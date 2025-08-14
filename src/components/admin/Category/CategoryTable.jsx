@@ -178,6 +178,7 @@ export default function CategoryTable({
   onDelete,
   onView,
   pageSize,
+  loading,
   currentPage,
 }) {
   const [sortConfig, setSortConfig] = useState({ key: "", direction: "asc" });
@@ -241,7 +242,7 @@ export default function CategoryTable({
         </TableHeader>
 
         <TableBody>
-          {sortedCategories.length === 0 && (
+          {!loading && sortedCategories.length === 0 && (
             <TableRow>
               <TableCell colSpan="7" className="text-center text-gray-400">
                 No categories found.

@@ -201,6 +201,7 @@ export default function AdminUsersPage() {
         onDelete={handleDelete}
       />
       {loading && <TableSkeletonBody totalColumns={6} rows={5} />}
+      
       <Pagination
         page={pageInfo.page}
         pages={pageInfo.pages}

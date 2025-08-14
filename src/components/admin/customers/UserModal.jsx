@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Modal from "@/components/ui/Modal";
 import Input from "@/components/ui/Input";
 import Button from "@/components/ui/Button";
+import Loader from "@/components/ui/Loader";
 
 export default function UserModal({
   isOpen,
@@ -145,6 +146,7 @@ export default function UserModal({
           </Button>
         </div>
       </form>
+      {loading && <Loader />}
     </Modal>
   );
 }
