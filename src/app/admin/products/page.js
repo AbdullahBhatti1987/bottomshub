@@ -68,6 +68,7 @@ export default function AdminProductsPage() {
 
   // ✅ Add Product / Update Product
   const handleSubmit = async (formData) => {
+    setLoading(true);
     try {
       // console.log("📤 Sending product data:", formData);
       if (selectedProduct) {
@@ -78,6 +79,7 @@ export default function AdminProductsPage() {
           formData
         );
         addToast("Product updated successfully", "success");
+        setLoading(false);
       } else {
         // Create new product
         await axios.post(`${BASE_URL}/api/admin/products`, formData);
@@ -87,6 +89,8 @@ export default function AdminProductsPage() {
       setModalOpen(false);
       setSelectedProduct(null);
       fetchProducts();
+        setLoading(false);
+
     } catch (err) {
       console.error("Error saving product:", err);
 
@@ -99,8 +103,12 @@ export default function AdminProductsPage() {
         }
 
         addToast(fullMessage, "error");
+        setLoading(false);
+
       } else {
         addToast("An unexpected error occurred", "error");
+        setLoading(false);
+
       }
     }
   };
@@ -134,9 +142,8 @@ export default function AdminProductsPage() {
         </Button>
       </div>
 
-     
       <div className="grid lg:grid-cols-2 grid-cols-1 gap-4">
-         <ProductFilter categories={categories} onFilter={handleFilter} />
+        <ProductFilter categories={categories} onFilter={handleFilter} />
         <ReportDownloader endpoint="products" />
       </div>
 
@@ -165,6 +172,7 @@ export default function AdminProductsPage() {
         onSubmit={handleSubmit}
         categories={categories}
         product={selectedProduct}
+        loading={loading}
       />
     </div>
   );

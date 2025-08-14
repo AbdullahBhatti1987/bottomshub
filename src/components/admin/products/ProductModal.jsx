@@ -197,13 +197,15 @@ import Textarea from "@/components/ui/Textarea";
 import { Select, SelectItem } from "@/components/ui/Select";
 import Button from "@/components/ui/Button";
 import FileUpload from "@/components/ui/FileUpload";
-import Image from "next/image";
 import Checkbox from "@/components/ui/Checkbox";
+import Loadable from "next/dist/shared/lib/loadable.shared-runtime";
+import Loader from "@/components/ui/Loader";
 
 export default function ProductModal({
   isOpen,
   onClose,
   onSubmit,
+  loading,
   categories = [],
   product = null,
 }) {
@@ -511,6 +513,7 @@ export default function ProductModal({
           <Button type="submit">{product ? "Update" : "Create"}</Button>
         </div>
       </form>
+      {loading && <Loader />}
     </Modal>
   );
 }
