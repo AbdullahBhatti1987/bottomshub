@@ -260,6 +260,8 @@ export async function GET(req) {
       reportType: type,
       from,
       to,
+      itemLabel: "Customers",
+      reportTitle: "Customer Report",
       companyName: "Bottom's Hub",
     });
 

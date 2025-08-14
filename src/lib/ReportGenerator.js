@@ -103,6 +103,8 @@ export async function generateReport({
   reportType = "pdf",
   from,
   to,
+  itemLabel,
+  reportTitle,
   companyName = "Bottom's Hub",
 }) {
   if (reportType === "pdf") {
@@ -113,7 +115,7 @@ export async function generateReport({
     doc.setFontSize(12);
     doc.setFont("helvetica", "bold");
     doc.text(companyName, 40, 40);
-    doc.text("Customer Report", pageWidth / 2, 40, { align: "center" });
+    doc.text(reportTitle, pageWidth / 2, 40, { align: "center" });
     doc.setFontSize(6);
     doc.text(`From: ${from} To: ${to} | Generated: ${new Date().toLocaleString()}`, pageWidth / 2, 50, { align: "center" });
 
@@ -152,7 +154,7 @@ export async function generateReport({
 
     // Left bottom: total customers
     doc.text(
-      `Total: ${data.length} customers`,
+      `Total: ${data.length} ${itemLabel}`,
       dataArg.settings.margin.left,
       doc.internal.pageSize.getHeight() - 10
     );

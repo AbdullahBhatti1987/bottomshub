@@ -94,6 +94,8 @@ export async function GET(req) {
       reportType: type,
       from,
       to,
+      itemLabel: "Categories",
+      reportTitle: "Category Report",
       companyName: "Bottom's Hub",
     });
 

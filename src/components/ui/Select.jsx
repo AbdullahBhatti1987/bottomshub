@@ -36,7 +36,10 @@ export function Select({ label, name, value, onChange, children, required }) {
         className="w-full flex items-center justify-between px-3 py-2 text-left border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-black border-gray-300 bg-white"
         onClick={() => setOpen(!open)}
       >
-        <span>{selectedLabel}</span>
+       <span className="whitespace-nowrap overflow-hidden text-ellipsis">
+  {selectedLabel}
+</span>
+
         <ChevronDown
           className={`w-4 h-4 ml-2 transition-transform ${
             open ? "rotate-180" : ""
@@ -44,8 +47,20 @@ export function Select({ label, name, value, onChange, children, required }) {
         />
       </button>
 
-      {open && (
+      {/* {open && (
         <ul className="absolute z-50 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-sm">
+          {childArray.map((child) =>
+            React.cloneElement(child, {
+              onSelect: (val) => {
+                onChange(val);
+                setOpen(false);
+              },
+            })
+          )}
+        </ul>
+      )} */}
+      {open && (
+        <ul className="absolute z-50 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-sm max-h-80 overflow-y-auto">
           {childArray.map((child) =>
             React.cloneElement(child, {
               onSelect: (val) => {

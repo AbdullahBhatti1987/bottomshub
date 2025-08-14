@@ -4,7 +4,6 @@ import React, { useEffect, useState } from "react";
 import { BASE_URL } from "@/lib/axios";
 
 import Button from "@/components/ui/Button";
-import Loader from "@/components/ui/Loader";
 
 import ProductTable from "@/components/admin/products/ProductTable";
 import ProductFilter from "@/components/admin/products/ProductFilter";
@@ -12,6 +11,7 @@ import ProductModal from "@/components/admin/products/ProductModal";
 import axios from "axios";
 import { useToastContext } from "@/components/ui/ToastProvider";
 import ConfirmDeleteModal from "@/components/ui/ConfirmDeleteModal";
+import ReportDownloader from "@/components/ui/ReportDownload";
 
 export default function AdminProductsPage() {
   const [products, setProducts] = useState([]);
@@ -40,7 +40,8 @@ export default function AdminProductsPage() {
   const fetchCategories = async () => {
     try {
       const res = await axios.get(`${BASE_URL}/api/admin/categories`);
-      setCategories(res.data?.data || []);
+      console.log("Categories fetched:", res?.data?.categories);
+      setCategories(res?.data?.categories || []);
     } catch (err) {
       addToast("Failed to fetch categories", "error");
     }
@@ -133,18 +134,21 @@ export default function AdminProductsPage() {
         </Button>
       </div>
 
-      <ProductFilter categories={categories} onFilter={handleFilter} />
+     
+      <div className="grid lg:grid-cols-2 grid-cols-1 gap-4">
+         <ProductFilter categories={categories} onFilter={handleFilter} />
+        <ReportDownloader endpoint="products" />
+      </div>
 
-    
-        <ProductTable
-          products={products}
-          onRefresh={fetchProducts}
-          onEdit={(product) => {
-            setSelectedProduct(product);
-            setModalOpen(true);
-          }}
-          onDelete={handleDelete}
-        />
+      <ProductTable
+        products={products}
+        onRefresh={fetchProducts}
+        onEdit={(product) => {
+          setSelectedProduct(product);
+          setModalOpen(true);
+        }}
+        onDelete={handleDelete}
+      />
       <ConfirmDeleteModal
         isOpen={deleteModalOpen}
         onClose={() => setDeleteModalOpen(false)}
