@@ -8,21 +8,22 @@ import SubscriptionBox from "@/components/frontend/SubscriptionBox";
 import Header from "@/components/frontend/Header";
 import Footer from "@/components/frontend/Footer";
 import BottomsSlider from "@/components/frontend/BottomsSlider";
-
+import Image from "next/image";
 
 export default function HomePage() {
   return (
     <div className="">
-        <Header />
+      <Header />
       <BottomsSlider />
-      <Slider />
+      
+
+      {/* <Slider /> */}
       <Categories />
       <NewArrivals />
       <Reviews />
       <Testimonials />
       <SubscriptionBox />
-        <Footer />
-
+      <Footer />
     </div>
   );
 }
