@@ -12,7 +12,7 @@ import BottomsSlider from "@/components/frontend/BottomsSlider";
 
 export default function HomePage() {
   return (
-    <div className="space-y-16">
+    <div className="">
         <Header />
       <BottomsSlider />
       <Slider />

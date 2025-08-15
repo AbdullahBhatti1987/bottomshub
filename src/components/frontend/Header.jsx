@@ -82,8 +82,8 @@ export default function Header() {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
 
-  const wishlistCount = 2;
-  const cartCount = 3;
+  const wishlistCount = 0;
+  const cartCount = 0;
   const isLoggedIn = true; // or pass as prop
 
   const menuItems = [

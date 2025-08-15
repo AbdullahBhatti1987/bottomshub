@@ -1,112 +1,3 @@
-// "use client";
-
-// import { useState, useEffect } from "react";
-// import axios from "axios";
-// import Link from "next/link";
-// import { BASE_URL } from "@/lib/axios";
-
-
-// export default function BottomsSlider() {
-//   const [slides, setSlides] = useState([]);
-//   const [currentIndex, setCurrentIndex] = useState(0);
-
-//   useEffect(() => {
-//     async function fetchSlides() {
-//       try {
-//         const res = await axios.get(`${BASE_URL}/api/admin/slider`);
-//         setSlides(res.data);
-//       } catch (err) {
-//         console.error(err);
-//       }
-//     }
-//     fetchSlides();
-//   }, []);
-
-//   useEffect(() => {
-//     const interval = setInterval(() => {
-//       setCurrentIndex((prev) => (prev + 1) % slides.length);
-//     }, 5000);
-//     return () => clearInterval(interval);
-//   }, [slides]);
-
-//   const prevSlide = () => setCurrentIndex((prev) => (prev - 1 + slides.length) % slides.length);
-//   const nextSlide = () => setCurrentIndex((prev) => (prev + 1) % slides.length);
-
-//   if (!slides.length) return null;
-
-//   return (
-//     <div className="relative w-full h-[500px] overflow-hidden mt-4">
-//       {slides.map((slide, index) => (
-//         <div
-//           key={index}
-//           className={`absolute w-full h-full transition-opacity duration-700 ${
-//             index === currentIndex ? "opacity-100" : "opacity-0"
-//           }`}
-//         >
-//           {slide.backgroundImage && (
-//             <img
-//               src={slide.backgroundImage}
-//               alt="Background"
-//               className="absolute w-full h-full object-cover"
-//             />
-//           )}
-//           <img
-//             src={slide.mainImage}
-//             alt={slide.heading}
-//             className="w-full h-full object-cover relative z-10"
-//           />
-//           {slide.overlayImage && (
-//             <img
-//               src={slide.overlayImage}
-//               alt="Overlay"
-//               className="absolute top-0 left-0 w-full h-full z-20"
-//             />
-//           )}
-//           <div className="absolute left-10 top-1/2 -translate-y-1/2 text-white max-w-lg z-30">
-//             <h2 className="text-3xl font-bold mb-2">{slide.heading}</h2>
-//             {slide.content && <p className="mb-4">{slide.content}</p>}
-//             {slide.buttonName && slide.buttonRoute && (
-//               <Link href={slide.buttonRoute}>
-//                 <button className="px-4 py-2 bg-black/70 hover:bg-black text-white rounded">
-//                   {slide.buttonName}
-//                 </button>
-//               </Link>
-//             )}
-//           </div>
-//         </div>
-//       ))}
-
-//       {/* Navigation Dots */}
-//       <div className="absolute right-5 top-1/2 -translate-y-1/2 flex flex-col space-y-3 z-40">
-//         {slides.map((_, index) => (
-//           <span
-//             key={index}
-//             className={`w-4 h-4 rounded-full cursor-pointer transition-all ${
-//               index === currentIndex ? "bg-white" : "bg-white/50"
-//             }`}
-//             onClick={() => setCurrentIndex(index)}
-//           />
-//         ))}
-//       </div>
-
-//       {/* Prev / Next Buttons */}
-//       <button
-//         onClick={prevSlide}
-//         className="absolute left-5 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black text-white px-3 py-2 rounded z-40"
-//       >
-//         &#10094;
-//       </button>
-//       <button
-//         onClick={nextSlide}
-//         className="absolute right-20 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black text-white px-3 py-2 rounded z-40"
-//       >
-//         &#10095;
-//       </button>
-//     </div>
-//   );
-// }
-
-
 "use client";
 
 import { useState, useEffect } from "react";
@@ -114,10 +5,25 @@ import Image from "next/image";
 import axios from "axios";
 import Link from "next/link";
 import { BASE_URL } from "@/lib/axios";
+import { motion } from "framer-motion";
+
+// Font aur Gradient
+// const font = "font-[lobster-two] text-shadow-lg";
+// const gradient = "from-purple-500 via-pink-500 to-red-500";
+
+// Font aur Gradient
+const font = "font-[noto-sans] font-medium tracking-normal";
+
+
+
+
+const gradient = "from-pink-500 via-red-500 to-red-300";
+
 
 export default function BottomsSlider() {
   const [slides, setSlides] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [hovered, setHovered] = useState(false);
 
   useEffect(() => {
     async function fetchSlides() {
@@ -145,65 +51,178 @@ export default function BottomsSlider() {
   if (!slides.length) return null;
 
   return (
-   <div className="relative w-full h-[500px] overflow-hidden mt-4">
-  {slides.map((slide, index) => (
     <div
-      key={index}
-      className={`absolute w-full h-full transition-opacity duration-700 ${
-        index === currentIndex ? "opacity-100" : "opacity-0"
-      }`}
+      className="relative w-full overflow-hidden h-[300px] sm:h-[350px] md:h-[500px] lg:h-[600px] group"
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
     >
-      {/* Background */}
-      {slide.backgroundImage && (
-        <Image
-          src={slide.backgroundImage}
-          alt="Background"
-          fill
-          className="object-cover"
-          priority
-        />
-      )}
+      {slides.map((slide, index) => (
+        <div
+          key={index}
+          className={`absolute w-full h-full flex items-center justify-between px-4 md:px-12 transition-opacity duration-700 ${
+            index === currentIndex ? "opacity-100" : "opacity-0"
+          }`}
+        >
+          {/* Background Image */}
+          {slide.backgroundImage && (
+            <Image
+              src={slide.backgroundImage}
+              alt="Background"
+              fill
+              className="object-cover z-0"
+              priority
+            />
+          )}
 
-      {/* Main Image */}
-      {slide.mainImage && (
-        <div className="relative z-10 flex items-center justify-center h-full">
-          <Image
-            src={slide.mainImage}
-            alt={slide.heading}
-            width={500} // main image width
-            height={400} // main image height
-            className="object-contain"
-            priority
-          />
+          {/* Left Card */}
+        <div
+  className={`relative z-20 w-[400px] md:w-[480px] p-6 sm:p-4 md:p-8 flex flex-col justify-center items-start text-white rounded-xl bg-gradient-to-br ${gradient} border border-gray-200/30 shadow-[8px_12px_30px_rgba(0,0,0,0.4),-4px_-4px_15px_rgba(255,255,255,0.05)] backdrop-blur-sm ml-6 md:ml-24 transition-all duration-700 ${font}`}
+>
+{/*  tilte div */}
+  {/* <div
+            className={`relative z-20 w-[400px] md:w-[480px] p-6 sm:p-4 md:p-8 flex flex-col justify-center items-start text-white rounded-xl bg-gradient-to-br ${gradient} border border-gray-200/30 shadow-[8px_12px_30px_rgba(0,0,0,0.4),-4px_-4px_15px_rgba(255,255,255,0.05)] backdrop-blur-sm ml-6 md:ml-24 transition-all duration-700 ${font}`}
+            style={{
+              transform: "perspective(1000px) rotateY(20deg) rotateX(10deg)",
+              transformOrigin: "top left",
+            }}
+          > */}
+            <motion.h2
+              key={`heading-${index}`}
+              initial={{ x: -100, opacity: 0 }}
+              animate={
+                index === currentIndex
+                  ? { x: 0, opacity: 1 }
+                  : { x: -100, opacity: 0 }
+              }
+              transition={{ delay: 0, duration: 0.3 }}
+              className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold mb-4 drop-shadow-lg lg:mr-12 md:mr-8 mr-6"
+            >
+              {slide.heading}
+            </motion.h2>
+
+            <motion.p
+              key={`content-${index}`}
+              initial={{ x: 100, opacity: 0 }} // Right se aayega
+              animate={
+                index === currentIndex
+                  ? { x: 0, opacity: 1 }
+                  : { x: 100, opacity: 0 }
+              }
+              transition={{ delay: 0.3, duration: 0.3 }}
+              className="text-sm sm:text-md md:text-lg mb-4 drop-shadow-md"
+            >
+              {slide.content}
+            </motion.p>
+
+            {slide.overlayImage && (
+              <motion.div
+                initial={{ y: -80, opacity: 0 }} // Top se aayega
+                animate={
+                  index === currentIndex
+                    ? { y: 0, opacity: 1 }
+                    : { y: -80, opacity: 0 }
+                }
+                transition={{ delay: 0.6, duration: 0.3 }}
+                className="absolute top-3 right-3 w-12 h-12 md:w-16 md:h-16"
+              >
+                <Image
+                  src={slide.overlayImage}
+                  alt="Overlay"
+                  fill
+                  sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 16vw"
+                  className="object-contain"
+                  priority
+                />
+              </motion.div>
+            )}
+
+            {slide.buttonName && slide.buttonRoute && (
+              <motion.div
+                initial={{ y: 80, opacity: 0 }} // Bottom se aayega
+                animate={
+                  index === currentIndex
+                    ? { y: 0, opacity: 1 }
+                    : { y: 80, opacity: 0 }
+                }
+                transition={{ delay: 0.9, duration: 0.3 }}
+              >
+                <Link href={slide.buttonRoute}>
+                  <button className="px-5 py-2 uppercase bg-white text-black font-medium rounded shadow-md hover:scale-105 mt-2">
+                    {slide.buttonName}
+                  </button>
+                </Link>
+              </motion.div>
+            )}
+          </div>
+
+          {/* Right Image */}
+          {slide.mainImage && (
+            <div
+              className={`relative flex-[0_0_45%] max-w-[45%] sm:max-w-[42%] h-[220px] sm:h-[300px] md:h-[400px] lg:h-[500px] flex items-center justify-center z-10 transition-all duration-700 ${
+                index === currentIndex
+                  ? "translate-x-0 opacity-100"
+                  : "translate-x-20 opacity-0"
+              }`}
+            >
+              <div className="absolute w-full h-full bg-black/20 rounded-xl blur-3xl animate-float-slow -z-10" />
+              <Image
+                src={slide.mainImage}
+                alt={slide.heading}
+                width={1200}
+                height={800}
+                className="object-contain w-full h-full max-w-full max-h-full rounded-xl transition-transform duration-700"
+                priority
+              />
+            </div>
+          )}
         </div>
-      )}
+      ))}
 
-      {/* Overlay Image */}
-      {slide.overlayImage && (
-        <Image
-          src={slide.overlayImage}
-          alt="Overlay"
-          width={120}
-          height={120}
-          className="absolute top-10 left-10 object-contain z-20"
-        />
-      )}
-
-      {/* Text & Button */}
-      <div className="absolute left-10 top-1/2 -translate-y-1/2 text-white max-w-lg z-30">
-        <h2 className="text-3xl font-bold mb-2">{slide.heading}</h2>
-        {slide.content && <p className="mb-4">{slide.content}</p>}
-        {slide.buttonName && slide.buttonRoute && (
-          <Link href={slide.buttonRoute}>
-            <button className="px-4 py-2 bg-black/70 hover:bg-black text-white rounded">
-              {slide.buttonName}
-            </button>
-          </Link>
-        )}
+      {/* Navigation Dots */}
+      <div className="absolute right-5 top-1/2 -translate-y-1/2 flex flex-col space-y-3 z-40">
+        {slides.map((_, index) => (
+          <span
+            key={index}
+            className={`w-4 h-4 rounded-full cursor-pointer transition-all ${
+              index === currentIndex ? "bg-white" : "bg-white/50"
+            }`}
+            onClick={() => setCurrentIndex(index)}
+          />
+        ))}
       </div>
-    </div>
-  ))}
-</div>
 
+      {/* Prev / Next Buttons */}
+      <button
+        onClick={prevSlide}
+        className={`absolute left-5 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black text-white px-3 py-2 rounded z-40 transition-opacity duration-300 ${
+          hovered ? "opacity-100" : "opacity-0"
+        }`}
+      >
+        &#10094;
+      </button>
+      <button
+        onClick={nextSlide}
+        className={`absolute left-14 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black text-white px-3 py-2 rounded z-40 transition-opacity duration-300 ${
+          hovered ? "opacity-100" : "opacity-0"
+        }`}
+      >
+        &#10095;
+      </button>
+
+      <style jsx>{`
+        @keyframes float-slow {
+          0%,
+          100% {
+            transform: translateY(0px);
+          }
+          50% {
+            transform: translateY(-10px);
+          }
+        }
+        .animate-float-slow {
+          animation: float-slow 6s ease-in-out infinite;
+        }
+      `}</style>
+    </div>
   );
 }
