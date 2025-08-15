@@ -53,7 +53,7 @@
 
 // export default colors;
 
-
+// /theme/colors.js
 const colors = {
   primary: "#1E88E5",       // Brand primary color (blue)
   primaryHover: "#1565C0",  // Darker hover
@@ -63,12 +63,15 @@ const colors = {
   iconPrimary: "#1E88E5",   // Icon main
   iconSecondary: "#9B9B9B", // Icon muted
   iconHover: "#1565C0",     // Icon hover
+  white: "#fff",     // Icon hover
 
   shineGradient:
     "linear-gradient(90deg, rgba(211,211,211,0.4) 0%, rgba(255,255,255,0.6) 50%, rgba(211,211,211,0.4) 100%)",
 
   badgeBg: "#1565C0",       // Theme-matched darker blue badge
   badgeText: "#FFFFFF",     // White text for contrast
+
+  
 };
 
 export default colors;

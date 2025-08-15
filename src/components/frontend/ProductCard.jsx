@@ -1,61 +1,119 @@
+// components/frontend/ProductCard.jsx
 "use client";
+
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { useState } from "react";
+import { ShoppingCart, Heart } from "lucide-react";
+import colors from "@/theme/colors";
 
-export default function ProductCard({ name, price, image, idx }) {
+const cardVariants = {
+  hidden: { opacity: 0, y: 50 },
+  visible: (i) => ({
+    opacity: 1,
+    y: 0,
+    transition: { delay: i * 0.15, duration: 0.5, ease: "easeOut" },
+  }),
+};
+
+export default function ProductCard({
+  name,
+  price,
+  category,
+  tags,
+  images = [],
+  idx,
+}) {
   const [liked, setLiked] = useState(false);
-
-  const slideVariants = {
-    hiddenLeft: { x: -100, opacity: 0 },
-    hiddenRight: { x: 100, opacity: 0 },
-    hiddenBottom: { y: 80, opacity: 0 },
-    visible: { x: 0, y: 0, opacity: 1 },
-  };
+  const [hovered, setHovered] = useState(false);
 
   return (
-    <motion.div
-      className="bg-white rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 group flex flex-col"
-      initial={idx % 2 === 0 ? "hiddenLeft" : "hiddenRight"}
-      whileInView="visible"
-      viewport={{ once: true, amount: 0.3 }}
-      variants={slideVariants}
-      transition={{ duration: 0.5, delay: idx * 0.1 }}
-      whileHover={{ scale: 1.04 }}
+    <div
+      className="flex flex-col items-center w-full relative"
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
     >
-      <div className="relative w-full h-64 md:h-72 overflow-hidden rounded-t-3xl">
-        <Image
-          src={image}
-          alt={name}
-          fill
-          className="object-cover transition-transform duration-500 group-hover:scale-105"
-        />
+      <motion.div
+        className="relative rounded-xl overflow-hidden shadow-lg bg-white group w-full"
+        custom={idx}
+        variants={cardVariants}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.3 }}
+      >
+        {/* Image */}
+        <div className="relative w-full h-56 sm:h-64 overflow-hidden">
+          <Image
+            src={images[0]}
+            alt={name}
+            fill
+            className="object-cover transition-transform duration-500 group-hover:scale-105"
+          />
 
-        {/* Floating heart button */}
-        <motion.button
-          onClick={() => setLiked(!liked)}
-          whileTap={{ scale: 1.2 }}
-          className={`absolute top-3 right-3 p-2 rounded-full shadow-md text-xl transition-colors duration-300 ${
-            liked ? "text-red-500 bg-white" : "text-gray-300 hover:text-red-500 bg-white/80"
-          }`}
-        >
-          ♥
-        </motion.button>
+          {/* Tag */}
+          {tags && (
+            <span
+              className="absolute px-3 py-1 text-white text-xs font-semibold rounded"
+              style={{
+                backgroundColor: colors.primary,
+                top: "6px",
+                left: "6px",
+              }}
+            >
+              {tags}
+            </span>
+          )}
 
-        {/* Gradient overlay on hover */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-t-3xl"></div>
-      </div>
-
-      <div className="p-5 flex flex-col justify-between flex-1">
-        <div>
-          <h3 className="text-gray-900 font-semibold text-lg md:text-xl truncate">{name}</h3>
-          <p className="text-gray-500 mt-1 text-md">{price}</p>
+          {/* Wishlist */}
+          <button
+            onClick={() => setLiked(!liked)}
+            className="absolute top-3 right-3 p-2 rounded-full shadow-md bg-white transition hover:scale-110"
+          >
+            <Heart
+              size={18}
+              fill={liked ? colors.primary : "transparent"}
+              color={liked ? colors.primary : "#ccc"}
+            />
+          </button>
         </div>
 
-        <button className="mt-4 w-full py-3 bg-black text-white rounded-xl font-medium text-sm md:text-base hover:bg-gray-800 hover:scale-105 transition-all">
-          Add to Cart
-        </button>
-      </div>
-    </motion.div>
+        {/* Price Box */}
+        <div
+          className="absolute bottom-0 left-0 right-0 px-4 py-3"
+          style={{
+            backgroundColor: `${colors.white}E6`,
+            backdropFilter: "blur(6px)",
+          }}
+        >
+          <h3
+            className="font-semibold text-sm sm:text-base truncate"
+            style={{ color: colors.grayDark }}
+          >
+            {name}
+          </h3>
+          <p className="text-xs sm:text-sm" style={{ color: "#6b7280" }}>
+            {category}
+          </p>
+          <p
+            className="text-sm sm:text-md font-bold"
+            style={{ color: colors.primary }}
+          >
+            {price}
+          </p>
+        </div>
+      </motion.div>
+
+      {/* Add to Cart Button */}
+      <motion.button
+        className="flex items-center justify-center gap-2 px-4 py-1.5 sm:px-5 sm:py-2 rounded-xl font-medium text-xs sm:text-sm mt-[-18px] z-10"
+        style={{ backgroundColor: colors.primary, color: colors.white }}
+        animate={{ y: hovered ? 0 : 10, opacity: hovered ? 1 : 0 }}
+        transition={{ type: "spring", stiffness: 200, damping: 15 }}
+        whileHover={{ scale: 1.05, backgroundColor: colors.primaryHover }}
+      >
+        <ShoppingCart size={16} />
+        Add to Cart
+      </motion.button>
+    </div>
   );
 }

@@ -19,9 +19,67 @@ const categories = [
   { name: "Men", image: "/images/category-men.jpg" },
   { name: "Women", image: "/images/category-women.avif" },
   { name: "Kids", image: "/images/category-kids.jpg" },
-  { name: "Accessories", image: "/images/category-accessories.avif" },
+  // { name: "Accessories", image: "/images/category-accessories.avif" },
   { name: "Shoes", image: "/images/category-shoes.webp" },
-  { name: "Bags", image: "/images/category-bags.jpeg" },
+  // { name: "Bags", image: "/images/category-bags.jpeg" },
+];
+
+// dummyProducts.js
+export const products = [
+  {
+    name: "Cool Sneakers",
+    price: "$120",
+    category: "Shoes",
+    tags: "New",
+    images: ["/images/product1.jpg"],
+  },
+  {
+    name: "Leather Jacket",
+    price: "$250",
+    category: "Clothing",
+    tags: "Hot",
+    images: ["/images/product2.jpg"],
+  },
+  {
+    name: "Classic Leather Jacket",
+    category: "Men's Wear",
+    price: "$120",
+    images: ["/images/jacket1.jpg"],
+    primaryColor: "#ff4d4f",
+    tag: "New",
+  },
+  {
+    name: "Elegant Handbag",
+    category: "Accessories",
+    price: "$89",
+    images: ["/images/handbag.jpg"],
+    primaryColor: "#4caf50",
+    tag: "Hot",
+  },
+  {
+    name: "Sports Sneakers",
+    category: "Footwear",
+    price: "$70",
+    images: ["/images/sneakers.jpg"],
+    primaryColor: "#1890ff",
+    tag: "Sale",
+  },
+  {
+    name: "Denim Jeans",
+    category: "Men's Wear",
+    price: "$50",
+    images: ["/images/jeans.jpg"],
+    primaryColor: "#f39c12",
+    tag: "Best",
+  },
+  {
+    name: "Silk Scarf",
+    category: "Accessories",
+    price: "$25",
+    images: ["/images/scarf.jpg"],
+    primaryColor: "#9c27b0",
+    tag: "New",
+  },
 ];
 
 const trendingProducts = [
@@ -62,38 +120,47 @@ export default function HomePage() {
         </div>
       </div>
 
-      <BottomsSlider />
+      <Slider />
 
-      {/* <Slider /> */}
-      <section className="py-12 container mx-auto px-4 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+      <section
+        className="
+    py-12 container mx-auto px-4 
+    grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 
+    gap-6 
+    w-full md:w-[90%] lg:w-[85%] 
+    place-items-center
+  "
+      >
         {categories.map((cat, idx) => (
           <CategoryCard key={idx} {...cat} idx={idx} />
         ))}
       </section>
 
-      <section className="py-12 container mx-auto px-4 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
-        {newArrivals.map((prod, idx) => (
+      <section className="py-12 container w-full md:w-[90%] lg:w-[85%]  mx-auto px-4 grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        {products.map((prod, idx) => (
           <ProductCard key={idx} {...prod} idx={idx} />
         ))}
       </section>
-      <section className="py-12 container mx-auto px-4 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
+
+      {/*  <section className="py-12 container mx-auto px-4 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
         {trendingProducts.map((prod, idx) => (
           <ProductCard key={idx} {...prod} idx={idx} />
         ))}
       </section>
+      
       <section className="py-12 container mx-auto px-4 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
         {brands.map((src, idx) => (
           <BrandCard key={idx} src={src} idx={idx} />
         ))}
       </section>
       <DealBanner />
-
-      <Newsletter />
-      <NewArrivals />
-      <Reviews />
-      <Testimonials />
-      <SubscriptionBox />
-      <Footer />
+ */}
+      {/* <Newsletter /> */}
+      {/* <NewArrivals /> */}
+      {/* <Reviews /> */}
+      {/* <Testimonials /> */}
+      {/* <SubscriptionBox /> */}
+      {/* <Footer /> */}
     </div>
   );
 }
