@@ -84,6 +84,7 @@ export default function AdminProductsPage() {
   // ✅ Add Product / Update Product
   const handleSubmit = async (formData) => {
     setLoading(true);
+    console.log("FormData", formData)
     try {
       // console.log("📤 Sending product data:", formData);
       if (selectedProduct) {
@@ -156,7 +157,7 @@ export default function AdminProductsPage() {
   };
 
   return (
-    <div className="p-4 space-y-4">
+    <div className=" space-y-4">
       <div className="flex items-center justify-between">
         <h2 className="text-xl font-semibold">Products</h2>
         <Button
@@ -177,7 +178,9 @@ export default function AdminProductsPage() {
       <ProductTable
         products={filteredProducts}
         onRefresh={fetchProducts}
+         pageSize={limit}
         loading={loading}
+        currentPage={pageInfo.page}
         onEdit={(product) => {
           setSelectedProduct(product);
           setViewMode(false); // edit mode -> not view only

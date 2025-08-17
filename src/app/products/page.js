@@ -1,87 +1,121 @@
-"use client";
-import { useState } from "react";
-import ProductCard from "@/components/products/ProductCard";
 
-const productsData = [
-  {
-    id: 1,
-    name: "Classic White Sneakers",
-    slug: "classic-white-sneakers",
-    price: 2999,
-    originalPrice: 3999,
-    tags: "sale",
-    images: [
-      {
-        url: "https://images.unsplash.com/photo-1519741497674-611481863552?w=800&q=80",
-        thumbnailUrl:
-          "https://images.unsplash.com/photo-1519741497674-611481863552?w=400&q=80",
-      },
-    ],
-    inStock: true,
-  },
-  {
-    id: 2,
-    name: "Leather Office Bag",
-    slug: "leather-office-bag",
-    price: 5499,
-    originalPrice: 5499,
-    tags: "new arrival",
-    images: [
-      {
-        url: "https://images.unsplash.com/photo-1519741497674-611481863552?w=800&q=80",
-        thumbnailUrl:
-          "https://images.unsplash.com/photo-1519741497674-611481863552?w=400&q=80",
-      },
-    ],
-    inStock: true,
-  },
-  {
-    id: 3,
-    name: "Wireless Headphones",
-    slug: "wireless-headphones",
-    price: 7999,
-    originalPrice: 8999,
-    tags: "sale",
-    images: [
-      {
-        url: "https://images.unsplash.com/photo-1519677100203-a0e668c92439?w=800&q=80",
-        thumbnailUrl:
-          "https://images.unsplash.com/photo-1519677100203-a0e668c92439?w=400&q=80",
-      },
-    ],
-    inStock: false,
-  },
-  {
-    id: 4,
-    name: "Casual Cotton T-Shirt",
-    slug: "casual-cotton-tshirt",
-    price: 1499,
-    originalPrice: 1499,
-    tags: "new arrival",
-    images: [
-      {
-        url: "https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?w=800&q=80",
-        thumbnailUrl:
-          "https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?w=400&q=80",
-      },
-    ],
-    inStock: true,
-  },
-];
+// ProductsPage.jsx
+"use client";
+import { useEffect, useState, useCallback } from "react";
+import axios from "axios";
+import ProductsList from "@/components/products/ProductList";
+import { BASE_URL } from "@/lib/axios";
+import SearchBar from "@/components/Filters/SearchBar";
+import CategoryFilter from "@/components/Filters/CategoryFilter";
+import PriceRangeSlider from "@/components/Filters/PriceRangeSlider";
+import Pagination from "@/components/Filters/Pagination";
+import colors from "@/theme/colors";
 
 export default function ProductsPage() {
-  const [products] = useState(productsData);
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+
+  const [search, setSearch] = useState("");
+  const [category, setCategory] = useState("");
+  const [priceRange, setPriceRange] = useState({ min: "", max: "" });
+
+  const [localSearch, setLocalSearch] = useState(search);
+  const [localCategory, setLocalCategory] = useState(category);
+  const [localPriceRange, setLocalPriceRange] = useState(priceRange);
+
+  const limit = 12;
+
+  const fetchProducts = useCallback(async () => {
+    setLoading(true);
+    try {
+      const params = { page, limit };
+      if (search) params.search = search;
+      if (category) params.category = category;
+      if (priceRange.min) params.minPrice = priceRange.min;
+      if (priceRange.max) params.maxPrice = priceRange.max;
+
+      const res = await axios.get(`${BASE_URL}/api/products`, { params });
+      console.log("Response return" , res?.data?.data)
+      setProducts(res.data.data);
+      setTotalPages(res.data.totalPages || Math.ceil(res.data.total / limit));
+    } catch (err) {
+      console.error("Failed to fetch products:", err);
+    }
+    setLoading(false);
+  }, [page, search, category, priceRange]);
+
+  const applyFilters = () => {
+    console.log("Apply Filters Clicked:");
+    console.log("Search:", localSearch);
+    console.log("Category:", localCategory);
+    console.log("Price Range:", localPriceRange);
+
+    setSearch(localSearch);
+    setCategory(localCategory);
+    setPriceRange(localPriceRange);
+    setPage(1);
+  };
+
+  const resetFilters = () => {
+    setLocalSearch("");
+    setLocalCategory("");
+    setLocalPriceRange({ min: "", max: "" });
+
+    setSearch("");
+    setCategory("");
+    setPriceRange({ min: "", max: "" });
+    setPage(1);
+  };
+
+  useEffect(() => {
+    fetchProducts();
+  }, [search, category, priceRange, page]);
 
   return (
-    <div className="px-4 md:px-10 py-6">
-      <h1 className="text-2xl md:text-3xl font-bold text-gray-800 mb-6">
-        🛍️ Our Products
-      </h1>
+    <div className="container mx-auto px-4 py-4">
+      {/* <h1 className="text-3xl font-bold mb-6 text-center md:text-left">
+        Shop Our Products
+      </h1> */}
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        {products.map((product) => (
-          <ProductCard key={product.id} product={product} />
-        ))}
+      <div className="flex flex-col md:flex-row gap-6">
+        <div className="md:w-1/4 flex flex-col gap-4 sticky top-24">
+          <SearchBar search={localSearch} setSearch={setLocalSearch} />
+          <CategoryFilter
+            category={localCategory}
+            setCategory={setLocalCategory}
+          />
+          <PriceRangeSlider
+            priceRange={localPriceRange}
+            setPriceRange={setLocalPriceRange} // update local only
+          />
+
+          <div className="flex gap-2 mt-4">
+            <button
+              onClick={applyFilters}
+              style={{ backgroundColor: colors.primary, color: colors.white }}
+              className="flex-1 px-4 py-2 rounded-lg hover:opacity-90 transition"
+            >
+              Apply Filters
+            </button>
+            <button
+              onClick={resetFilters}
+              className="flex-1 px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition"
+            >
+              Reset
+            </button>
+          </div>
+        </div>
+
+        <div className="md:w-3/4 flex flex-col gap-6">
+          <ProductsList products={products} loading={loading} />
+          <Pagination
+            page={page}
+            totalPages={totalPages}
+            onPageChange={setPage}
+          />
+        </div>
       </div>
     </div>
   );

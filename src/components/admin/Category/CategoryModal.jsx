@@ -23,18 +23,20 @@ export default function CategoryModal({
     description: "",
   });
 
-  useEffect(() => {
-    if (category) {
-      setForm({
-        name: category.name || "",
-        slug: category.slug || "",
-        image: category.image || "",
-        description: category.description || "",
-      });
-    } else {
-      setForm({ name: "", slug: "", image: "", description: "" });
-    }
-  }, [category]);
+ useEffect(() => {
+  if (category) {
+    setForm({
+      name: category.name || "",
+      slug: category.slug || "",
+      image: category.image || "",
+      description: category.description || "",
+    });
+  } else if (!viewMode) {
+    setForm({ name: "", slug: "", image: "", description: "" });
+  }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+}, [category, viewMode]); // Always two dependencies
+
 
   useEffect(() => {
     if (form.name && !category) {
@@ -83,7 +85,7 @@ export default function CategoryModal({
             value={form.name}
             onChange={handleChange}
             required
-           disabled={loading || viewMode} 
+            disabled={loading || viewMode}
           />
         </div>
 

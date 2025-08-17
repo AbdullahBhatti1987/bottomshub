@@ -52,7 +52,7 @@ export const uploadImageToCloudinary = async (fileBase64, folder = 'bottomshub/p
     const uploadResponse = await cloudinary.uploader.upload(fileBase64, {
       folder,
       transformation: [
-        { width: 1024, crop: 'limit' } // Limit width to 1024, height auto-adjusted
+        { width: 1920, crop: 'limit' } // Limit width to 1024, height auto-adjusted
       ]
     });
 
@@ -60,7 +60,7 @@ export const uploadImageToCloudinary = async (fileBase64, folder = 'bottomshub/p
 
     // Generate a thumbnail (keeping original aspect ratio, max width 100)
     const thumbnailUrl = cloudinary.url(public_id, {
-      width: 100,
+      width: 300,
       crop: 'scale',       // Scale while keeping ratio
       secure: true,
     });

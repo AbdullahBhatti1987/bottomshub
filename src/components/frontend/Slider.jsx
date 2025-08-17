@@ -7,10 +7,8 @@ import Link from "next/link";
 import { BASE_URL } from "@/lib/axios";
 import { motion } from "framer-motion";
 
-
 const font = "font-[noto-sans] font-medium tracking-normal";
 const gradient = "from-pink-500 via-red-500 to-red-300";
-
 
 export default function Slider() {
   const [slides, setSlides] = useState([]);
@@ -30,11 +28,14 @@ export default function Slider() {
   }, []);
 
   useEffect(() => {
+    if (!slides.length) return;
+
     const interval = setInterval(() => {
       setCurrentIndex((prev) => (prev + 1) % slides.length);
-    }, 5000);
+    }, 10000); // exactly 10s
+
     return () => clearInterval(interval);
-  }, [slides]);
+  }, [slides.length]);
 
   const prevSlide = () =>
     setCurrentIndex((prev) => (prev - 1 + slides.length) % slides.length);
@@ -67,11 +68,11 @@ export default function Slider() {
           )}
 
           {/* Left Card */}
-        <div
-  className={`relative z-20 w-[400px] md:w-[480px] p-6 sm:p-4 md:p-8 flex flex-col justify-center items-start text-white rounded-xl bg-gradient-to-br ${gradient} border border-gray-200/30 shadow-[8px_12px_30px_rgba(0,0,0,0.4),-4px_-4px_15px_rgba(255,255,255,0.05)] backdrop-blur-sm ml-6 md:ml-24 transition-all duration-700 ${font}`}
->
-{/*  tilte div */}
-  {/* <div
+          <div
+            className={`relative z-20 w-[400px] md:w-[480px] p-6 sm:p-4 md:p-8 flex flex-col justify-center items-start text-white rounded-xl bg-gradient-to-br ${gradient} border border-gray-200/30 shadow-[8px_12px_30px_rgba(0,0,0,0.4),-4px_-4px_15px_rgba(255,255,255,0.05)] backdrop-blur-sm ml-6 md:ml-24 transition-all duration-700 ${font}`}
+          >
+            {/*  tilte div */}
+            {/* <div
             className={`relative z-20 w-[400px] md:w-[480px] p-6 sm:p-4 md:p-8 flex flex-col justify-center items-start text-white rounded-xl bg-gradient-to-br ${gradient} border border-gray-200/30 shadow-[8px_12px_30px_rgba(0,0,0,0.4),-4px_-4px_15px_rgba(255,255,255,0.05)] backdrop-blur-sm ml-6 md:ml-24 transition-all duration-700 ${font}`}
             style={{
               transform: "perspective(1000px) rotateY(20deg) rotateX(10deg)",

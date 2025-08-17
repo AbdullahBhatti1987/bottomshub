@@ -12,14 +12,14 @@ export const uploadMultipleImagesToCloudinary = async (base64Images = [], folder
       const result = await cloudinary.uploader.upload(base64Image, {
         folder,
         transformation: [
-          { width: 500, height: 500, crop: 'limit' } 
+          { width: 800, height: 800, crop: 'limit' } 
         ]
       });
 
       const { secure_url, public_id } = result;
 
       const thumbnailUrl = cloudinary.url(public_id, {
-        width: 100,
+        width: 300,
         height: 100,
         crop: 'thumb',
         gravity: 'center',

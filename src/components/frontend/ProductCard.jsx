@@ -44,20 +44,25 @@ export default function ProductCard({
         {/* Image */}
         <div className="relative w-full h-56 sm:h-64 overflow-hidden">
           <Image
-            src={images[0]}
+            src={
+              images && images.length > 0
+                ? images[0].url
+                : "/images/placeholder.png"
+            }
             alt={name}
             fill
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw" // responsive sizing
             className="object-cover transition-transform duration-500 group-hover:scale-105"
           />
 
           {/* Tag */}
           {tags && (
             <span
-              className="absolute px-3 py-1 text-white text-xs font-semibold rounded"
+              className="absolute px-2 py-1 text-white text-[10px] font-semibold rounded"
               style={{
                 backgroundColor: colors.primary,
-                top: "6px",
-                left: "6px",
+                top: "4px",
+                left: "4px",
               }}
             >
               {tags}
@@ -67,12 +72,12 @@ export default function ProductCard({
           {/* Wishlist */}
           <button
             onClick={() => setLiked(!liked)}
-            className="absolute top-3 right-3 p-2 rounded-full shadow-md bg-white transition hover:scale-110"
+            className="absolute top-3 right-3 p-3 rounded-full bg-transparent transition hover:scale-110 duration-300"
           >
             <Heart
               size={18}
               fill={liked ? colors.primary : "transparent"}
-              color={liked ? colors.primary : "#ccc"}
+              color={liked ? colors.primary : colors.primary}
             />
           </button>
         </div>
@@ -91,14 +96,15 @@ export default function ProductCard({
           >
             {name}
           </h3>
-          <p className="text-xs sm:text-sm" style={{ color: "#6b7280" }}>
-            {category}
+          <p className="text-xs sm:text-sm" style={{ color: colors.secondary }}>
+            {category?.name || "Uncategorized"}
           </p>
+
           <p
             className="text-sm sm:text-md font-bold"
-            style={{ color: colors.primary }}
+            style={{ color: colors.secondary }}
           >
-            {price}
+            Rs. {price}
           </p>
         </div>
       </motion.div>

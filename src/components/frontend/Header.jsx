@@ -105,8 +105,8 @@ export default function Header({className}) {
     { label: "Home", href: "/" },
     { label: "Products", href: "/products" },
     { label: "Categories", hasDropdown: true },
-    { label: "About", href: "/about" },
-    { label: "Contact", href: "/contact" },
+    { label: "About", href: "/aboutus" },
+    { label: "Contact", href: "/contactus" },
   ];
 
   useEffect(() => {
@@ -121,7 +121,7 @@ export default function Header({className}) {
 
   return (
        <header className={`relative shadow-md rounded-2xl ${className}`} style={{ backgroundColor: colors.background }}>
-      <div className="container mx-auto flex items-center justify-between py-4 px-6">
+      <div className="container max-w-7xl mx-auto flex items-center justify-between py-4 px-6">
         {/* Logo */}
         <div
           className="font-bold font-sans text-2xl sm:text-3xl md:text-3xl lg:text-4xl"
@@ -191,9 +191,9 @@ export default function Header({className}) {
       </div>
 
       {/* Mobile Menu */}
-      <div
+      {/* <div
         className={`md:hidden shadow-md px-6 overflow-hidden transition-all duration-300 ${
-          mobileOpen ? "max-h-96 py-4" : "max-h-0 py-0"
+          mobileOpen ? "max-h-84 py-4" : "max-h-0 py-0"
         }`}
         style={{ backgroundColor: colors.background }}
       >
@@ -206,7 +206,24 @@ export default function Header({className}) {
             {item.label}
           </button>
         ))}
-      </div>
+      </div> */}
+      <div
+  className={`md:hidden shadow-md px-6 overflow-hidden transition-all duration-300 ${
+    mobileOpen ? "max-h-80 py-2" : "max-h-0 py-0"
+  }`}
+  style={{ backgroundColor: colors.background }}
+>
+  {menuItems.map((item) => (
+    <button
+      key={item.label}
+      style={{ color: colors.text }}
+      className="block w-full text-left py-2 text-lg font-sans hover:underline transition"
+    >
+      {item.label}
+    </button>
+  ))}
+</div>
+
     </header>
   );
 }
