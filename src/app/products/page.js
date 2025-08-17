@@ -74,13 +74,13 @@ export default function ProductsPage() {
   }, [search, category, priceRange, page]);
 
   return (
-    <div className="container mx-auto px-4 py-4">
+    <div className="container max-w-7xl mx-auto px-4 py-4">
       {/* <h1 className="text-3xl font-bold mb-6 text-center md:text-left">
         Shop Our Products
       </h1> */}
 
       <div className="flex flex-col md:flex-row gap-6">
-        <div className="md:w-1/4 flex flex-col gap-4 sticky top-24">
+        <div className="md:w-1/4 flex flex-col gap-4 top-24 bg-white">
           <SearchBar search={localSearch} setSearch={setLocalSearch} />
           <CategoryFilter
             category={localCategory}
