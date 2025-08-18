@@ -6,9 +6,9 @@ const SliderSchema = new mongoose.Schema(
     content: { type: String },
     buttonName: { type: String },
     buttonRoute: { type: String },
-    mainImage: { type: String, required: true }, // main slider image
+    // mainImage: { type: String, required: true }, // main slider image
     backgroundImage: { type: String }, // optional background
-    overlayImage: { type: String }, // optional PNG overlay
+    // overlayImage: { type: String }, // optional PNG overlay
   },
   { timestamps: true }
 );

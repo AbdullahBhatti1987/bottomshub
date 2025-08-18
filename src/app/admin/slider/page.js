@@ -11,9 +11,9 @@ export default function SliderUploadPage() {
     content: "",
     buttonName: "",
     buttonRoute: "",
-    mainImage: null,
+    // mainImage: null,
     backgroundImage: null,
-    overlayImage: null,
+    // overlayImage: null,
   });
 
   const [loading, setLoading] = useState(false);
@@ -48,9 +48,9 @@ export default function SliderUploadPage() {
         content: "",
         buttonName: "",
         buttonRoute: "",
-        mainImage: null,
+        // mainImage: null,
         backgroundImage: null,
-        overlayImage: null,
+        // overlayImage: null,
       });
     } catch (err) {
       console.error(err);
@@ -98,7 +98,7 @@ export default function SliderUploadPage() {
           className="w-full border px-3 py-2 rounded"
         />
 
-        <div>
+        {/* <div>
           <label className="block mb-1 font-medium">Main Image</label>
           <input
             type="file"
@@ -107,7 +107,7 @@ export default function SliderUploadPage() {
             onChange={handleFileChange}
             required
           />
-        </div>
+        </div> */}
 
         <div>
           <label className="block mb-1 font-medium">Background Image</label>
@@ -119,7 +119,7 @@ export default function SliderUploadPage() {
           />
         </div>
 
-        <div>
+        {/* <div>
           <label className="block mb-1 font-medium">Overlay Image (PNG)</label>
           <input
             type="file"
@@ -127,7 +127,7 @@ export default function SliderUploadPage() {
             accept="image/png"
             onChange={handleFileChange}
           />
-        </div>
+        </div> */}
 
         <button
           type="submit"
