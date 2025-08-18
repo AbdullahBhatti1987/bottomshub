@@ -22,12 +22,12 @@ export default function Pagination({ page, totalPages, onPageChange }) {
   }
 
   return (
-    <div className="flex items-center justify-center gap-2 mt-6 flex-wrap">
+    <div className="flex items-center justify-center gap-1 sm:gap-2 md:gap-3 mt-4 flex-wrap">
       {/* Prev Button */}
       <button
         onClick={() => onPageChange(page - 1)}
         disabled={page === 1}
-        className="px-3 py-2 rounded-md disabled:opacity-50"
+        className="px-2 sm:px-3 md:px-4 py-1 sm:py-2 text-xs sm:text-sm rounded-md disabled:opacity-50"
         style={{
           backgroundColor: "#E5E7EB",
           color: "#374151",
@@ -39,7 +39,7 @@ export default function Pagination({ page, totalPages, onPageChange }) {
       {/* First Page (1) */}
       <button
         onClick={() => onPageChange(1)}
-        className="px-4 py-2 rounded-md"
+        className="px-2 sm:px-4 md:px-5 py-1 sm:py-2 text-xs sm:text-sm rounded-md"
         style={{
           backgroundColor: page === 1 ? colors.primary : "#E5E7EB",
           color: page === 1 ? colors.white : "#374151",
@@ -49,14 +49,14 @@ export default function Pagination({ page, totalPages, onPageChange }) {
       </button>
 
       {/* Left Ellipsis */}
-      {start > 2 && <span className="px-2">...</span>}
+      {start > 2 && <span className="px-1 sm:px-2">...</span>}
 
       {/* Middle Pages */}
       {pages.map((p) => (
         <button
           key={p}
           onClick={() => onPageChange(p)}
-          className="px-4 py-2 rounded-md"
+          className="px-2 sm:px-4 md:px-5 py-1 sm:py-2 text-xs sm:text-sm rounded-md"
           style={{
             backgroundColor: p === page ? colors.primary : "#E5E7EB",
             color: p === page ? colors.white : "#374151",
@@ -67,13 +67,13 @@ export default function Pagination({ page, totalPages, onPageChange }) {
       ))}
 
       {/* Right Ellipsis */}
-      {end < totalPages - 1 && <span className="px-2">...</span>}
+      {end < totalPages - 1 && <span className="px-1 sm:px-2">...</span>}
 
       {/* Last Page */}
       {totalPages > 1 && (
         <button
           onClick={() => onPageChange(totalPages)}
-          className="px-4 py-2 rounded-md"
+          className="px-2 sm:px-4 md:px-5 py-1 sm:py-2 text-xs sm:text-sm rounded-md"
           style={{
             backgroundColor: page === totalPages ? colors.primary : "#E5E7EB",
             color: page === totalPages ? colors.white : "#374151",
@@ -87,7 +87,7 @@ export default function Pagination({ page, totalPages, onPageChange }) {
       <button
         onClick={() => onPageChange(page + 1)}
         disabled={page === totalPages}
-        className="px-3 py-2 rounded-md disabled:opacity-50"
+        className="px-2 sm:px-3 md:px-4 py-1 sm:py-2 text-xs sm:text-sm rounded-md disabled:opacity-50"
         style={{
           backgroundColor: "#E5E7EB",
           color: "#374151",

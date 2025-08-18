@@ -5,7 +5,7 @@ import axios from "axios";
 import Link from "next/link";
 import colors from "@/theme/colors";
 import { BASE_URL } from "@/lib/axios";
-import ProductCard from "./ProductCard";
+import ProductCard from "../products/ProductCard";
 
 export default function ProductsSection({ limit = 8 }) {
   const [products, setProducts] = useState([]);

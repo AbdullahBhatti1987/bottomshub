@@ -7,22 +7,88 @@ import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { BASE_URL } from "@/lib/axios";
 import colors from "@/theme/colors";
-import { IoHeartOutline } from "react-icons/io5";
+import { IoHeartOutline, IoLogoInstagram } from "react-icons/io5";
 import { IoIosHeart } from "react-icons/io";
+import Link from "next/link";
+import {
+  IoShareSocialOutline,
+  IoLogoWhatsapp,
+  IoLogoFacebook,
+  IoLogoTwitter,
+} from "react-icons/io5";
+import {
+  FaTiktok,
+  FaSnapchatGhost,
+  FaLinkedin,
+  FaPinterest,
+  FaEnvelope,
+} from "react-icons/fa";
 
 export default function ProductDetailPage() {
   const params = useParams();
   const { slug } = params;
   const [wishlist, setWishlist] = useState(false);
-
+  const [shareOpen, setShareOpen] = useState(false);
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
   const [quantity, setQuantity] = useState(1);
   const [selectedSize, setSelectedSize] = useState(null); // ✅ selected size
+  const url = typeof window !== "undefined" ? window.location.href : "";
 
-  const sizeMap = ["sm", "md", "lg", "xl", "xxl"];
-
+  const socials = [
+    {
+      name: "WhatsApp",
+      icon: <IoLogoWhatsapp size={40} color="#25D366" />,
+      link: `https://wa.me/?text=${encodeURIComponent(url)}`,
+    },
+    {
+      name: "Facebook",
+      icon: <IoLogoFacebook size={40} color="#1877F2" />,
+      link: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
+        url
+      )}`,
+    },
+    {
+      name: "Twitter",
+      icon: <IoLogoTwitter size={40} color="#1DA1F2" />,
+      link: `https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}`,
+    },
+    {
+      name: "Instagram",
+      icon: <IoLogoInstagram size={40} color="#E1306C" />,
+      link: `https://www.instagram.com/`,
+    },
+    {
+      name: "TikTok",
+      icon: <FaTiktok size={40} color="#010101" />,
+      link: `https://www.tiktok.com/`,
+    },
+    {
+      name: "Snapchat",
+      icon: <FaSnapchatGhost size={40} color="#FFFC00" />,
+      link: `https://www.snapchat.com/`,
+    },
+    {
+      name: "LinkedIn",
+      icon: <FaLinkedin size={40} color="#0A66C2" />,
+      link: `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(
+        url
+      )}`,
+    },
+    {
+      name: "Pinterest",
+      icon: <FaPinterest size={40} color="#E60023" />,
+      link: `https://pinterest.com/pin/create/button/?url=${encodeURIComponent(
+        url
+      )}`,
+    },
+    {
+      name: "Email",
+      icon: <FaEnvelope size={40} color="#EA4335" />,
+      link: `mailto:?subject=Check this out&body=${encodeURIComponent(url)}`,
+    },
+  ];
   const fetchProductBySlug = async () => {
     setLoading(true);
     try {
@@ -44,13 +110,20 @@ export default function ProductDetailPage() {
       <div className="py-12 container max-w-7xl mx-auto px-4">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 max-h-[420px] animate-pulse">
           {/* Left Skeleton */}
-          <div className="grid grid-cols-[60px_1fr] gap-4">
+          <div className="grid grid-cols-[60px_1fr] lg:gap-4 md:gap-3 gap-2">
             {/* Thumbnails */}
             <div className="flex flex-col gap-3">
               {[...Array(5)].map((_, idx) => (
                 <div
                   key={idx}
-                  className="w-[60px] h-[60px] bg-gray-200 rounded-lg"
+                  className={`
+    w-[40px] h-[40px] 
+    sm:w-[40px] sm:h-[40px]
+    md:w-[50px] md:h-[50px] 
+    lg:w-[60px] lg:h-[60px] 
+    cursor-pointer rounded-lg overflow-hidden 
+     transition-all duration-200 flex-shrink-0
+  `}
                 />
               ))}
             </div>
@@ -109,17 +182,22 @@ export default function ProductDetailPage() {
     <div className="py-12 container lg:max-w-7xl w-full mx-auto px-4">
       <div className="grid grid-cols-1 w-full md:grid-cols-2 gap-8 md:gap-12 ">
         {/* Left: Images */}
-        <div className="grid grid-cols-[60px_1fr] gap-4">
+        <div className="grid grid-cols-[60px_1fr] lg:gap-4 md:gap-3 ">
           {/* Thumbnails */}
           <div className="flex flex-col gap-3 overflow-y-auto max-h-[420px]">
             {product?.images?.map((img, idx) => (
               <div
                 key={idx}
                 onClick={() => setSelectedImage(img.url)}
-                className={`cursor-pointer rounded-lg overflow-hidden border transition-all duration-200 flex-shrink-0`}
+                className={`
+    w-[40px] h-[40px] 
+    sm:w-[40px] sm:h-[40px]
+    md:w-[50px] md:h-[50px] 
+    lg:w-[60px] lg:h-[60px] 
+    cursor-pointer rounded-lg overflow-hidden 
+    border transition-all duration-200 flex-shrink-0
+  `}
                 style={{
-                  width: "60px",
-                  height: "60px",
                   borderColor:
                     selectedImage === img.url ? colors.primary : "#D1D5DB",
                   borderWidth: selectedImage === img.url ? "2px" : "1px",
@@ -162,9 +240,9 @@ export default function ProductDetailPage() {
 
         {/* Right: Product Info */}
         {/* Right: Product Info */}
-        <div className="flex flex-col gap-2 md:gap-3 lg:gap-4">
+        <div className="flex flex-col gap-3 lg:gap-4">
           {/* Title */}
-          <h2 className="text-lg sm:text-xl md:text-2xl  lg:text-3xl font-bold leading-snug">
+          <h2 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold leading-snug">
             {product.name}
           </h2>
 
@@ -252,12 +330,13 @@ export default function ProductDetailPage() {
 
             <span
               className="
-        w-10 h-8 text-sm
-        sm:w-12 sm:h-10 sm:text-base
-        md:w-14 md:h-11 md:text-base
-        lg:w-16 lg:h-12 lg:text-lg
-        flex items-center justify-center border rounded-lg font-medium
-      "
+    flex-1 sm:flex-none
+    h-8 text-sm
+    sm:w-12 sm:h-10 sm:text-base
+    md:w-16 md:h-11 md:text-base
+    lg:w-20 lg:h-12 lg:text-lg
+    flex items-center justify-center border rounded-lg font-medium
+  "
             >
               {quantity}
             </span>
@@ -277,12 +356,52 @@ export default function ProductDetailPage() {
             </button>
           </div>
 
-          {/* Wishlist + Cart */}
-          <div className="flex gap-3 sm:gap-4 md:gap-5">
-            {/* Heart */}
-            <button
-              onClick={() => setWishlist((prev) => !prev)}
-              className="
+          {/* Wishlist + Cart + Buy Now */}
+          <div className="flex flex-col gap-3 sm:gap-4 md:gap-5 w-full">
+            {/* Row: Wishlist + Add to Cart */}
+            {/* Row: Wishlist + Add to Cart + Share */}
+            <div className="flex gap-3 sm:gap-4 md:gap-5">
+              {/* Heart */}
+              {/* Add to Cart */}
+              <button
+                className="
+      flex-1 
+      px-3 py-1.5 text-xs
+      sm:px-4 sm:py-2 sm:text-sm
+      md:px-5 md:py-2.5 md:text-base
+      lg:px-6 lg:py-3 lg:text-lg
+      rounded-lg font-semibold transition hover:opacity-90
+    "
+                style={{ backgroundColor: colors.primary, color: colors.white }}
+              >
+                Add to Cart
+              </button>
+              <button
+                onClick={() => setWishlist((prev) => !prev)}
+                className="
+      w-8 h-8
+      sm:w-10 sm:h-10
+      md:w-11 md:h-11
+      lg:w-12 lg:h-12
+      flex items-center justify-center rounded-lg 
+      bg-gray-100/50 border border-gray-400/40
+    "
+              >
+                {wishlist ? (
+                  <IoIosHeart
+                    className="h-4 w-4 sm:h-5 sm:w-5 md:h-5 md:w-5 lg:h-6 lg:w-6"
+                    style={{ color: colors.primary }}
+                  />
+                ) : (
+                  <IoHeartOutline className="h-4 w-4 sm:h-5 sm:w-5 md:h-5 md:w-5 lg:h-6 lg:w-6 text-gray-500" />
+                )}
+              </button>
+
+              {/* Share */}
+              <div className="relative">
+                <button
+                  onClick={() => setShareOpen((prev) => !prev)}
+                  className="
         w-8 h-8
         sm:w-10 sm:h-10
         md:w-11 md:h-11
@@ -290,30 +409,56 @@ export default function ProductDetailPage() {
         flex items-center justify-center rounded-lg 
         bg-gray-100/50 border border-gray-400/40
       "
-            >
-              {wishlist ? (
-                <IoIosHeart
-                  className="h-4 w-4 sm:h-5 sm:w-5 md:h-5 md:w-5 lg:h-6 lg:w-6"
-                  style={{ color: colors.primary }}
-                />
-              ) : (
-                <IoHeartOutline className="h-4 w-4 sm:h-5 sm:w-5 md:h-5 md:w-5 lg:h-6 lg:w-6 text-gray-500" />
-              )}
-            </button>
+                >
+                  <IoShareSocialOutline className="h-4 w-4 sm:h-5 sm:w-5 md:h-5 md:w-5 lg:h-6 lg:w-6 text-gray-600" />
+                </button>
 
-            {/* Cart */}
+                {/* Share Popover */}
+                {shareOpen && (
+                  <div className="fixed inset-0  flex justify-center items-center bg-black/40 z-50">
+                    <div className="bg-white w-[300px] h-[300px]  rounded-xl shadow-2xl p-8 relative">
+                      {/* Close Button */}
+                      <button
+                        onClick={() => setShareOpen(false)}
+                        className="absolute top-2 right-2 text-gray-600 hover:text-black"
+                      >
+                        ✕
+                      </button>
+                      <div className="grid grid-cols-3 gap-4 place-items-center h-full">
+                        {socials.map((s, idx) => (
+                          <Link
+                            key={idx}
+                            href={s.link}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex flex-col items-center justify-center w-16 h-16 rounded-lg hover:bg-gray-300 shadow transition"
+                          >
+                            {s.icon}
+                            <span className="text-[11px] mt-1 font-medium">
+                              {s.name}
+                            </span>
+                          </Link>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Buy Now Full Width */}
             <button
               className="
-        flex-1 
-        px-3 py-1.5 text-xs
+    flex-1 
+        px-4 py-2 text-xs
         sm:px-4 sm:py-2 sm:text-sm
         md:px-5 md:py-2.5 md:text-base
         lg:px-6 lg:py-3 lg:text-lg
         rounded-lg font-semibold transition hover:opacity-90
-      "
-              style={{ backgroundColor: colors.primary, color: colors.white }}
+    "
+              style={{ backgroundColor: "#111827", color: colors.white }} // Black Buy Now
             >
-              Add to Cart
+              Buy Now
             </button>
           </div>
         </div>

@@ -3,10 +3,10 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useParams } from "next/navigation";
-import ProductCard from "@/components/frontend/ProductCard";
 import colors from "@/theme/colors";
 import Link from "next/link";
 import { BASE_URL } from "@/lib/axios";
+import ProductCard from "@/components/products/ProductCard";
 
 export default function CategoryProductsPage() {
   const params = useParams();
