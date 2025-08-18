@@ -45,9 +45,6 @@
 //   );
 // }
 
-
-
-
 "use client";
 import Image from "next/image";
 import Link from "next/link";
@@ -65,7 +62,7 @@ export default function SliderCard({ slide, isActive }) {
           src={slide.backgroundImage}
           alt="Background"
           fill
-          className="object-cover object-center z-0"
+          className="object-cover z-0"
           priority
         />
       )}

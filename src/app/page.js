@@ -224,6 +224,10 @@
 import Slider from "@/components/frontend/Slider";
 import CategoriesSection from "@/components/frontend/CategoriesSection";
 import ProductsSection from "@/components/frontend/ProductsSection";
+import Footer from "@/components/frontend/Footer";
+import SubscriptionBox from "@/components/frontend/SubscriptionBox";
+import Testimonials from "@/components/frontend/Testimonials";
+import Reviews from "@/components/frontend/Reviews";
 
 export default function HomePage() {
   return (
@@ -236,6 +240,8 @@ export default function HomePage() {
       {/* Products Section */}
       
       <ProductsSection limit={8} />
+      <Reviews />
+       <Footer />
     </div>
   );
 }

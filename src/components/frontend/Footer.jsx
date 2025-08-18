@@ -81,7 +81,7 @@ export default function Footer() {
             <input
               type="email"
               placeholder="Email"
-              className="px-2 py-1 rounded-md bg-white text-gray-900 text-xs flex-1 outline-none w-full sm:w-auto"
+              className="px-3 py-3 rounded-md bg-white text-gray-900 text-xs flex-1 outline-none w-full sm:w-auto"
               style={{ backgroundColor: colors.white }}
             />
             <button

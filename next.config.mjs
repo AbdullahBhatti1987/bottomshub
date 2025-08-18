@@ -3,6 +3,7 @@
 const nextConfig = {
   experimental: {
     serverActions: {}, // ✅ should be an object, not true or boolean
+    
   },
   images: {
     remotePatterns: [
@@ -16,6 +17,8 @@ const nextConfig = {
       },
     ],
   },
+ allowedDevOrigins: ["http://localhost:3000", "http://192.168.100.72:3000"]
+
 };
 
 export default nextConfig;
