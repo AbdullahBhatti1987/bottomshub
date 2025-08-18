@@ -75,9 +75,6 @@
 //   );
 // }
 
-
-
-
 "use client";
 import { useEffect, useState } from "react";
 import axios from "axios";
@@ -129,34 +126,40 @@ export default function Reviews() {
 
         <div className="relative flex justify-center">
           <AnimatePresence mode="wait">
-            {currentReviews.map((review) => (
-              <motion.div
-                key={review._id}
-                className="bg-white shadow-lg rounded-2xl p-8 w-80 m-3"
-                variants={slideVariants}
-                initial="hidden"
-                animate="visible"
-                exit="exit"
-                transition={{ type: "spring", stiffness: 300, damping: 30 }}
-              >
-                <p className="text-lg italic text-gray-700">"{review.review}"</p>
-                <div className="mt-4 font-bold text-gray-900">
-                  - {review.user?.name || "Anonymous"}
+            <motion.div
+              key={current} // use the slide index as key
+              className="grid grid-cols-1 sm:grid-cols-2 gap-6"
+              initial={{ opacity: 0, x: 100 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -100 }}
+              transition={{ type: "spring", stiffness: 300, damping: 30 }}
+            >
+              {currentReviews.map((review) => (
+                <div
+                  key={review._id}
+                  className="bg-white shadow-lg rounded-2xl p-8"
+                >
+                  <p className="text-lg italic text-gray-700">
+                    "{review.review}"
+                  </p>
+                  <div className="mt-4 font-bold text-gray-900">
+                    - {review.user?.name || "Anonymous"}
+                  </div>
+                  <div className="mt-2 flex justify-center gap-1">
+                    {[...Array(5)].map((_, i) => (
+                      <span
+                        key={i}
+                        className={`text-yellow-400 ${
+                          i < review.rating ? "opacity-100" : "opacity-30"
+                        }`}
+                      >
+                        ★
+                      </span>
+                    ))}
+                  </div>
                 </div>
-                <div className="mt-2 flex justify-center gap-1">
-                  {[...Array(5)].map((_, i) => (
-                    <span
-                      key={i}
-                      className={`text-yellow-400 ${
-                        i < review.rating ? "opacity-100" : "opacity-30"
-                      }`}
-                    >
-                      ★
-                    </span>
-                  ))}
-                </div>
-              </motion.div>
-            ))}
+              ))}
+            </motion.div>
           </AnimatePresence>
         </div>
 

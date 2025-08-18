@@ -224,8 +224,6 @@
 //   );
 // }
 
-
-
 "use client";
 import { useState } from "react";
 import Image from "next/image";
@@ -268,7 +266,8 @@ export default function ProductCard({
                 : "/images/placeholder.png"
             }
             alt={safeValue(name)}
-            fill
+            fill // or keep width/height if not using fill
+            sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" // <-- add this
             className="object-cover w-full h-full transition-transform duration-500 group-hover:scale-105"
           />
 
