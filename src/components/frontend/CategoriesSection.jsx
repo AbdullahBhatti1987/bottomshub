@@ -29,7 +29,7 @@ export default function CategoriesSection({ limit = 4 }) {
   }, []);
 
   return (
-    <section className="py-12 max-w-7xl container mx-auto px-4">
+    <section className="py-12 container w-full md:w-[90%] lg:w-[85%] mx-auto px-4">
       {/* Grid 1 row with 4 cols */}
       <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-6 place-items-center">
         {loading

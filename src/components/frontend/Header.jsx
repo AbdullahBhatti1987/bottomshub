@@ -92,7 +92,7 @@ function IconButton({ type, count = 0, isLoggedIn = false }) {
   );
 }
 
-export default function Header({className}) {
+export default function Header({ className }) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
@@ -120,8 +120,11 @@ export default function Header({className}) {
   }, []);
 
   return (
-       <header className={`relative shadow-md rounded-2xl ${className}`} style={{ backgroundColor: colors.background }}>
-      <div className="container max-w-7xl mx-auto flex items-center justify-between py-4 px-6">
+    <header
+      className={`relative shadow-md rounded-2xl ${className}`}
+      style={{ backgroundColor: colors.background }}
+    >
+      <div className="container w-full md:w-[90%] lg:w-[85%] mx-auto px-4 flex items-center justify-between py-4">
         {/* Logo */}
         <div
           className="font-bold font-sans text-2xl sm:text-3xl md:text-3xl lg:text-4xl"
@@ -208,22 +211,21 @@ export default function Header({className}) {
         ))}
       </div> */}
       <div
-  className={`md:hidden shadow-md px-6 overflow-hidden transition-all duration-300 ${
-    mobileOpen ? "max-h-80 py-2" : "max-h-0 py-0"
-  }`}
-  style={{ backgroundColor: colors.background }}
->
-  {menuItems.map((item) => (
-    <button
-      key={item.label}
-      style={{ color: colors.text }}
-      className="block w-full text-left py-2 text-lg font-sans hover:underline transition"
-    >
-      {item.label}
-    </button>
-  ))}
-</div>
-
+        className={`md:hidden shadow-md px-6 overflow-hidden transition-all duration-300 ${
+          mobileOpen ? "max-h-80 py-2" : "max-h-0 py-0"
+        }`}
+        style={{ backgroundColor: colors.background }}
+      >
+        {menuItems.map((item) => (
+          <button
+            key={item.label}
+            style={{ color: colors.text }}
+            className="block w-full text-left py-2 text-lg font-sans hover:underline transition"
+          >
+            {item.label}
+          </button>
+        ))}
+      </div>
     </header>
   );
 }
