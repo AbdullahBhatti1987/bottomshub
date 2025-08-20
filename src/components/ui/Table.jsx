@@ -352,10 +352,11 @@ export function TableCell({
     
         
        
-  px-1 sm:px-2 md:px-3 
-  text-[8px] sm:text-[9px] md:text-[10px] lg:text-[11px] 
-  text-gray-800 whitespace-nowrap overflow-hidden
-"
+      className="
+  px-1 sm:px-2 md:px-3 h-12
+  text-[8px] sm:text-[9px] md:text-[12px] lg:text-[13px] xl:text-[14px] 
+  font-medium tracking-wide text-gray-600 whitespace-nowrap
+
         ${fixedHeight} ${className}`}
       {...rest}
       style={{ maxWidth: "250px" }}

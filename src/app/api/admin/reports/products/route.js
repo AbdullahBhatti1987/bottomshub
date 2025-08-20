@@ -99,7 +99,6 @@ import { generateReport } from "@/lib/ReportGenerator";
 //   }
 // }
 
-
 export async function GET(req) {
   try {
     await connectDb();
@@ -108,7 +107,7 @@ export async function GET(req) {
     const type = searchParams.get("type"); // csv | pdf
     const from = searchParams.get("from");
     const to = searchParams.get("to");
-    const orientation = searchParams.get("orientation") || "portrait";
+    const orientation = searchParams.get("orientation") || "landscape";
 
     if (!from || !to) {
       return responseHelper.badRequest("from and to dates are required");
@@ -132,47 +131,94 @@ export async function GET(req) {
       );
     }
 
-    // --- Map to report data (all fields) ---
-    const data = products.map((prod, i) => ({
-      SrNo: i + 1,
-      Name: prod.name,
-      Slug: prod.slug,
-      SKU: prod.sku,
-      Description: prod.description || "N/A",
-      ShortDescription: prod.shortDescription || "N/A",
-      Category: prod.category?.name || "N/A",
-      Price: prod.price,
-      OriginalPrice: prod.originalPrice || 0,
-      Quantity: prod.quantity || 0,
-      DiscountValue: prod.discountValue || 0,
-      Sizes: prod.sizes?.join(", ") || "",
-      Tags: prod.tags?.join(", ") || "",
-      Stock: prod.inStock ? "Yes" : "No",
-      Featured: prod.isFeatured ? "Yes" : "No",
-      Images: prod.images?.length || 0,
-      Thumbnails: prod.images?.length || 0,
-      CreatedOn: prod.createdAt.toISOString().split("T")[0],
-    }));
+    // const sizeOrder = ["small", "medium", "large", "x-large", "xx-large"];
+    // const sizesStr = (prod.sizes || [])
+    //   .sort((a, b) => sizeOrder.indexOf(a.size) - sizeOrder.indexOf(b.size))
+    //   .map((s) => `${s.size}-${s.quantity}`)
+    //   .join(", ");
+
+    // // --- Map to report data (all fields) ---
+    // const data = products.map((prod, i) => ({
+    //   SrNo: i + 1,
+    //   Name: prod.name,
+    //   Slug: prod.slug,
+    //   SKU: prod.sku,
+    //   Description: prod.description || "N/A",
+    //   ShortDescription: prod.shortDescription || "N/A",
+    //   Category: prod.category?.name || "N/A",
+    //   Price: prod.price,
+    //   OriginalPrice: prod.originalPrice || 0,
+    //   Quantity: prod.quantity || 0,
+    //   DiscountValue: prod.discountValue || 0,
+    //   // Sizes: prod.sizes?.join(", ") || "",
+    //    Sizes: (prod.sizes || [])
+    //         .sort((a, b) => sizeOrder.indexOf(a.size) - sizeOrder.indexOf(b.size))
+    //         .map(s => `${s.size}-${s.quantity}`)
+    //         .join(", "),
+    //   Tags: prod.tags || "",
+    //   Stock: prod.inStock ? "Yes" : "No",
+    //   Featured: prod.isFeatured ? "Yes" : "No",
+    //   Images: prod.images?.length || 0,
+    //   Thumbnails: prod.images?.length || 0,
+    //   CreatedOn: prod.createdAt.toISOString().split("T")[0],
+    // }));
+
+    const sizeOrder = ["small", "medium", "large", "x-large", "xx-large"];
+
+const data = products.map((prod, i) => ({
+  SrNo: i + 1,
+  Name: prod.name,
+  Slug: prod.slug,
+  SKU: prod.sku,
+  Description: prod.description || "N/A",
+  ShortDescription: prod.shortDescription || "N/A",
+  Category: prod.category?.name || "N/A",
+  Price: prod.price,
+  OriginalPrice: prod.originalPrice || 0,
+  Quantity: prod.quantity || 0,
+  DiscountValue: prod.discountValue || 0,
+  Sizes: (prod.sizes || [])
+          .sort((a, b) => sizeOrder.indexOf(a.size) - sizeOrder.indexOf(b.size))
+          .map(s => `${s.size}-${s.quantity}`)
+          .join(", "),
+  Tags: prod.tags || "",
+  Stock: prod.inStock ? "Yes" : "No",
+  Featured: prod.isFeatured ? "Yes" : "No",
+  Images: prod.images?.length || 0,
+  Thumbnails: prod.images?.length || 0,
+  CreatedOn: prod.createdAt.toISOString().split("T")[0],
+}));
+
 
     const columns = [
-      { key: "SrNo", label: "Sr No", align: "center" },
-      { key: "Name", align: "left" },
-      { key: "Slug", align: "left" },
-      { key: "SKU", align: "left" },
-      { key: "Description", align: "left" },
-      { key: "ShortDescription", label: "Short Description", align: "left" },
-      { key: "Category", align: "left" },
-      { key: "Price", align: "right" },
-      { key: "OriginalPrice", label: "Original Price", align: "right" },
-      { key: "Quantity", align: "center" },
-      { key: "DiscountValue", label: "Discount", align: "center" },
-      { key: "Sizes", align: "left" },
-      { key: "Tags", align: "left" },
-      { key: "Stock", align: "center" },
-      { key: "Featured", align: "center" },
-      { key: "Images", align: "center" },
-      { key: "Thumbnails", align: "center" },
-      { key: "CreatedOn", label: "Created On", align: "center" },
+      { key: "SrNo", label: "Sr No", align: "center", width: 20 },
+      { key: "Name", label: "Name", align: "left", width: 60 },
+      { key: "Slug", label: "Slug", align: "left", width: 40 },
+      { key: "SKU", label: "SKU", align: "left", width: 40 },
+      // { key: "Description", label: "Description", align: "left", width: 100 },
+      // {
+      //   key: "ShortDescription",
+      //   label: "Short Desc",
+      //   align: "left",
+      //   width: 60,
+      // },
+      { key: "Category", label: "Category", align: "left", width: 40 },
+      { key: "Price", label: "Price", align: "right", width: 30 },
+      {
+        key: "OriginalPrice",
+        label: "Original Price",
+        align: "right",
+        width: 35,
+      },
+      { key: "Quantity", label: "Qty", align: "center", width: 30 },
+      { key: "DiscountValue", label: "Discount", align: "center", width: 30 },
+      { key: "Sizes", label: "Sizes", align: "left", width: 50 },
+      { key: "Tags", label: "Tags", align: "left", width: 50 },
+      { key: "Stock", label: "Stock", align: "center", width: 25 },
+      { key: "Featured", label: "Featured", align: "center", width: 25 },
+      { key: "Images", label: "Images", align: "center", width: 25 },
+      { key: "Thumbnails", label: "Thumbnails", align: "center", width: 25 },
+      { key: "CreatedOn", label: "Created On", align: "center", width: 30 },
     ];
 
     const { buffer, mimeType, ext } = await generateReport({
@@ -184,7 +230,7 @@ export async function GET(req) {
       itemLabel: "Products",
       reportTitle: "Product Report",
       companyName: "Bottom's Hub",
-      orientation, // <-- pass orientation
+      orientation,
     });
 
     return new Response(buffer, {
