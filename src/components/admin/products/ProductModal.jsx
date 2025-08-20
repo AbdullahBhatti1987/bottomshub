@@ -862,7 +862,7 @@ export default function ProductModal({
         tags: "",
         sizes: [],
         discountApplied: false,
-        discount: { type: "flat", value: 0 },
+        discount: { type: "percentage", value: 0 },
         images: [],
         inStock: true,
         isFeatured: false,

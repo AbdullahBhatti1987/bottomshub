@@ -1,3 +1,28 @@
+// "use client";
+// import ProductCard from "./ProductCard";
+
+// export default function ProductsList({ products, loading }) {
+//   if (loading) {
+//     return (
+//       <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 w-full">
+//         {Array.from({ length: 8 }).map((_, idx) => (
+//           <div key={idx} className="h-64 bg-gray-200 animate-pulse rounded-xl" />
+//         ))}
+//       </div>
+//     );
+//   }
+
+//   return (
+//     <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 w-full">
+//       {products.map((prod, idx) => (
+//         <ProductCard key={idx} {...prod} />
+//       ))}
+//     </div>
+//   );
+// }
+
+
+
 "use client";
 import ProductCard from "./ProductCard";
 
@@ -12,10 +37,24 @@ export default function ProductsList({ products, loading }) {
     );
   }
 
+  if (!products || products.length === 0) {
+    return <p className="text-center text-gray-500">No products found.</p>;
+  }
+
   return (
     <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 w-full">
       {products.map((prod, idx) => (
-        <ProductCard key={idx} {...prod} />
+        <ProductCard
+          key={prod._id || idx}
+          name={prod.name}
+          price={prod.price}
+          originalPrice={prod.originalPrice}
+          discount={prod.discount}
+          images={prod.images}
+          slug={prod.slug}
+          category={prod.category}
+          shortDescription={prod.shortDescription}
+        />
       ))}
     </div>
   );

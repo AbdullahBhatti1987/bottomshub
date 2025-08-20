@@ -35,8 +35,9 @@ export default function ProductsPage() {
       if (category) params.category = category;
       if (priceRange.min) params.minPrice = priceRange.min;
       if (priceRange.max) params.maxPrice = priceRange.max;
-
+      console.log("Response Params" , params)
       const res = await axios.get(`${BASE_URL}/api/products`, { params });
+      console.log("Response return" , res?.data)
       console.log("Response return" , res?.data?.data)
       setProducts(res.data.data);
       setTotalPages(res.data.totalPages || Math.ceil(res.data.total / limit));
@@ -82,10 +83,9 @@ export default function ProductsPage() {
       <div className="flex flex-col md:flex-row gap-6">
         <div className="md:w-1/4 flex flex-col gap-4 top-24 bg-white">
           <SearchBar search={localSearch} setSearch={setLocalSearch} />
-          <CategoryFilter
-            category={localCategory}
-            setCategory={setLocalCategory}
-          />
+     
+          <CategoryFilter category={localCategory} setCategory={setLocalCategory} />
+
           <PriceRangeSlider
             priceRange={localPriceRange}
             setPriceRange={setLocalPriceRange} // update local only

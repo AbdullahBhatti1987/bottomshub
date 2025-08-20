@@ -280,7 +280,13 @@ export default function ProductCard({
                 color: colors.white,
               }}
             >
-              {safeValue(discount.value)}% off
+              {discount.type === "percentage"
+                ? `${discount.value}% OFF`
+                : discount.type === "flat"
+                ? `Rs ${discount.value} OFF`
+                : discount.type === "buy1get1"
+                ? "Buy 1 Get 1"
+                : ""}
             </span>
           )}
         </div>

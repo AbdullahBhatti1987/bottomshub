@@ -63,7 +63,7 @@ export default function RootLayout({ children }) {
       <body suppressHydrationWarning={true}>
         <HeaderWrapper />
           <ToastProvider>
-            <FrontendLayout>{children}</FrontendLayout>
+            <FrontendLayout isAdmin={isAdmin} >{children}</FrontendLayout>
           </ToastProvider>
 
           <FooterWrapper />

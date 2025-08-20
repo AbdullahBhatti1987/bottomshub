@@ -430,8 +430,62 @@ export default function Slider() {
   if (!slides.length) return null;
 
   return (
+    // <div
+    //   className="relative w-full overflow-hidden h-[350px] sm:h-[450px] md:h-[550px] lg:h-[650px] group"
+    //   onMouseEnter={() => setHovered(true)}
+    //   onMouseLeave={() => setHovered(false)}
+    // >
+    //   {slides.map((slide, index) => (
+    //     <SliderCard
+    //       key={index}
+    //       slide={slide}
+    //       isActive={index === currentIndex}
+    //     />
+    //   ))}
+
+    //   {/* Navigation Dots */}
+    //   <div className="absolute right-5 top-1/2 -translate-y-1/2 flex flex-col space-y-3 z-40">
+    //     {slides.map((_, index) => (
+    //       <span
+    //         key={index}
+    //         className={`w-3 h-3 rounded-full cursor-pointer transition-all ${
+    //           index === currentIndex ? "bg-white" : "bg-white/50"
+    //         }`}
+    //         onClick={() => setCurrentIndex(index)}
+    //       />
+    //     ))}
+    //   </div>
+
+    //   {/* Prev / Next */}
+    //   <button
+    //     onClick={prevSlide}
+    //     className={`absolute
+    // sm:left-5 sm:top-1/2 sm:-translate-y-1/2
+    // left-5 bottom-5 translate-y-0
+    // bg-black/50 hover:bg-black/70 text-white px-3 py-2 rounded h-12
+    // z-40 transition-opacity duration-300 ${
+    //   hovered ? "opacity-100" : "opacity-0"
+    // }`}
+    //   >
+    //     &#10094;
+    //   </button>
+
+    //   <button
+    //     onClick={nextSlide}
+    //     className={`absolute
+    // sm:left-14 sm:top-1/2 sm:-translate-y-1/2  // desktop/tablet ke liye
+    // left-16 bottom-5 translate-y-0             // mobile ke liye
+    // bg-black/50 hover:bg-black/70 text-white px-3 py-2 rounded h-12
+    // z-40 transition-opacity duration-300 ${
+    //   hovered ? "opacity-100" : "opacity-0"
+    // }`}
+    //   >
+    //     &#10095;
+    //   </button>
+    // </div>
+
     <div
-      className="relative w-full overflow-hidden h-[350px] sm:h-[450px] md:h-[550px] lg:h-[650px] group"
+      className="relative w-full aspect-[16/9] sm:aspect-[16/9] md:aspect-[16/9] lg:aspect-[16/7] overflow-hidden group"
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
@@ -460,12 +514,12 @@ export default function Slider() {
       <button
         onClick={prevSlide}
         className={`absolute 
-    sm:left-5 sm:top-1/2 sm:-translate-y-1/2  
-    left-5 bottom-5 translate-y-0   
-    bg-black/50 hover:bg-black/70 text-white px-3 py-2 rounded h-12
-    z-40 transition-opacity duration-300 ${
-      hovered ? "opacity-100" : "opacity-0"
-    }`}
+      sm:left-5 sm:top-1/2 sm:-translate-y-1/2  
+      left-5 bottom-5 translate-y-0   
+      bg-black/50 hover:bg-black/70 text-white px-3 py-2 rounded h-12
+      z-40 transition-opacity duration-300 ${
+        hovered ? "opacity-100" : "opacity-0"
+      }`}
       >
         &#10094;
       </button>
@@ -473,12 +527,12 @@ export default function Slider() {
       <button
         onClick={nextSlide}
         className={`absolute 
-    sm:left-14 sm:top-1/2 sm:-translate-y-1/2  // desktop/tablet ke liye
-    left-16 bottom-5 translate-y-0             // mobile ke liye
-    bg-black/50 hover:bg-black/70 text-white px-3 py-2 rounded h-12
-    z-40 transition-opacity duration-300 ${
-      hovered ? "opacity-100" : "opacity-0"
-    }`}
+      sm:left-14 sm:top-1/2 sm:-translate-y-1/2  
+      left-16 bottom-5 translate-y-0             
+      bg-black/50 hover:bg-black/70 text-white px-3 py-2 rounded h-12
+      z-40 transition-opacity duration-300 ${
+        hovered ? "opacity-100" : "opacity-0"
+      }`}
       >
         &#10095;
       </button>

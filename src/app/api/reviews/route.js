@@ -5,17 +5,39 @@ import Product from '@/models/Product';
 import { connectDb } from '@/lib/connectDb';
 import responseHelper from '@/lib/responseHelper';
 
-export async function GET() {
+// export async function GET() {
+//   await connectDb();
+//   try {
+//     const reviews = await Review.find()
+//       .populate('user', 'name')
+//       .populate('product', 'name');
+
+//     return responseHelper.success({ data: reviews }, 'Reviews fetched');
+//   } catch (err) {
+//     console.error('GET /reviews error:', err);
+//     return responseHelper.serverError('Failed to fetch all reviews');
+//   }
+// }
+
+export async function GET(req) {
   await connectDb();
+
   try {
+    const { searchParams } = new URL(req.url);
+    const limit = parseInt(searchParams.get('limit')) || 10; // default 10
+    const skip = parseInt(searchParams.get('skip')) || 0;    // default 0
+
     const reviews = await Review.find()
       .populate('user', 'name')
-      .populate('product', 'name');
+      .populate('product', 'name')
+      .skip(skip)
+      .limit(limit)
+      .sort({ createdAt: -1 }); // latest first
 
     return responseHelper.success({ data: reviews }, 'Reviews fetched');
   } catch (err) {
     console.error('GET /reviews error:', err);
-    return responseHelper.serverError('Failed to fetch all reviews');
+    return responseHelper.serverError('Failed to fetch reviews');
   }
 }
 

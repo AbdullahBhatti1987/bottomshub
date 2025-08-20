@@ -763,7 +763,7 @@ export default function ProductDetailPage() {
           )}
 
           {/* Quantity */}
-          <div className="flex items-center gap-2 mt-3">
+          <div className="flex items-center gap-2 mt-3 mb-2">
             <button
               onClick={() => setQuantity((prev) => (prev > 1 ? prev - 1 : 1))}
               className="w-10 h-10 rounded-lg bg-gray-100/50 border border-gray-400/40 flex items-center justify-center"
@@ -784,16 +784,16 @@ export default function ProductDetailPage() {
           {/* Buttons */}
           {/* <div className="flex flex- gap-3 mt-4"> */}
           {/* Wishlist + Cart + Buy Now */}
-          <div className="flex flex-col gap-3 sm:gap-4 md:gap-5 w-full">
+          <div className="flex flex-col gap-6 w-full">
             {/* Row: Wishlist + Add to Cart + Share */}
-            <div className="flex gap-3 sm:gap-4 md:gap-5">
+            <div className="flex gap-2">
               {/* Heart */}
               {/* Add to Cart */}
               <button
                 onClick={handleAddToCart}
                 className="
       flex-1
-      px-3 py-1.5 text-xs
+      px-3 py-1.5 text-sm
       sm:px-4 sm:py-2 sm:text-sm
       md:px-5 md:py-2.5 md:text-base
       lg:px-6 lg:py-3 lg:text-lg
@@ -808,15 +808,16 @@ export default function ProductDetailPage() {
               </button>
               <button
                 onClick={handleWishlistToggle}
-                className="w-12 h-12 rounded-lg bg-gray-100/50 border border-gray-400/40 flex items-center justify-center"
+                className="  w-10 h-10
+        lg:w-12 lg:h-12 rounded-lg bg-gray-100/50 border border-gray-400/40 flex items-center justify-center"
               >
                 {wishlist ? (
                   <IoIosHeart
-                    className="h-4 w-4 sm:h-5 sm:w-5 md:h-5 md:w-5 lg:h-6 lg:w-6"
+                    className="h-6 w-6"
                     style={{ color: colors.primary }}
                   />
                 ) : (
-                  <IoHeartOutline className="h-4 w-4 sm:h-5 sm:w-5 md:h-5 md:w-5 lg:h-6 lg:w-6 text-gray-500" />
+                  <IoHeartOutline className="h-6 w-6  text-gray-500" />
                 )}
               </button>
 
@@ -825,15 +826,13 @@ export default function ProductDetailPage() {
                 <button
                   onClick={() => setShareOpen((prev) => !prev)}
                   className="
-        w-8 h-8
-        sm:w-10 sm:h-10
-        md:w-11 md:h-11
+        w-10 h-10
         lg:w-12 lg:h-12
         flex items-center justify-center rounded-lg
         bg-gray-100/50 border border-gray-400/40
       "
                 >
-                  <IoShareSocialOutline className="h-4 w-4 sm:h-5 sm:w-5 md:h-5 md:w-5 lg:h-6 lg:w-6 text-gray-600" />
+                  <IoShareSocialOutline className="h-6 w-6 text-gray-600" />
                 </button>
 
                 {/* Share Popover */}
@@ -857,7 +856,7 @@ export default function ProductDetailPage() {
                             className="flex flex-col items-center justify-center w-16 h-16 rounded-lg hover:bg-gray-300 shadow transition"
                           >
                             {s.icon}
-                            <span className="text-[11px] mt-1 font-medium">
+                            <span className="text-[12px] mt-1 font-medium">
                               {s.name}
                             </span>
                           </Link>
@@ -868,17 +867,18 @@ export default function ProductDetailPage() {
                 )}
               </div>
             </div>
+            {/* Buy Now */}
             <button
               onClick={handleBuyNow}
               className="
     flex-1
-        px-4 py-2 text-xs
-        sm:px-4 sm:py-2 sm:text-sm
-        md:px-5 md:py-2.5 md:text-base
-        lg:px-6 lg:py-3 lg:text-lg
-        rounded-lg font-semibold transition hover:opacity-90
-    "
-              style={{ backgroundColor: "#111827", color: colors.white }} // Black Buy Now
+    px-3 py-3 text-sm
+    md:px-5 md:py-2.5 md:text-base
+    lg:px-6 lg:py-3 lg:text-lg
+    h-10
+    rounded-lg font-semibold transition hover:opacity-90
+  "
+              style={{ backgroundColor: "#111827", color: colors.white }}
             >
               Buy Now
             </button>

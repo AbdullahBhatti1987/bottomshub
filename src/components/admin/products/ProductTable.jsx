@@ -264,7 +264,7 @@ export default function ProductTable({
                   className="rounded-md object-contain"
                 />
               </TableCell>
-              <TableCell>{p.name}</TableCell>
+              <TableCell  truncate={20}>{p.name}</TableCell>
               <TableCell>{p.sku}</TableCell>
               {/* <TableCell truncate={30}>{p.description}</TableCell> */}
               <TableCell truncate={20}>{p.shortDescription}</TableCell>

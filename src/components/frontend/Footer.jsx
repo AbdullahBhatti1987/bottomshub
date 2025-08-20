@@ -20,55 +20,61 @@ export default function Footer() {
           </p>
         </div>
 
-        {/* Categories */}
-        <div>
-          <h3 className="text-base font-semibold text-white mb-2">Categories</h3>
-          <ul className="space-y-1 text-xs">
-            <li>
-              <Link href="/products" className="hover:text-white transition">
-                Men
-              </Link>
-            </li>
-            <li>
-              <Link href="/products" className="hover:text-white transition">
-                Women
-              </Link>
-            </li>
-            <li>
-              <Link href="/products" className="hover:text-white transition">
-                Kids
-              </Link>
-            </li>
-            <li>
-              <Link href="/products" className="hover:text-white transition">
-                Accessories
-              </Link>
-            </li>
-          </ul>
-        </div>
+        <div className="grid grid-cols-2 gap-6">
+          {/* Categories */}
+          <div>
+            <h3 className="text-base font-semibold text-white mb-2">
+              Categories
+            </h3>
+            <ul className="space-y-1 text-xs">
+              <li>
+                <Link href="/products" className="hover:text-white transition">
+                  Men
+                </Link>
+              </li>
+              <li>
+                <Link href="/products" className="hover:text-white transition">
+                  Women
+                </Link>
+              </li>
+              <li>
+                <Link href="/products" className="hover:text-white transition">
+                  Kids
+                </Link>
+              </li>
+              <li>
+                <Link href="/products" className="hover:text-white transition">
+                  Accessories
+                </Link>
+              </li>
+            </ul>
+          </div>
 
-        {/* Support */}
-        <div>
-          <h3 className="text-base font-semibold text-white mb-2">Support</h3>
-          <ul className="space-y-1 text-xs">
-            <li>
-              <Link href="/contactus" className="hover:text-white transition">
-                Contact Us
-              </Link>
-            </li>
-            <li>
-              <Link href="/faqs" className="hover:text-white transition">
-                FAQs
-              </Link>
-            </li>
-            <li>
-              <Link href="/help-center" className="hover:text-white transition">
-                Help Center
-              </Link>
-            </li>
-          </ul>
+          {/* Support */}
+          <div>
+            <h3 className="text-base font-semibold text-white mb-2">Support</h3>
+            <ul className="space-y-1 text-xs">
+              <li>
+                <Link href="/contactus" className="hover:text-white transition">
+                  Contact Us
+                </Link>
+              </li>
+              <li>
+                <Link href="/faqs" className="hover:text-white transition">
+                  FAQs
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/help-center"
+                  className="hover:text-white transition"
+                >
+                  Help Center
+                </Link>
+              </li>
+            </ul>
+          </div>
         </div>
-
         {/* Newsletter */}
         <div>
           <h3 className="text-base font-semibold text-white mb-2">
@@ -85,7 +91,7 @@ export default function Footer() {
               style={{ backgroundColor: colors.white }}
             />
             <button
-              className="text-white text-xs font-bold px-3 py-1 rounded-md transition w-full sm:w-auto"
+              className="text-white text-xs font-bold px-3 py-3 rounded-md transition w-full sm:w-auto"
               style={{ backgroundColor: colors.primary }}
             >
               Subscribe
@@ -97,7 +103,9 @@ export default function Footer() {
       {/* Footer Bottom */}
       <div className="border-t border-gray-700 mt-6 py-3">
         <div className="max-w-7xl mx-auto px-4 flex flex-col md:flex-row items-center justify-between text-xs text-gray-400">
-          <p>&copy; {new Date().getFullYear()} BottomsHub. All rights reserved.</p>
+          <p>
+            &copy; {new Date().getFullYear()} BottomsHub. All rights reserved.
+          </p>
           <div className="flex gap-4 mt-2 md:mt-0">
             <Link href="/privacy-policy" className="hover:text-white">
               Privacy Policy

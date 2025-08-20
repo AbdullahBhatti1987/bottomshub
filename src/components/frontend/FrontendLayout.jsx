@@ -1,6 +1,13 @@
-// components/frontend/FrontendLayout.jsx
 "use client";
+import { usePathname } from "next/navigation";
 
 export default function FrontendLayout({ children }) {
-  return <div className="pt-18">{children}</div>;
+  const pathname = usePathname();
+  const isAdmin = pathname.startsWith("/admin"); // note: no slash at end
+
+  return (
+    <div className={isAdmin ? "pt-0" : "pt-18"}>
+      {children}
+    </div>
+  );
 }

@@ -58,9 +58,6 @@
 //   }
 // }
 
-
-
-
 import { connectDb } from "@/lib/connectDb";
 import responseHelper from "@/lib/responseHelper";
 import Product from "@/models/Product";
@@ -73,10 +70,12 @@ export async function GET(req) {
   await connectDb();
 
   try {
+    console.log("Req", req);
     const url = new URL(req.url);
     const page = parseInt(url.searchParams.get("page")) || 1;
     const limit = parseInt(url.searchParams.get("limit")) || 10;
     const search = url.searchParams.get("search") || "";
+    const category = url.searchParams.get("category") || "";
     const categorySlug = url.searchParams.get("category") || "";
     const minPrice = url.searchParams.get("minPrice");
     const maxPrice = url.searchParams.get("maxPrice");
@@ -89,10 +88,18 @@ export async function GET(req) {
     }
 
     // Filter by category slug
+    // if (categorySlug) {
+    //   // Find category ObjectId by slug
+    //   const cat = await Category.findOne({ slug: categorySlug });
+    //   if (cat) query.category = cat._id; // ObjectId for Product.category
+    // }
+
     if (categorySlug) {
-      // Find category ObjectId by slug
+      console.log("Category:", categorySlug);
       const cat = await Category.findOne({ slug: categorySlug });
-      if (cat) query.category = cat._id; // ObjectId for Product.category
+      console.log("Category slug received1:", categorySlug);
+      console.log("Category found2:", cat);
+      if (cat) query.category = cat._id;
     }
 
     // Filter by price range
@@ -104,10 +111,12 @@ export async function GET(req) {
 
     // Fetch products with pagination, latest first
     const products = await Product.find(query)
-      .populate("category") // optional
+      .populate("category") // ✅ ab ye mongoose query pe lag raha hai
       .sort({ createdAt: -1 })
       .skip((page - 1) * limit)
       .limit(limit);
+
+    console.log("products=>>", products);
 
     return responseHelper.success(
       {
