@@ -217,10 +217,6 @@
 //   );
 // }
 
-
-
-
-
 import Slider from "@/components/frontend/Slider";
 import CategoriesSection from "@/components/frontend/CategoriesSection";
 import ProductsSection from "@/components/frontend/ProductsSection";
@@ -230,21 +226,23 @@ import Testimonials from "@/components/frontend/Testimonials";
 import Reviews from "@/components/frontend/Reviews";
 import BrandSlider from "@/components/frontend/BrandSlider";
 import NewsletterCTA from "@/components/frontend/NewsletterCTA";
+import BestSellers from "@/components/frontend/BestSellers";
 
 export default function HomePage() {
   return (
     <div>
       <Slider />
-
+      <BestSellers />
       {/* Categories Section */}
       <CategoriesSection limit={4} />
 
       {/* Products Section */}
-      <NewsletterCTA />
       <ProductsSection limit={8} />
       <BrandSlider />
       <Reviews />
-       <Footer />
+      <NewsletterCTA />
+
+      <Footer />
     </div>
   );
 }

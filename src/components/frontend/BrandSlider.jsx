@@ -17,7 +17,7 @@ export default function BrandSlider() {
   const scrollingBrands = [...brands, ...brands];
 
   return (
-    <div className="overflow-hidden py-8 bg-gray-100">
+    <div className="overflow-hidden py-4 bg-gray-50">
       <div className="flex gap-8 min-w-max animate-scroll">
         {scrollingBrands.map((brand, idx) => (
           <motion.div

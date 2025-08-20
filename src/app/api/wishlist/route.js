@@ -1,13 +1,20 @@
-import { connectDb } from '@/lib/connectDb';
-import responseHelper from '@/lib/responseHelper';
 import Wishlist from '@/models/Wishlist';
-import { auth } from '@/middlewares/auth';
+import Product from '@/models/Product';
 
 export async function GET(req) {
   await connectDb();
-  const user = await auth(req);
-  if (!user) return responseHelper.unauthorized();
 
-  const wishlist = await Wishlist.findOne({ user: user._id }).populate('products');
-  return responseHelper.ok(wishlist || { products: [] });
+  // Aggregate most wishlisted products
+  const mostWishlisted = await Wishlist.aggregate([
+    { $unwind: "$products" },
+    { $group: { _id: "$products", count: { $sum: 1 } } },
+    { $sort: { count: -1 } },
+    { $limit: 10 }
+  ]);
+
+  // Get full product details
+  const productIds = mostWishlisted.map(item => item._id);
+  const products = await Product.find({ _id: { $in: productIds } });
+
+  return responseHelper.ok(products);
 }
