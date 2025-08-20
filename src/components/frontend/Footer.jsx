@@ -7,10 +7,10 @@ import colors from "@/theme/colors";
 export default function Footer() {
   return (
     <footer
-      className="bg-gray-900 text-gray-300 pt-6"
+      className="bg-gray-900 text-gray-300 pt-6 mx-auto"
       style={{ backgroundColor: colors.primaryDark }}
     >
-      <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+      <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* About */}
         <div>
           <h3 className="text-base font-semibold text-white mb-2">About Us</h3>

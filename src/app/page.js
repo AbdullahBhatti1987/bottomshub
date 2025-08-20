@@ -228,6 +228,8 @@ import Footer from "@/components/frontend/Footer";
 import SubscriptionBox from "@/components/frontend/SubscriptionBox";
 import Testimonials from "@/components/frontend/Testimonials";
 import Reviews from "@/components/frontend/Reviews";
+import BrandSlider from "@/components/frontend/BrandSlider";
+import NewsletterCTA from "@/components/frontend/NewsletterCTA";
 
 export default function HomePage() {
   return (
@@ -238,8 +240,9 @@ export default function HomePage() {
       <CategoriesSection limit={4} />
 
       {/* Products Section */}
-      
+      <NewsletterCTA />
       <ProductsSection limit={8} />
+      <BrandSlider />
       <Reviews />
        <Footer />
     </div>
