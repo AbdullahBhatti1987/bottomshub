@@ -350,11 +350,12 @@ export default function ProductCard({
         {/* Add to Cart */}
         <button
           className="w-full mt-2 bg-black text-white text-xs py-1.5 rounded-md hover:bg-gray-900 transition"
-          onClick={(e) => {
-            e.stopPropagation();
-            e.preventDefault();
-            if (onAddToCart) onAddToCart();
-          }}
+          // onClick={(e) => {
+          //   e.stopPropagation();
+          //   e.preventDefault();
+          //   if (onAddToCart) onAddToCart();
+          // }}
+          onClick={onAddToCart}
         >
           Add to Cart
         </button>

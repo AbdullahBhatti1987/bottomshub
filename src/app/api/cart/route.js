@@ -1,4 +1,4 @@
-import connectDb from '@/lib/connectDb';
+import { connectDb } from '@/lib/connectDb';
 import { authenticateUser } from '@/middlewares/auth';
 import Cart from '@/models/Cart';
 import responseHelper from '@/lib/responseHelper';
