@@ -13,6 +13,8 @@ import { useToastContext } from "@/components/ui/ToastProvider";
 import ConfirmDeleteModal from "@/components/ui/ConfirmDeleteModal";
 import ReportDownloader from "@/components/ui/ReportDownload";
 import { TableSkeletonBody } from "@/components/ui/TableSkeletonBody";
+import Pagination from "@/components/ui/Pagination";
+
 
 export default function AdminProductsPage() {
   const [products, setProducts] = useState([]);
@@ -36,7 +38,7 @@ export default function AdminProductsPage() {
     try {
       const res = await axios.get(`${BASE_URL}/api/admin/products`);
       // console.log("res", res);
-      setProducts(res.data?.data || []);
+      setProducts(res?.data?.data || []);
     } catch (err) {
       console.error("Product fetch error:", err);
       addToast("Failed to fetch products", "error");
@@ -84,7 +86,7 @@ export default function AdminProductsPage() {
   // ✅ Add Product / Update Product
   const handleSubmit = async (formData) => {
     setLoading(true);
-    console.log("FormData", formData)
+    console.log("FormData", formData);
     try {
       // console.log("📤 Sending product data:", formData);
       if (selectedProduct) {
@@ -178,7 +180,7 @@ export default function AdminProductsPage() {
       <ProductTable
         products={filteredProducts}
         onRefresh={fetchProducts}
-         pageSize={limit}
+        pageSize={limit}
         loading={loading}
         currentPage={pageInfo.page}
         onEdit={(product) => {
@@ -193,7 +195,22 @@ export default function AdminProductsPage() {
         }}
         onDelete={handleDelete}
       />
+
       {loading && <TableSkeletonBody totalColumns={6} rows={5} />}
+
+      <Pagination
+        page={pageInfo.page}
+        pages={pageInfo.pages}
+        total={pageInfo.total}
+        limit={limit}
+        onLimitChange={(newLimit) => {
+          setLimit(newLimit);
+          setPageInfo((prev) => ({ ...prev, page: 1 }));
+        }}
+        onPageChange={(p) => {
+          setPageInfo((prev) => ({ ...prev, page: p }));
+        }}
+      />
 
       <ConfirmDeleteModal
         isOpen={deleteModalOpen}
