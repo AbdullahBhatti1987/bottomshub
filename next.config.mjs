@@ -1,4 +1,5 @@
 // next.config.mjs or next.config.js
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   experimental: {
@@ -17,7 +18,7 @@ const nextConfig = {
       },
     ],
   },
- allowedDevOrigins: ["http://localhost:3000", "http://192.168.100.72:3000"]
+//  allowedDevOrigins: ["http://localhost:3000", process.env.BASE_URL,]
 
 };
 

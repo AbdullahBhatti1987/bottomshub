@@ -76,3 +76,25 @@ const colors = {
 };
 
 export default colors;
+
+
+// const colors = {
+//   primary: "#e0ff4f",       // Brand primary color (blue)
+//   primaryHover: "#1565C0",  // Darker hover
+//   secondary: "#E3F2FD",     // Light background
+//   text: "#4A4A4A",          // Text color
+//   background: "#00272b",    // Page background
+//   iconPrimary: "#1E88E5",   // Icon main
+//   iconSecondary: "#9B9B9B", // Icon muted
+//   iconHover: "#1565C0",     // Icon hover
+//   white: "#e0ff4f",             // White
+//   ringPrimary: "#1E88E5",    // Focus ring color for inputs/buttons
+
+//   shineGradient:
+//     "linear-gradient(90deg, rgba(211,211,211,0.4) 0%, rgba(255,255,255,0.6) 50%, rgba(211,211,211,0.4) 100%)",
+
+//   badgeBg: "#1565C0",       
+//   badgeText: "#FFFFFF",   
+// };
+
+// export default colors;

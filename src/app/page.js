@@ -227,6 +227,7 @@ import Reviews from "@/components/frontend/Reviews";
 import BrandSlider from "@/components/frontend/BrandSlider";
 import NewsletterCTA from "@/components/frontend/NewsletterCTA";
 import BestSellers from "@/components/frontend/BestSellers";
+import ProductHighlight from "@/components/frontend/ProductHighlight";
 
 export default function HomePage() {
   return (
@@ -235,9 +236,9 @@ export default function HomePage() {
       <BestSellers />
       {/* Categories Section */}
       <CategoriesSection limit={4} />
-
       {/* Products Section */}
       <ProductsSection limit={8} />
+      <ProductHighlight />
       <BrandSlider />
       <Reviews />
       <NewsletterCTA />
