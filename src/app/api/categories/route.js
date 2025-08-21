@@ -18,7 +18,7 @@ export async function GET(req) {
     if (limit > 0) query = query.limit(limit);
 
     const categories = await query;
-    console.log("categories", categories)
+    // console.log("categories", categories)
     return responseHelper.success({ data: categories }, "Categories fetched");
   } catch (err) {
     console.error("GET Categories Error:", err);

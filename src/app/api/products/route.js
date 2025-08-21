@@ -70,7 +70,7 @@ export async function GET(req) {
   await connectDb();
 
   try {
-    console.log("Req", req);
+    // console.log("Req", req);
     const url = new URL(req.url);
     const page = parseInt(url.searchParams.get("page")) || 1;
     const limit = parseInt(url.searchParams.get("limit")) || 10;
@@ -95,10 +95,10 @@ export async function GET(req) {
     // }
 
     if (categorySlug) {
-      console.log("Category:", categorySlug);
+      // console.log("Category:", categorySlug);
       const cat = await Category.findOne({ slug: categorySlug });
-      console.log("Category slug received1:", categorySlug);
-      console.log("Category found2:", cat);
+      // console.log("Category slug received1:", categorySlug);
+      // console.log("Category found2:", cat);
       if (cat) query.category = cat._id;
     }
 
@@ -116,7 +116,7 @@ export async function GET(req) {
       .skip((page - 1) * limit)
       .limit(limit);
 
-    console.log("products=>>", products);
+    // console.log("products=>>", products);
 
     return responseHelper.success(
       {

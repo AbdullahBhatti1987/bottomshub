@@ -66,6 +66,7 @@ const colors = {
   iconSecondary: "#9B9B9B", // Icon muted
   iconHover: "#1565C0",     // Icon hover
   white: "#fff",             // White
+  button: "#E3F2FD",             // White
   ringPrimary: "#1E88E5",    // Focus ring color for inputs/buttons
 
   shineGradient:

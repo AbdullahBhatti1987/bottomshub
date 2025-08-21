@@ -61,12 +61,12 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body suppressHydrationWarning={true}>
-        <HeaderWrapper />
           <ToastProvider>
+        <HeaderWrapper />
             <FrontendLayout isAdmin={isAdmin} >{children}</FrontendLayout>
-          </ToastProvider>
 
           <FooterWrapper />
+          </ToastProvider>
       </body>
     </html>
   );

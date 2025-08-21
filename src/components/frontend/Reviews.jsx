@@ -232,7 +232,7 @@ export default function Reviews() {
   const currentReviews = reviews.slice(current, current + perSlide);
 
   return (
-    <section className="bg-gradient-to-r from-gray-50 to-gray-100 py-16 overflow-hidden">
+    <section className=" py-16 overflow-hidden">
       <div className="max-w-5xl mx-auto text-center px-6">
         <h2 className="text-3xl font-bold mb-10">What Our Customers Say</h2>
 
