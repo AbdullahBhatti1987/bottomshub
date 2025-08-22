@@ -64,7 +64,6 @@ export default function OtpLoginModal({ user, setUser, isOpen, setIsOpen }) {
       if (!name) return addToast("Enter your name", "error");
       if (!mobile) return addToast("Enter your mobile number", "error");
     }
-
     try {
       setLoading(true);
       const res = await axios.post(`${BASE_URL}/api/auth/email/verify-otp`, {
@@ -73,7 +72,6 @@ export default function OtpLoginModal({ user, setUser, isOpen, setIsOpen }) {
         mobile: userExists ? undefined : mobile,
         otp,
       });
-
       const { user } = res.data;
       localStorage.setItem("bottomsHub_user", JSON.stringify(user));
       setUser(user);
@@ -88,26 +86,6 @@ export default function OtpLoginModal({ user, setUser, isOpen, setIsOpen }) {
     }
   };
 
-  const logout = async () => {
-    try {
-      const res = await axios.post(`${BASE_URL}/api/auth/email/logout`);
-
-      if (res.status === 200) {
-        localStorage.removeItem("bottomsHub_user");
-        setUser(null);
-        //   setDropdownOpen(false);
-        setIsOpen(false);
-        setMenuOpen(false);
-        addToast("Logout successful", "success");
-        router.push("/");
-      } else {
-        addToast("Logout failed", "error");
-      }
-    } catch (err) {
-      console.error("Logout error:", err);
-      addToast("Logout failed", "error");
-    }
-  };
 
   const handleClose = () => {
     setIsOpen(false);
@@ -116,36 +94,6 @@ export default function OtpLoginModal({ user, setUser, isOpen, setIsOpen }) {
   return (
     <>
       {/* User Icon + Dropdown */}
-      {user && (
-        <div className="relative" ref={menuRef}>
-          {/* Menu container clickable to toggle */}
-          <div
-            onClick={() => setMenuOpen((prev) => !prev)}
-            className="cursor-pointer"
-          >
-            <AnimatePresence>
-              {menuOpen && (
-                <motion.div
-                  initial={{ opacity: 0, y: -10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -10 }}
-                  className="absolute right-0 mt-2 w-48 bg-white shadow-xl rounded-lg p-3 z-50"
-                >
-                  <p className="text-sm font-medium text-gray-800 truncate px-2 mb-2">
-                    {user.email}
-                  </p>
-                  <button
-                    onClick={logout}
-                    className="w-full text-left px-3 py-2 text-sm rounded-md hover:bg-gray-100 transition-colors"
-                  >
-                    Logout
-                  </button>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
-        </div>
-      )}
 
       {/* OTP Modal */}
       <AnimatePresence>
@@ -240,7 +188,7 @@ export default function OtpLoginModal({ user, setUser, isOpen, setIsOpen }) {
                     }}
                     disabled={loading}
                   >
-                    {loading ? "Verifying..." : "Verify & Save"}
+                    {loading ? "Login..." : "Login"}
                   </button>
                 </div>
               )}
