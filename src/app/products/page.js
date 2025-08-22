@@ -74,53 +74,15 @@ export default function ProductsPage() {
   }, [search, category, priceRange, page]);
 
   return (
-    <div className="container max-w-7xl mx-auto px-4 py-4">
-      <h1 className="text-3xl w-full  font-bold mb-6 text-center">
-        All Products
-      </h1>
+    <div className="container w-full mx-auto px-4 py-4">
+      <div className="flex flex-col md:flex-row gap-6 ">
+       
 
-      {/* <div className="flex flex-col md:flex-row gap-6">
-        <div className="md:w-1/4 flex flex-col sticky gap-4 top-24 bg-white">
-          <SearchBar search={localSearch} setSearch={setLocalSearch} />
-          <CategoryFilter
-            category={localCategory}
-            setCategory={setLocalCategory}
-          />
-          <PriceRangeSlider
-            priceRange={localPriceRange}
-            setPriceRange={setLocalPriceRange} // update local only
-          />
-
-          <div className="flex gap-2 mt-4">
-            <button
-              onClick={applyFilters}
-              style={{ backgroundColor: colors.primary, color: colors.white }}
-              className="flex-1 px-4 py-2 rounded-lg hover:opacity-90 transition"
-            >
-              Apply Filters
-            </button>
-            <button
-              onClick={resetFilters}
-              className="flex-1 px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition"
-            >
-              Reset
-            </button>
-          </div>
-        </div>
-
-        <div className="md:w-3/4 flex flex-col gap-6 overflow-y-scroll bg-scroll">
-          <ProductsList products={products} loading={loading} />
-          <Pagination
-            page={page}
-            totalPages={totalPages}
-            onPageChange={setPage}
-          />
-        </div>
-      </div> */}
-
-      <div className="flex flex-col md:flex-row gap-6">
-        {/* Sidebar */}
-        <div className="md:w-1/4 flex flex-col sticky top-36 self-start bg-white gap-4">
+        <div
+          className="md:w-1/5 w-full  flex flex-col  gap-4 
+  md:sticky md:top-26 md:self-start"
+        >
+          <h1 className="text-3xl font-bold w-full sm:w-auto">Filter</h1>
           <SearchBar search={localSearch} setSearch={setLocalSearch} />
           <CategoryFilter
             category={localCategory}
@@ -148,7 +110,7 @@ export default function ProductsPage() {
         </div>
 
         {/* Products list */}
-        <div className="md:w-3/4 flex flex-col gap-6">
+        <div className="md:w-4/5 flex flex-col gap-6">
           <ProductsList products={products} loading={loading} />
           <Pagination
             page={page}

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { useParams } from "next/navigation";
 import Image from "next/image";
@@ -26,11 +26,12 @@ import {
   FaEnvelope,
 } from "react-icons/fa";
 import { getSocials } from "@/lib/constants/socialMedia";
+import SlugSkeleton from "@/components/frontend/SlugSkeleton";
+import { WishlistContext } from "@/context/WishlistContext";
 
 export default function ProductDetailPage() {
   const params = useParams();
   const { slug } = params;
-  const [wishlist, setWishlist] = useState(false);
   const [shareOpen, setShareOpen] = useState(false);
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -41,6 +42,9 @@ export default function ProductDetailPage() {
   const [position, setPosition] = useState({ x: 50, y: 50 });
   const url = typeof window !== "undefined" ? window.location.href : "";
 
+  const { wishlist, addToWishlist, removeFromWishlist } =
+    useContext(WishlistContext);
+
   const handleMouseMove = (e) => {
     const { left, top, width, height } =
       e.currentTarget.getBoundingClientRect();
@@ -48,60 +52,6 @@ export default function ProductDetailPage() {
     const y = ((e.pageY - top) / height) * 100;
     setPosition({ x, y });
   };
-
-  const socials = [
-    {
-      name: "WhatsApp",
-      icon: <IoLogoWhatsapp size={40} color="#25D366" />,
-      link: `https://wa.me/?text=${encodeURIComponent(url)}`,
-    },
-    {
-      name: "Facebook",
-      icon: <IoLogoFacebook size={40} color="#1877F2" />,
-      link: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
-        url
-      )}`,
-    },
-    {
-      name: "Twitter",
-      icon: <IoLogoTwitter size={40} color="#1DA1F2" />,
-      link: `https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}`,
-    },
-    {
-      name: "Instagram",
-      icon: <IoLogoInstagram size={40} color="#E1306C" />,
-      link: `https://www.instagram.com/`,
-    },
-    {
-      name: "TikTok",
-      icon: <FaTiktok size={40} color="#010101" />,
-      link: `https://www.tiktok.com/`,
-    },
-    {
-      name: "Snapchat",
-      icon: <FaSnapchatGhost size={40} color="#FFFC00" />,
-      link: `https://www.snapchat.com/`,
-    },
-    {
-      name: "LinkedIn",
-      icon: <FaLinkedin size={40} color="#0A66C2" />,
-      link: `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(
-        url
-      )}`,
-    },
-    {
-      name: "Pinterest",
-      icon: <FaPinterest size={40} color="#E60023" />,
-      link: `https://pinterest.com/pin/create/button/?url=${encodeURIComponent(
-        url
-      )}`,
-    },
-    {
-      name: "Email",
-      icon: <FaEnvelope size={40} color="#EA4335" />,
-      link: `mailto:?subject=Check this out&body=${encodeURIComponent(url)}`,
-    },
-  ];
 
   const fetchProductBySlug = async () => {
     setLoading(true);
@@ -125,70 +75,19 @@ export default function ProductDetailPage() {
     // TODO: integrate with cart API
   };
 
-  const handleWishlistToggle = () => {
-    setWishlist((prev) => !prev);
-    console.log("Wishlist Toggled:", !wishlist, "Product:", product?._id);
-    // TODO: integrate with wishlist API
-  };
-
   const handleBuyNow = () => {
     console.log("Buy Now:", product?._id, quantity, selectedSize);
     // TODO: integrate with buy now logic / checkout
   };
 
+  const btnBase = `
+  flex items-center justify-center rounded-lg font-semibold transition
+  text-sm sm:text-base lg:text-lg
+  h-10 sm:h-11 lg:h-12
+`;
+
   if (loading || !product) {
-    return (
-      <div className="py-12 container max-w-7xl mx-auto px-4">
-     <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-10 max-h-[420px] animate-pulse px-4 md:px-6 lg:px-0">
-  {/* Left Skeleton */}
-  <div className="grid grid-cols-[50px_1fr] sm:grid-cols-[60px_1fr] gap-3 sm:gap-4">
-    {/* Thumbnails Skeleton */}
-    <div className="flex flex-col gap-2 sm:gap-3">
-      <div className="w-[50px] sm:w-[60px] h-[50px] sm:h-[60px] rounded-lg bg-gray-200" />
-      {[...Array(4)].map((_, idx) => (
-        <div
-          key={idx}
-          className="w-[50px] sm:w-[60px] h-[50px] sm:h-[60px] rounded-lg bg-gray-300"
-        />
-      ))}
-    </div>
-
-    {/* Main Image Skeleton */}
-    <div className="w-full bg-gray-200 rounded-xl aspect-square" />
-  </div>
-
-  {/* Right Skeleton */}
-  <div className="flex flex-col gap-4">
-    <div className="h-8 bg-gray-200 rounded w-3/4" />
-    <div className="h-4 bg-gray-200 rounded w-full" />
-    <div className="flex gap-4 mt-4">
-      <div className="h-6 bg-gray-200 rounded w-24" />
-      <div className="h-6 bg-gray-200 rounded w-16" />
-    </div>
-    <div className="h-4 bg-gray-200 rounded w-1/2 mt-4" />
-    <div className="flex gap-2 mt-4">
-      {[...Array(4)].map((_, idx) => (
-        <div key={idx} className="flex-1 h-12 bg-gray-200 rounded-lg" />
-      ))}
-    </div>
-    <div className="flex items-center gap-3 mt-6">
-      <div className="w-12 h-12 bg-gray-200 rounded-lg" />
-      <div className="w-16 h-12 bg-gray-200 rounded-lg" />
-      <div className="w-12 h-12 bg-gray-200 rounded-lg" />
-    </div>
-    <div className="flex gap-3 mt-3">
-      <div className="flex-1 h-12 bg-gray-200 rounded-lg" />
-      <div className="w-12 h-12 bg-gray-200 rounded-lg" />
-      <div className="w-12 h-12 bg-gray-200 rounded-lg" />
-    </div>
-    <div className="flex gap-3 mt-3">
-      <div className="flex-1 h-12 bg-gray-200 rounded-lg" />
-    </div>
-  </div>
-</div>
-
-      </div>
-    );
+    return <SlugSkeleton />;
   }
 
   return (
@@ -284,14 +183,25 @@ export default function ProductDetailPage() {
           </div>
 
           {/* Sizes */}
+          {/* Sizes */}
           {product?.sizes?.some((s) => s.quantity > 0) && (
-            <div className="flex flex-wrap gap-2 mt-2">
+            <div className="flex flex-wrap gap-2 mt-2 ">
               {product.sizes
                 .filter((s) => s.quantity > 0)
                 .map((s, idx) => {
                   const isSelected = selectedSize === s.size;
+
+                  // ✅ Size ranges mapping
+                  const sizeRanges = {
+                    small: "24–28",
+                    medium: "26–30",
+                    large: "28–30",
+                    xl: "30–34",
+                    xxl: "32–36",
+                  };
+
                   return (
-                    <span
+                    <div
                       key={idx}
                       onClick={() => setSelectedSize(s.size)}
                       style={
@@ -299,14 +209,30 @@ export default function ProductDetailPage() {
                           ? {
                               backgroundColor: colors.primary,
                               color: "white",
+                              fontWeight: "semebold",
                               borderColor: colors.primary,
                             }
                           : {}
                       }
-                      className={`uppercase flex items-center justify-center rounded-lg bg-gray-100/50 border border-gray-400/40 shadow-md cursor-pointer px-3 py-2 text-sm sm:text-base`}
+                      className="flex flex-col  items-center justify-center h-12 w-1/5 uppercase rounded-lg bg-gray-100/50 border border-gray-400/40 shadow-md cursor-pointer px-3 py-2 text-xs sm:text-sm"
                     >
-                      {s.size}
-                    </span>
+                      <span>{s.size}</span>
+                      <span
+                        className="text-[12px] font-semibold text-gray-400"
+                        style={
+                          isSelected
+                            ? {
+                                backgroundColor: colors.primary,
+                                color: "white",
+                                fontWeight: "semebold",
+                                borderColor: colors.primary,
+                              }
+                            : {}
+                        }
+                      >
+                        {sizeRanges[s.size?.toLowerCase()] || ""}
+                      </span>
+                    </div>
                   );
                 })}
             </div>
@@ -316,16 +242,16 @@ export default function ProductDetailPage() {
           <div className="flex items-center gap-2 mt-3 mb-2">
             <button
               onClick={() => setQuantity((prev) => (prev > 1 ? prev - 1 : 1))}
-              className="w-10 h-10 rounded-lg bg-gray-100/50 border border-gray-400/40 flex items-center justify-center"
+              className="w-12 h-12 rounded-lg bg-gray-100/50 border border-gray-400/40 flex items-center justify-center"
             >
               -
             </button>
-            <span className="w-12 h-10 flex items-center justify-center border rounded-lg">
+            <span className="w-12 h-12 flex items-center justify-center border rounded-lg">
               {quantity}
             </span>
             <button
               onClick={() => setQuantity((prev) => prev + 1)}
-              className="w-10 h-10 rounded-lg bg-gray-100/50 border border-gray-400/40 flex items-center justify-center"
+              className="w-12 h-12 rounded-lg bg-gray-100/50 border border-gray-400/40 flex items-center justify-center"
             >
               +
             </button>
@@ -343,10 +269,10 @@ export default function ProductDetailPage() {
                 onClick={handleAddToCart}
                 className="
       flex-1
-      px-3 py-1.5 text-sm
-      sm:px-4 sm:py-2 sm:text-sm
-      md:px-5 md:py-2.5 md:text-base
-      lg:px-6 lg:py-3 lg:text-lg
+      px-3 py-1 text-sm
+      sm:px-4 sm:py-1.5 sm:text-sm
+      md:px-5 md:py-2.0 md:text-base
+      lg:px-6 lg:py-2.5 lg:text-lg
       rounded-lg font-semibold transition hover:opacity-90
     "
                 style={{
@@ -357,17 +283,22 @@ export default function ProductDetailPage() {
                 Add to Cart
               </button>
               <button
-                onClick={handleWishlistToggle}
-                className="  w-10 h-10
-        lg:w-12 lg:h-12 rounded-lg bg-gray-100/50 border border-gray-400/40 flex items-center justify-center"
+                onClick={() => {
+                  if (wishlist.includes(product._id)) {
+                    removeFromWishlist(product._id);
+                  } else {
+                    addToWishlist(product._id);
+                  }
+                }}
+                className="w-12 h-12 lg:w-12 lg:h-12 rounded-lg bg-gray-100/50 border border-gray-400/40 flex items-center justify-center"
               >
-                {wishlist ? (
+                {wishlist.includes(product._id) ? (
                   <IoIosHeart
                     className="h-6 w-6"
                     style={{ color: colors.primary }}
                   />
                 ) : (
-                  <IoHeartOutline className="h-6 w-6  text-gray-500" />
+                  <IoHeartOutline className="h-6 w-6 text-gray-500" />
                 )}
               </button>
 
@@ -376,7 +307,7 @@ export default function ProductDetailPage() {
                 <button
                   onClick={() => setShareOpen((prev) => !prev)}
                   className="
-        w-10 h-10
+        w-12 h-12
         lg:w-12 lg:h-12
         flex items-center justify-center rounded-lg
         bg-gray-100/50 border border-gray-400/40
@@ -411,22 +342,20 @@ export default function ProductDetailPage() {
                             </span>
                           </Link>
                         ))} */}
-                        {getSocials(url).map(
-                          (s, idx) => (
-                            <Link
-                              key={idx}
-                              href={s.link}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="flex flex-col items-center justify-center w-16 h-16 rounded-lg hover:bg-gray-300 shadow transition"
-                            >
-                              {s.icon}
-                              <span className="text-[12px] mt-1 font-medium">
-                                {s.name}
-                              </span>
-                            </Link>
-                          )
-                        )}
+                        {getSocials(url).map((s, idx) => (
+                          <Link
+                            key={idx}
+                            href={s.link}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex flex-col items-center justify-center w-16 h-16 rounded-lg hover:bg-gray-300 shadow transition"
+                          >
+                            {s.icon}
+                            <span className="text-[12px] mt-1 font-medium">
+                              {s.name}
+                            </span>
+                          </Link>
+                        ))}
                       </div>
                     </div>
                   </div>

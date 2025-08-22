@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useContext } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { Menu, X } from "lucide-react";
 import colors from "@/theme/colors";
@@ -12,6 +12,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import axios from "axios";
 import { BASE_URL } from "@/lib/axios";
 import { useToastContext } from "../ui/ToastProvider";
+import { WishlistContext } from "@/context/WishlistContext"; 
 
 // NavButton
 function NavButton({ label, href, onClick }) {
@@ -46,16 +47,16 @@ const iconConfig = {
   heart: {
     outline: AiOutlineHeart,
     filled: AiFillHeart,
-    size: 24,
+    size: 28,
     href: "/wishlist",
   },
   cart: {
     outline: FiShoppingCart,
     filled: FaShoppingCart,
-    size: 24,
+    size: 28,
     href: "/cart",
   },
-  user: { outline: FaRegUser, filled: FaUser, size: 22 },
+  user: { outline: FaRegUser, filled: FaUser, size: 24 },
 };
 
 function IconButton({ type, count = 0, isLoggedIn = false, onClick }) {
@@ -64,11 +65,7 @@ function IconButton({ type, count = 0, isLoggedIn = false, onClick }) {
 
   const { outline, filled, size } = iconConfig[type];
   const IconComponent =
-    type === "user" && isLoggedIn
-      ? filled
-      : hover
-      ? filled
-      : outline;
+    type === "user" && isLoggedIn ? filled : hover ? filled : outline;
 
   const handleClick = () => {
     setActive(true);
@@ -77,29 +74,35 @@ function IconButton({ type, count = 0, isLoggedIn = false, onClick }) {
   };
 
   return (
-    <div
-      className={`relative flex items-center justify-center cursor-pointer transition-transform duration-150 ${
-        active ? "scale-90" : "scale-100"
-      }`}
-      style={{ width: size, height: size }}
-      onMouseEnter={() => setHover(true)}
-      onMouseLeave={() => setHover(false)}
-      onClick={handleClick}
+<div
+  className={`relative flex items-center justify-center cursor-pointer transition-transform duration-150 ${
+    active ? "scale-90" : "scale-100"
+  }`}
+  style={{ width: size, height: size }}
+  onMouseEnter={() => setHover(true)}
+  onMouseLeave={() => setHover(false)}
+  onClick={handleClick}
+>
+  <IconComponent
+    className="w-full h-full transition-colors duration-200" // icon color smoothly change
+    style={{ color: colors.primary }}
+  />
+
+  {count > 0 && (
+    <span
+      className="absolute -top-2 -right-2 flex items-center justify-center min-w-[18px] h-5 text-[12px] px-2 rounded-full font-bold shadow-md transition-all duration-200 ease-in-out"
+      style={{
+        backgroundColor: colors.badgeBg || "#EF4444",
+        color: colors.badgeText || "#fff",
+      }}
     >
-      <IconComponent
-        className="w-full h-full"
-        style={{ color: colors.primary }}
-      />
-      {count > 0 && (
-        <span
-          className="absolute -top-1 -right-1 text-[10px] px-1 rounded-full font-semibold"
-          style={{ backgroundColor: colors.badgeBg, color: colors.badgeText }}
-        >
-          {count}
-        </span>
-      )}
-    </div>
-  );
+      {count}
+    </span>
+  )}
+</div>
+
+
+  )
 }
 
 // Header
@@ -109,6 +112,11 @@ export default function Header({ className }) {
   const [menuOpen, setMenuOpen] = useState(false); // user menu dropdown
   const dropdownRef = useRef(null);
   const menuRef = useRef(null);
+   const { wishlist } = useContext(WishlistContext);
+
+const wishlistCount = wishlist.length;
+
+
 
   const router = useRouter();
   const { addToast } = useToastContext();
@@ -116,8 +124,21 @@ export default function Header({ className }) {
   const [otpModalOpen, setOtpModalOpen] = useState(false);
   const [user, setUser] = useState(null);
 
-  const wishlistCount = 0;
-  const cartCount = 0;
+
+  // const [wishlistCount, setWishlistCount] = useState(0);
+  // useEffect(() => {
+  //   const storedWishlist = JSON.parse(localStorage.getItem("bottomshub_wishlist")) || [];
+  //   setWishlistCount(storedWishlist.length);
+  // }, []);
+
+
+  const [cartCount, setCartCount] = useState(0);
+  useEffect(() => {
+    const storedWishlist = JSON.parse(localStorage.getItem("bottomshub_cartItems")) || [];
+    setCartCount(storedWishlist.length);
+  }, []);
+
+
 
   const menuItems = [
     { label: "Home", href: "/" },
@@ -230,7 +251,11 @@ export default function Header({ className }) {
 
         {/* Desktop Icons */}
         <div className="hidden md:flex items-center space-x-3">
-          <IconButton type="heart" count={wishlistCount} />
+          <IconButton
+            type="heart"
+            count={wishlistCount}
+            onClick={() => router.push("/wishlist")}
+          />
           <IconButton type="cart" count={cartCount} />
 
           {/* User icon + dropdown */}
@@ -269,7 +294,11 @@ export default function Header({ className }) {
 
         {/* Mobile Menu + Icons */}
         <div className="flex items-center space-x-3 md:hidden">
-          <IconButton type="heart" count={wishlistCount} />
+          <IconButton
+            type="heart"
+            count={wishlistCount}
+            onClick={() => router.push("/wishlist")}
+          />
           <IconButton type="cart" count={cartCount} />
           <IconButton
             type="user"

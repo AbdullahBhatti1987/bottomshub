@@ -120,7 +120,7 @@ export default function OtpLoginModal({ user, setUser, isOpen, setIsOpen }) {
 
               <h2 className="text-xl font-bold mb-4 text-center">
                 {step === "send" && "Login with Email OTP"}
-                {step === "verify" && "Enter OTP & Info"}
+                {step === "verify" && "Enter OTP"}
               </h2>
 
               {step === "send" && (
@@ -152,11 +152,11 @@ export default function OtpLoginModal({ user, setUser, isOpen, setIsOpen }) {
               {step === "verify" && (
                 <div className="flex flex-col gap-3">
                   <input
-                    type="text"
+                    type="number"
                     placeholder="Enter OTP"
                     value={otp}
                     onChange={(e) => setOtp(e.target.value)}
-                    className="w-full p-2 border rounded"
+                    className="w-full p-2 border rounded text-center"
                   />
                   {!userExists && (
                     <>

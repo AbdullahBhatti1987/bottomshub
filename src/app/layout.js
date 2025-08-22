@@ -43,6 +43,7 @@ import { ToastProvider } from "@/components/ui/ToastProvider";
 import HeaderWrapper from "@/components/frontend/HeaderWrapper";
 import FrontendLayout from "@/components/frontend/FrontendLayout";
 import FooterWrapper from "@/components/frontend/FooterWrapper";
+import { WishlistProvider } from "@/context/WishlistContext";
 
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
 const geistMono = Geist_Mono({ variable: "--font-geist-mono" });
@@ -61,12 +62,14 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body suppressHydrationWarning={true}>
-          <ToastProvider>
-        <HeaderWrapper />
-            <FrontendLayout isAdmin={isAdmin} >{children}</FrontendLayout>
+        <ToastProvider>
+          <WishlistProvider>
+            <HeaderWrapper />
+            <FrontendLayout isAdmin={isAdmin}>{children}</FrontendLayout>
 
-          <FooterWrapper />
-          </ToastProvider>
+            <FooterWrapper />
+          </WishlistProvider>
+        </ToastProvider>
       </body>
     </html>
   );
