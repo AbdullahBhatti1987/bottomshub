@@ -275,6 +275,7 @@ import { AiOutlineHeart, AiFillHeart } from "react-icons/ai";
 import { FiShoppingCart } from "react-icons/fi";
 import { FaShoppingCart, FaUser, FaRegUser } from "react-icons/fa";
 import OtpLoginModal from "../auth/OtpLoginModal";
+import { motion } from "framer-motion";
 
 // NavButton
 function NavButton({ label, href, onClick }) {
@@ -388,16 +389,14 @@ export default function Header({ className }) {
   ];
 
   // persist login state
-useEffect(() => {
-  const user_token = localStorage.getItem("bottomsHub_user");
-  if (user_token) {
-    const user = JSON.parse(user_token); // <-- JSON.parse
-    setUser(user);
-    console.log(user)
-  }
-}, []);
-
-
+  useEffect(() => {
+    const user_token = localStorage.getItem("bottomsHub_user");
+    if (user_token) {
+      const user = JSON.parse(user_token); // <-- JSON.parse
+      setUser(user);
+      console.log(user);
+    }
+  }, []);
 
   useEffect(() => {
     function handleClickOutside(event) {
@@ -438,13 +437,13 @@ useEffect(() => {
 
   return (
     <header
-      className={`relative shadow-md rounded-2xl ${className}`}
+      className={`relative w-full ${className}`}
       style={{ backgroundColor: colors.background }}
     >
-      <div className="container w-full md:w-[90%] lg:w-[85%] mx-auto px-4 flex items-center justify-between py-4">
+      <div className="container w-full mx-auto flex items-center justify-between px-2">
         {/* Logo */}
         <div
-          className="font-bold font-sans text-2xl sm:text-3xl md:text-3xl lg:text-4xl"
+          className="font-bold font-sans text-lg  md:text-xl lg:text-2xl"
           style={{ color: colors.primary }}
         >
           BottomsHub
@@ -560,17 +559,22 @@ useEffect(() => {
       )}
 
       {/* Mobile Menu */}
+      {/* Mobile Menu */}
       <div
-        className={`md:hidden shadow-md px-6 overflow-hidden transition-all duration-300 ${
+        className={`md:hidden shadow-md px-6 overflow-hidden transition-all duration-300 absolute top-full left-0 w-full ${
           mobileOpen ? "max-h-[80vh] py-2" : "max-h-0 py-0"
         }`}
         style={{ backgroundColor: colors.background }}
       >
         {menuItems.map((item) => (
           <div key={item.label} className="w-full">
-            <button
+            <motion.button
+              key={item.label}
               style={{ color: colors.text }}
               className="block w-full text-left py-2 text-lg font-sans hover:underline transition"
+              whileTap={{ scale: 0.8 }} // chhoti si press animation
+              whileHover={{ scale: 1.2 }} // hover par thoda pop
+              transition={{ type: "spring", stiffness: 300, damping: 15 }}
               onClick={() => {
                 if (item.hasDropdown) {
                   setDropdownOpen((prev) => !prev);
@@ -582,7 +586,7 @@ useEffect(() => {
               }}
             >
               {item.label}
-            </button>
+            </motion.button>
 
             {/* Mobile Dropdown for Categories */}
             {item.hasDropdown && dropdownOpen && (
