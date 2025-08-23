@@ -39,9 +39,7 @@ export default function WishlistPage() {
   const fetchProducts = async () => {
     try {
       setLoading(true);
-      const res = await axios.get(
-        `${BASE_URL}/api/products?ids=${cart.join(",")}`
-      );
+      const res = await axios.get(`${BASE_URL}/api/products?ids=${cart.join(",")}`);
       setProducts(res.data.data);
     } catch (err) {
       console.error("Failed to fetch cart products:", err);
@@ -57,7 +55,7 @@ export default function WishlistPage() {
 
   return (
     <div className="p-6 container mx-auto">
-      <h1 className="text-3xl font-bold mb-6">My Wishlist</h1>
+      <h1 className="text-3xl font-bold mb-6">My Cart</h1>
 
       {loading ? (
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">

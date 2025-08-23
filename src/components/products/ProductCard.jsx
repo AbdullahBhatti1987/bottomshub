@@ -24,8 +24,8 @@ export default function ProductCard({
   shortDescription,
   onAddToCart,
   onWishlist,
+  disableAddToCart = false, // new prop
 }) {
-  // local state for like/unlike
   const [isWishlisted, setIsWishlisted] = useState(false);
 
   return (
@@ -40,8 +40,8 @@ export default function ProductCard({
                 : "/images/placeholder.png"
             }
             alt={safeValue(name)}
-            fill // or keep width/height if not using fill
-            sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" // <-- add this
+            fill
+            sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
             className="object-cover w-full h-full transition-transform duration-500 group-hover:scale-105"
           />
 
@@ -49,10 +49,7 @@ export default function ProductCard({
           {discount && (
             <span
               className="absolute top-2 left-2 text-[10px] font-bold px-2 py-0.5 rounded-md shadow"
-              style={{
-                backgroundColor: colors.primary,
-                color: colors.white,
-              }}
+              style={{ backgroundColor: colors.primary, color: colors.white }}
             >
               {discount.type === "percentage"
                 ? `${discount.value}% OFF`
@@ -66,7 +63,7 @@ export default function ProductCard({
         </div>
       </Link>
 
-      {/* Wishlist Button (Independent - No Route Change) */}
+      {/* Wishlist Button */}
       <button
         className="absolute top-2 right-2 bg-white hover:bg-gray-100 p-1.5 rounded-full inset-shadow-md transition"
         aria-label="Add to wishlist"
@@ -86,7 +83,6 @@ export default function ProductCard({
 
       {/* Info Section */}
       <div className="p-3">
-        {/* Product Name (Link) */}
         <Link href={`/products/${slug}`}>
           <h3
             className="font-semibold text-sm text-gray-800 truncate group-hover:text-primary transition"
@@ -96,12 +92,10 @@ export default function ProductCard({
           </h3>
         </Link>
 
-        {/* Category */}
         <p className="text-[11px] font-semibold uppercase text-gray-500 tracking-wide mb-1">
           {safeValue(category) || "New Arrival"}
         </p>
 
-        {/* Short Description */}
         <p
           className="text-[11px] text-gray-500 tracking-wide mb-2 truncate"
           title={safeValue(shortDescription)}
@@ -109,11 +103,8 @@ export default function ProductCard({
           {safeValue(shortDescription)}
         </p>
 
-        {/* Price */}
         <div className="flex items-center gap-2 mt-1">
-          <p className="font-bold text-primary text-sm">
-            Rs.{safeValue(price)}
-          </p>
+          <p className="font-bold text-primary text-sm">Rs.{safeValue(price)}</p>
           {originalPrice && (
             <p className="line-through text-xs text-gray-400">
               Rs.{safeValue(originalPrice)}
@@ -123,8 +114,13 @@ export default function ProductCard({
 
         {/* Add to Cart */}
         <button
-          className="w-full mt-2 bg-black text-white text-sm md:text-base lg:text-md py-1.5 md:py-2 rounded-md hover:bg-gray-900 transition"
+          className={`w-full mt-2 text-sm md:text-base lg:text-md py-1.5 md:py-2 rounded-md transition ${
+            disableAddToCart
+              ? "bg-gray-400 text-gray-200 cursor-not-allowed"
+              : "bg-black text-white hover:bg-gray-900"
+          }`}
           onClick={onAddToCart}
+          disabled={disableAddToCart}
         >
           Add to Cart
         </button>

@@ -137,6 +137,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { ListFilter, Star, TrendingUp } from "lucide-react";
 import RecentViewedProducts from "@/components/products/RecentViewedProducts";
+import { RecentViewedContext } from "@/context/RecentViewedContext";
+import { WishlistContext } from "@/context/WishlistContext";
 
 export default function ProductsPage() {
   const [products, setProducts] = useState([]);
@@ -145,16 +147,20 @@ export default function ProductsPage() {
   const [totalPages, setTotalPages] = useState(1);
   const [topSellingProduct, setTopSellingProduct] = useState(null);
   const [loadingTopProduct, setLoadingTopProduct] = useState(false);
-  const [product, setProduct] = useState(null);
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("");
   const [priceRange, setPriceRange] = useState({ min: "", max: "" });
-
+const { addToRecent } = useContext(RecentViewedContext);
   const [localSearch, setLocalSearch] = useState(search);
   const [localCategory, setLocalCategory] = useState(category);
   const [localPriceRange, setLocalPriceRange] = useState(priceRange);
+  const { addToWishlist } = useContext(WishlistContext);
 
   const limit = 12;
+
+  const handleAddToCart = () => {
+    addToCart({ _id: product._id });
+  };
 
   const fetchProducts = useCallback(async () => {
     setLoading(true);

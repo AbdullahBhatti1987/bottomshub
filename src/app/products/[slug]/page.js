@@ -64,7 +64,7 @@ export default function ProductDetailPage() {
   const { wishlist, addToWishlist, removeFromWishlist } =
     useContext(WishlistContext);
 
-  const { cart, addToCart, removeFromCart, updateQuantity } =
+  const { cart, addToCart} =
     useContext(CartContext);
 
       const { addToRecent } = useContext(RecentViewedContext);
