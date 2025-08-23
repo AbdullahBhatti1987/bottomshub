@@ -46,12 +46,12 @@ export default function ProductsList({ products, loading, userId }) {
   return (
     <>
       {/* 🔘 View & Sort Controls */}
-      <div className="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4">
+      <div className="flex flex-col sm:flex-row justify-between items-center  gap-4">
         <h1 className="text-3xl font-bold text-center w-full sm:w-auto">
           All Products
         </h1>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 ">
           {/* Toggle Buttons */}
           <button
             onClick={() => setView("grid")}

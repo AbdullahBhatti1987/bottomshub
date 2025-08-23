@@ -45,9 +45,12 @@ function NavButton({ label, href, onClick }) {
 
 // IconButton
 const iconConfig = {
-  heart: { outline: AiOutlineHeart, filled: AiFillHeart, size: 28 },
-  cart: { outline: FiShoppingCart, filled: FaShoppingCart, size: 28 },
-  user: { outline: FaRegUser, filled: FaUser, size: 24 },
+  // heart: { outline: AiOutlineHeart, filled: AiFillHeart, size: 28 },
+  // cart: { outline: FiShoppingCart, filled: FaShoppingCart, size: 28 },
+  // user: { outline: FaRegUser, filled: FaUser, size: 24 },
+  heart: { outline: AiOutlineHeart, filled: AiOutlineHeart, size: 28 },
+  cart: { outline: FiShoppingCart, filled: FiShoppingCart, size: 28 },
+  user: { outline: FaRegUser, filled: FaRegUser, size: 24 },
 };
 
 function IconButton({ type, count = 0, isLoggedIn = false, onClick }) {
@@ -82,7 +85,7 @@ function IconButton({ type, count = 0, isLoggedIn = false, onClick }) {
       />
       {count > 0 && type !== "user" && (
         <span
-          className="absolute -top-2 -right-2 flex items-center justify-center min-w-[18px] h-5 text-[12px] px-2 rounded-full font-bold shadow-md transition-all duration-200 ease-in-out"
+          className="absolute -top-2 -right-2 flex items-center justify-center min-w-[12px] h-5 text-[12px] p-1.5 rounded-full font-bold shadow-md transition-all duration-200 ease-in-out"
           style={{
             backgroundColor: colors.badgeBg || "#EF4444",
             color: colors.badgeText || "#fff",
