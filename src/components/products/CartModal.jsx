@@ -18,7 +18,7 @@ export default function CartModal({ product, onClose }) {
 
   const addToCart = async () => {
     // 1️⃣ Check token in local storage
-    const token = localStorage.getItem("BottomsHub_userToken");
+    const token = localStorage.getItem("bottomsHub_user");
     if (!token) {
       addToast("Kindly login first", "error");
       return;

@@ -10,7 +10,7 @@ import colors from "@/theme/colors";
 import Link from "next/link";
 import { IoIosHeart } from "react-icons/io";
 import { ZoomIn } from "lucide-react";
-import { useToastContext } from "@/components/ui/ToastProvider"; 
+import { useToastContext } from "@/components/ui/ToastProvider";
 
 import {
   IoShareSocialOutline,
@@ -76,24 +76,9 @@ export default function ProductDetailPage() {
   }, [slug]);
 
   // --- Functions ---
-const handleAddToCart = () => {
-  if (!selectedSize) {
-    addToast("Please select a size before adding to cart.", "error");
-    return;
-  }
-
-  const existingItem = cart.find(
-    (item) => item._id === product._id && item.size === selectedSize
-  );
-
-  if (existingItem) {
-    updateQuantity(product._id, existingItem.quantity + quantity, selectedSize);
-  } else {
-    addToCart({ _id: product._id }, selectedSize, quantity);
-  }
-};
-
-
+  const handleAddToCart = () => {
+    addToCart({ _id: product._id });
+  };
 
   const handleBuyNow = () => {
     console.log("Buy Now:", product?._id, quantity, selectedSize);
@@ -284,33 +269,35 @@ const handleAddToCart = () => {
             <div className="flex gap-2">
               {/* Heart */}
               {/* Add to Cart */}
-           <button
-  onClick={handleAddToCart} // ✅ Use the function that checks size
-  className="
-    flex-1
-    px-3 py-1 text-sm
-    sm:px-4 sm:py-1.5 sm:text-sm
-    md:px-5 md:py-2 md:text-base
-    lg:px-6 lg:py-2.5 lg:text-lg
-    rounded-lg font-semibold transition hover:opacity-90 hover:cursor-pointer
-  "
-  style={{
-    backgroundColor: colors.primary,
-    color: colors.white,
-  }}
->
-  Add to Cart
-</button>
-
               <button
-                onClick={() => {
-                  // if (wishlist.includes(product._id)) {
-                  //   removeFromWishlist(product._id);
-                  // } else {
-                    addToWishlist(product._id);
-                  // }
+                onClick={handleAddToCart}
+                disabled={cart.includes(product._id)}
+                className={`
+        flex-1
+        px-3 py-3 text-sm
+        sm:px-4 sm:py-3 sm:text-sm
+        md:px-5 md:py-3 md:text-base
+        lg:px-6 lg:py-3 lg:text-lg
+        rounded-lg font-semibold transition hover:opacity-90 hover:cursor-pointer
+        ${cart.includes(product._id) ? "opacity-50 cursor-not-allowed" : ""}
+      `}
+                style={{
+                  backgroundColor: colors.primary,
+                  color: colors.white,
                 }}
-                className="w-12 h-12 lg:w-12 lg:h-12 rounded-lg bg-gray-100/50 border border-gray-400/40 flex items-center justify-center hover:cursor-pointer"
+              >
+                {cart.includes(product._id) ? "Already Cart" : "Add to Cart"}
+              </button>
+
+              {/* Wishlist */}
+              <button
+                onClick={() => addToWishlist(product._id)}
+                disabled={wishlist.includes(product._id)}
+                className={`
+        w-12 h-12 lg:w-12 lg:h-12 rounded-lg bg-gray-100/50 border border-gray-400/40 flex items-center justify-center
+        hover:cursor-pointer
+        ${wishlist.includes(product._id) ? "opacity-50 cursor-not-allowed" : ""}
+      `}
               >
                 {wishlist.includes(product._id) ? (
                   <IoIosHeart

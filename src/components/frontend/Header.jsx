@@ -12,7 +12,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import axios from "axios";
 import { BASE_URL } from "@/lib/axios";
 import { useToastContext } from "../ui/ToastProvider";
-import { WishlistContext } from "@/context/WishlistContext"; 
+import { WishlistContext } from "@/context/WishlistContext";
+import { CartContext } from "@/context/CartContext";
 
 // NavButton
 function NavButton({ label, href, onClick }) {
@@ -44,18 +45,8 @@ function NavButton({ label, href, onClick }) {
 
 // IconButton
 const iconConfig = {
-  heart: {
-    outline: AiOutlineHeart,
-    filled: AiFillHeart,
-    size: 28,
-    href: "/wishlist",
-  },
-  cart: {
-    outline: FiShoppingCart,
-    filled: FaShoppingCart,
-    size: 28,
-    href: "/cart",
-  },
+  heart: { outline: AiOutlineHeart, filled: AiFillHeart, size: 28 },
+  cart: { outline: FiShoppingCart, filled: FaShoppingCart, size: 28 },
   user: { outline: FaRegUser, filled: FaUser, size: 24 },
 };
 
@@ -74,71 +65,51 @@ function IconButton({ type, count = 0, isLoggedIn = false, onClick }) {
   };
 
   return (
-<div
-  className={`relative flex items-center justify-center cursor-pointer transition-transform duration-150 ${
-    active ? "scale-90" : "scale-100"
-  }`}
-  style={{ width: size, height: size }}
-  onMouseEnter={() => setHover(true)}
-  onMouseLeave={() => setHover(false)}
-  onClick={handleClick}
->
-  <IconComponent
-    className="w-full h-full transition-colors duration-200" // icon color smoothly change
-    style={{ color: colors.primary }}
-  />
-
-  {count > 0 && (
-    <span
-      className="absolute -top-2 -right-2 flex items-center justify-center min-w-[18px] h-5 text-[12px] px-2 rounded-full font-bold shadow-md transition-all duration-200 ease-in-out"
-      style={{
-        backgroundColor: colors.badgeBg || "#EF4444",
-        color: colors.badgeText || "#fff",
-      }}
+    <div
+      className={`relative flex items-center justify-center cursor-pointer transition-transform duration-150 ${
+        active ? "scale-90" : "scale-100"
+      }`}
+      style={{ width: size, height: size }}
+      onMouseEnter={() => setHover(true)}
+      onMouseLeave={() => setHover(false)}
+      onClick={handleClick}
     >
-      {count}
-    </span>
-  )}
-</div>
-
-
-  )
+      <IconComponent
+        className="w-full h-full transition-colors duration-200"
+        style={{ color: colors.primary }}
+      />
+      {count > 0 && (
+        <span
+          className="absolute -top-2 -right-2 flex items-center justify-center min-w-[18px] h-5 text-[12px] px-2 rounded-full font-bold shadow-md transition-all duration-200 ease-in-out"
+          style={{
+            backgroundColor: colors.badgeBg || "#EF4444",
+            color: colors.badgeText || "#fff",
+          }}
+        >
+          {count}
+        </span>
+      )}
+    </div>
+  );
 }
 
 // Header
 export default function Header({ className }) {
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [dropdownOpen, setDropdownOpen] = useState(false); // categories dropdown
-  const [menuOpen, setMenuOpen] = useState(false); // user menu dropdown
+  const [desktopDropdown, setDesktopDropdown] = useState(false);
+  const [mobileDropdown, setMobileDropdown] = useState(false);
+  const [userMenuOpen, setUserMenuOpen] = useState(false); // both desktop & mobile
   const dropdownRef = useRef(null);
   const menuRef = useRef(null);
-   const { wishlist } = useContext(WishlistContext);
+  const { wishlist } = useContext(WishlistContext);
+  const { cart } = useContext(CartContext);
 
-const wishlistCount = wishlist.length;
-
-
-
+  const wishlistCount = wishlist.length;
+  const cartCount = cart.length;
   const router = useRouter();
   const { addToast } = useToastContext();
-
   const [otpModalOpen, setOtpModalOpen] = useState(false);
   const [user, setUser] = useState(null);
-
-
-  // const [wishlistCount, setWishlistCount] = useState(0);
-  // useEffect(() => {
-  //   const storedWishlist = JSON.parse(localStorage.getItem("bottomshub_wishlist")) || [];
-  //   setWishlistCount(storedWishlist.length);
-  // }, []);
-
-
-  const [cartCount, setCartCount] = useState(0);
-  useEffect(() => {
-    const storedWishlist = JSON.parse(localStorage.getItem("bottomshub_cartItems")) || [];
-    setCartCount(storedWishlist.length);
-  }, []);
-
-
 
   const menuItems = [
     { label: "Home", href: "/" },
@@ -148,63 +119,46 @@ const wishlistCount = wishlist.length;
     { label: "Contact", href: "/contactus" },
   ];
 
-  // persist login state
+  // Init user + cart
   useEffect(() => {
     const user_token = localStorage.getItem("bottomsHub_user");
-    if (user_token) {
-      const userData = JSON.parse(user_token);
-      setUser(userData);
-    }
+    if (user_token) setUser(JSON.parse(user_token));
+
+
   }, []);
 
-  // outside click close
+  // Outside click close
   useEffect(() => {
     function handleClickOutside(event) {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        setDropdownOpen(false);
-      }
-      if (menuRef.current && !menuRef.current.contains(event.target)) {
-        setMenuOpen(false);
-      }
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target))
+        setDesktopDropdown(false);
+      if (menuRef.current && !menuRef.current.contains(event.target))
+        setUserMenuOpen(false);
     }
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // ✅ Logout function
   const handleLogout = async () => {
     try {
       const res = await axios.post(`${BASE_URL}/api/auth/email/logout`);
       if (res.data?.success) {
         localStorage.removeItem("bottomsHub_user");
         setUser(null);
-        setMenuOpen(false);
+        setUserMenuOpen(false);
         addToast("Logout successful", "success");
         router.push("/");
-      } else {
-        addToast(res.data?.message || "Logout failed", "error");
-      }
-    } catch (err) {
-      console.error("Logout error:", err);
+      } else addToast(res.data?.message || "Logout failed", "error");
+    } catch {
       addToast("Logout failed", "error");
     }
   };
 
-  const handleLoginModal = () => {
-    setOtpModalOpen(true);
-  };
-
   return (
-    <header
-      className={`relative w-full ${className}`}
-      style={{ backgroundColor: colors.background }}
-    >
+    <header className={`relative w-full ${className}`} style={{ backgroundColor: colors.background }}>
       <div className="container w-full mx-auto flex items-center justify-between px-2">
         {/* Logo */}
-        <div
-          className="font-bold font-sans text-lg  md:text-xl lg:text-2xl"
-          style={{ color: colors.primary }}
-        >
+        <div className="font-bold font-sans text-lg md:text-xl lg:text-2xl" style={{ color: colors.primary }}>
           BottomsHub
         </div>
 
@@ -212,36 +166,28 @@ const wishlistCount = wishlist.length;
         <nav className="hidden md:flex space-x-3 lg:space-x-4 items-center">
           {menuItems.map((item) =>
             item.hasDropdown ? (
-              <div
-                key={item.label}
-                className="relative group"
-                ref={dropdownRef}
-              >
-                <NavButton
-                  label={item.label}
-                  href="#"
-                  onClick={() => setDropdownOpen((prev) => !prev)}
-                />
-                <div
-                  className={`absolute top-full left-0 shadow-md mt-2 py-2 w-44 rounded-lg transform transition-all duration-200 origin-top ${
-                    dropdownOpen
-                      ? "scale-y-100 opacity-100"
-                      : "scale-y-0 opacity-0 pointer-events-none"
-                  }`}
-                  style={{ backgroundColor: colors.background }}
-                >
-                  {["Men", "Women", "Kids"].map((cat) => (
-                    <button
-                      key={`${item.label}-${cat}`}
-                      className="block w-full text-left px-4 py-2 hover:bg-gray-100 transition text-sm"
-                      onClick={() =>
-                        router.push(`/categories/${cat.toLowerCase()}`)
-                      }
+              <div key={item.label} className="relative" ref={dropdownRef}>
+                <NavButton label={item.label} href="#" onClick={() => setDesktopDropdown((prev) => !prev)} />
+                <AnimatePresence>
+                  {desktopDropdown && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                      className="absolute top-full left-0 shadow-md mt-2 py-2 w-44 rounded-lg bg-white z-50"
                     >
-                      {cat}
-                    </button>
-                  ))}
-                </div>
+                      {["Men", "Women", "Kids"].map((cat) => (
+                        <button
+                          key={cat}
+                          className="block w-full text-left px-4 py-2 hover:bg-gray-100 transition text-sm"
+                          onClick={() => router.push(`/categories/${cat.toLowerCase()}`)}
+                        >
+                          {cat}
+                        </button>
+                      ))}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
             ) : (
               <NavButton key={item.label} label={item.label} href={item.href} />
@@ -251,35 +197,23 @@ const wishlistCount = wishlist.length;
 
         {/* Desktop Icons */}
         <div className="hidden md:flex items-center space-x-3">
-          <IconButton
-            type="heart"
-            count={wishlistCount}
-            onClick={() => router.push("/wishlist")}
-          />
-          <IconButton type="cart" count={cartCount} />
-
-          {/* User icon + dropdown */}
+          <IconButton type="heart" count={wishlistCount} onClick={() => router.push("/wishlist")} />
+          <IconButton type="cart" count={cartCount} onClick={() => router.push("/cart")} />
           <div className="relative" ref={menuRef}>
             <IconButton
               type="user"
               isLoggedIn={!!user}
-              onClick={() =>
-                user ? setMenuOpen((prev) => !prev) : handleLoginModal()
-              }
+              onClick={() => (user ? setUserMenuOpen((prev) => !prev) : setOtpModalOpen(true))}
             />
-
-            {/* Dropdown if logged in */}
             <AnimatePresence>
-              {menuOpen && user && (
+              {userMenuOpen && user && (
                 <motion.div
                   initial={{ opacity: 0, y: -10 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -10 }}
                   className="absolute right-0 mt-2 w-48 bg-white shadow-xl rounded-lg p-3 z-50"
                 >
-                  <p className="text-sm font-medium text-gray-800 truncate px-2 mb-2">
-                    {user.email}
-                  </p>
+                  <p className="text-sm font-medium text-gray-800 truncate px-2 mb-2">{user.email}</p>
                   <button
                     onClick={handleLogout}
                     className="w-full text-left px-3 py-2 text-sm rounded-md hover:bg-gray-100 transition-colors"
@@ -292,92 +226,97 @@ const wishlistCount = wishlist.length;
           </div>
         </div>
 
-        {/* Mobile Menu + Icons */}
+        {/* Mobile Icons */}
         <div className="flex items-center space-x-3 md:hidden">
-          <IconButton
-            type="heart"
-            count={wishlistCount}
-            onClick={() => router.push("/wishlist")}
-          />
-          <IconButton type="cart" count={cartCount} />
+          <IconButton type="heart" count={wishlistCount} onClick={() => router.push("/wishlist")} />
+          <IconButton type="cart" count={cartCount} onClick={() => router.push("/cart")} />
           <IconButton
             type="user"
             isLoggedIn={!!user}
-            onClick={() =>
-              user ? setMenuOpen((prev) => !prev) : handleLoginModal()
-            }
+            onClick={() => (user ? setUserMenuOpen((prev) => !prev) : setOtpModalOpen(true))}
           />
-
           <button onClick={() => setMobileOpen(!mobileOpen)}>
-            {mobileOpen ? (
-              <X className="w-6 h-6" style={{ color: colors.primary }} />
-            ) : (
-              <Menu className="w-6 h-6" style={{ color: colors.primary }} />
-            )}
+            {mobileOpen ? <X className="w-6 h-6" style={{ color: colors.primary }} /> : <Menu className="w-6 h-6" style={{ color: colors.primary }} />}
           </button>
         </div>
       </div>
 
       {/* OTP Modal */}
-      {otpModalOpen && (
-        <OtpLoginModal
-          isOpen={otpModalOpen}
-          setIsOpen={setOtpModalOpen}
-          user={user}
-          setUser={setUser}
-        />
-      )}
+      {otpModalOpen && <OtpLoginModal isOpen={otpModalOpen} setIsOpen={setOtpModalOpen} user={user} setUser={setUser} />}
 
       {/* Mobile Menu */}
-      <div
-        className={`md:hidden shadow-md px-6 overflow-hidden transition-all duration-300 absolute top-full left-0 w-full ${
-          mobileOpen ? "max-h-[80vh] py-2" : "max-h-0 py-0"
-        }`}
-        style={{ backgroundColor: colors.background }}
-      >
-        {menuItems.map((item) => (
-          <div key={item.label} className="w-full">
-            <motion.button
-              key={item.label}
-              style={{ color: colors.text }}
-              className="block w-full text-left py-2 text-lg font-sans hover:underline transition"
-              whileTap={{ scale: 0.8 }}
-              whileHover={{ scale: 1.2 }}
-              transition={{ type: "spring", stiffness: 300, damping: 15 }}
-              onClick={() => {
-                if (item.hasDropdown) {
-                  setDropdownOpen((prev) => !prev);
-                } else {
-                  router.push(item.href);
-                  setMobileOpen(false);
-                  setDropdownOpen(false);
-                }
-              }}
-            >
-              {item.label}
-            </motion.button>
-
-            {/* Mobile Dropdown for Categories */}
-            {item.hasDropdown && dropdownOpen && (
-              <div className="ml-4 max-h-40 overflow-y-auto">
-                {["Men", "Women", "Kids"].map((cat) => (
-                  <button
-                    key={`mobile-${cat}`}
-                    className="block w-full text-left py-2 text-base font-sans hover:underline transition"
-                    onClick={() => {
-                      router.push(`/categories/${cat.toLowerCase()}`);
+      <AnimatePresence>
+        {mobileOpen && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            className="md:hidden shadow-md px-6 py-2 overflow-hidden absolute top-full left-0 w-full z-40 bg-white"
+          >
+            {menuItems.map((item) => (
+              <div key={item.label} className="w-full">
+                <motion.button
+                  className="block w-full text-left py-2 text-lg font-sans hover:underline transition"
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => {
+                    if (item.hasDropdown) setMobileDropdown((prev) => !prev);
+                    else {
+                      router.push(item.href);
                       setMobileOpen(false);
-                      setDropdownOpen(false);
-                    }}
-                  >
-                    {cat}
-                  </button>
-                ))}
+                    }
+                  }}
+                >
+                  {item.label}
+                </motion.button>
+
+                {/* Mobile Categories Dropdown */}
+                <AnimatePresence>
+                  {item.hasDropdown && mobileDropdown && (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: "auto", opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      className="ml-4 max-h-40 overflow-y-auto"
+                    >
+                      {["Men", "Women", "Kids"].map((cat) => (
+                        <button
+                          key={cat}
+                          className="block w-full text-left py-2 text-base font-sans hover:underline transition"
+                          onClick={() => {
+                            router.push(`/categories/${cat.toLowerCase()}`);
+                            setMobileOpen(false);
+                            setMobileDropdown(false);
+                          }}
+                        >
+                          {cat}
+                        </button>
+                      ))}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
+            ))}
+
+            {/* Mobile User Dropdown (same as desktop) */}
+            {user && userMenuOpen && (
+              <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                className="mt-2 px-4 py-2 bg-white shadow-lg rounded-lg"
+              >
+                <p className="text-sm font-medium text-gray-800 truncate mb-2">{user.email}</p>
+                <button
+                  onClick={handleLogout}
+                  className="block w-full text-left px-3 py-2 text-sm rounded-md hover:bg-gray-100 transition-colors"
+                >
+                  Logout
+                </button>
+              </motion.div>
             )}
-          </div>
-        ))}
-      </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </header>
   );
 }
