@@ -34,10 +34,10 @@ export default function ProductsPage() {
       if (category) params.category = category;
       if (priceRange.min) params.minPrice = priceRange.min;
       if (priceRange.max) params.maxPrice = priceRange.max;
-      console.log("Response Params", params);
+      // console.log("Response Params", params);
       const res = await axios.get(`${BASE_URL}/api/products`, { params });
-      console.log("Response return", res?.data);
-      console.log("Response return", res?.data?.data);
+      // console.log("Response return", res?.data);
+      // console.log("Response return", res?.data?.data);
       setProducts(res.data.data);
       setTotalPages(res.data.totalPages || Math.ceil(res.data.total / limit));
     } catch (err) {
