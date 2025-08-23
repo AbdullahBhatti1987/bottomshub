@@ -51,12 +51,16 @@ const iconConfig = {
 };
 
 function IconButton({ type, count = 0, isLoggedIn = false, onClick }) {
-  const [hover, setHover] = useState(false);
   const [active, setActive] = useState(false);
 
   const { outline, filled, size } = iconConfig[type];
+
+  // Decide icon based only on count / login
   const IconComponent =
-    type === "user" && isLoggedIn ? filled : hover ? filled : outline;
+    (type === "user" && isLoggedIn) ||
+    (type !== "user" && count > 0)
+      ? filled
+      : outline;
 
   const handleClick = () => {
     setActive(true);
@@ -70,15 +74,13 @@ function IconButton({ type, count = 0, isLoggedIn = false, onClick }) {
         active ? "scale-90" : "scale-100"
       }`}
       style={{ width: size, height: size }}
-      onMouseEnter={() => setHover(true)}
-      onMouseLeave={() => setHover(false)}
       onClick={handleClick}
     >
       <IconComponent
         className="w-full h-full transition-colors duration-200"
         style={{ color: colors.primary }}
       />
-      {count > 0 && (
+      {count > 0 && type !== "user" && (
         <span
           className="absolute -top-2 -right-2 flex items-center justify-center min-w-[18px] h-5 text-[12px] px-2 rounded-full font-bold shadow-md transition-all duration-200 ease-in-out"
           style={{
@@ -123,8 +125,6 @@ export default function Header({ className }) {
   useEffect(() => {
     const user_token = localStorage.getItem("bottomsHub_user");
     if (user_token) setUser(JSON.parse(user_token));
-
-
   }, []);
 
   // Outside click close
@@ -155,19 +155,28 @@ export default function Header({ className }) {
   };
 
   return (
-    <header className={`relative w-full ${className}`} style={{ backgroundColor: colors.background }}>
+    <header
+      className={`relative w-full ${className}`}
+      style={{ backgroundColor: colors.background }}
+    >
       <div className="container w-full mx-auto flex items-center justify-between px-2">
         {/* Logo */}
-        <div className="font-bold font-sans text-lg md:text-xl lg:text-2xl" style={{ color: colors.primary }}>
+        <div
+          className="font-bold font-sans text-lg md:text-xl lg:text-2xl"
+          style={{ color: colors.primary }}
+        >
           BottomsHub
         </div>
-
         {/* Desktop Menu */}
         <nav className="hidden md:flex space-x-3 lg:space-x-4 items-center">
           {menuItems.map((item) =>
             item.hasDropdown ? (
               <div key={item.label} className="relative" ref={dropdownRef}>
-                <NavButton label={item.label} href="#" onClick={() => setDesktopDropdown((prev) => !prev)} />
+                <NavButton
+                  label={item.label}
+                  href="#"
+                  onClick={() => setDesktopDropdown((prev) => !prev)}
+                />
                 <AnimatePresence>
                   {desktopDropdown && (
                     <motion.div
@@ -180,7 +189,9 @@ export default function Header({ className }) {
                         <button
                           key={cat}
                           className="block w-full text-left px-4 py-2 hover:bg-gray-100 transition text-sm"
-                          onClick={() => router.push(`/categories/${cat.toLowerCase()}`)}
+                          onClick={() =>
+                            router.push(`/categories/${cat.toLowerCase()}`)
+                          }
                         >
                           {cat}
                         </button>
@@ -194,16 +205,27 @@ export default function Header({ className }) {
             )
           )}
         </nav>
-
         {/* Desktop Icons */}
         <div className="hidden md:flex items-center space-x-3">
-          <IconButton type="heart" count={wishlistCount} onClick={() => router.push("/wishlist")} />
-          <IconButton type="cart" count={cartCount} onClick={() => router.push("/cart")} />
+          <IconButton
+            type="heart"
+            count={wishlistCount}
+            isLoggedIn={wishlistCount > 0} // fill if wishlist has items
+            onClick={() => router.push("/wishlist")}
+          />
+          <IconButton
+            type="cart"
+            count={cartCount}
+            isLoggedIn={cartCount > 0} // fill if cart has items
+            onClick={() => router.push("/cart")}
+          />
           <div className="relative" ref={menuRef}>
             <IconButton
               type="user"
-              isLoggedIn={!!user}
-              onClick={() => (user ? setUserMenuOpen((prev) => !prev) : setOtpModalOpen(true))}
+              isLoggedIn={!!user} // fill if user is logged in
+              onClick={() =>
+                user ? setUserMenuOpen((prev) => !prev) : setOtpModalOpen(true)
+              }
             />
             <AnimatePresence>
               {userMenuOpen && user && (
@@ -213,7 +235,9 @@ export default function Header({ className }) {
                   exit={{ opacity: 0, y: -10 }}
                   className="absolute right-0 mt-2 w-48 bg-white shadow-xl rounded-lg p-3 z-50"
                 >
-                  <p className="text-sm font-medium text-gray-800 truncate px-2 mb-2">{user.email}</p>
+                  <p className="text-sm font-medium text-gray-800 truncate px-2 mb-2">
+                    {user.email}
+                  </p>
                   <button
                     onClick={handleLogout}
                     className="w-full text-left px-3 py-2 text-sm rounded-md hover:bg-gray-100 transition-colors"
@@ -228,21 +252,44 @@ export default function Header({ className }) {
 
         {/* Mobile Icons */}
         <div className="flex items-center space-x-3 md:hidden">
-          <IconButton type="heart" count={wishlistCount} onClick={() => router.push("/wishlist")} />
-          <IconButton type="cart" count={cartCount} onClick={() => router.push("/cart")} />
+          <IconButton
+            type="heart"
+            count={wishlistCount}
+            isLoggedIn={wishlistCount > 0} // fill if wishlist has items
+            onClick={() => router.push("/wishlist")}
+          />
+          <IconButton
+            type="cart"
+            count={cartCount}
+            isLoggedIn={cartCount > 0} // fill if cart has items
+            onClick={() => router.push("/cart")}
+          />
           <IconButton
             type="user"
-            isLoggedIn={!!user}
-            onClick={() => (user ? setUserMenuOpen((prev) => !prev) : setOtpModalOpen(true))}
+            isLoggedIn={!!user} // fill if user is logged in
+            onClick={() =>
+              user ? setUserMenuOpen((prev) => !prev) : setOtpModalOpen(true)
+            }
           />
           <button onClick={() => setMobileOpen(!mobileOpen)}>
-            {mobileOpen ? <X className="w-6 h-6" style={{ color: colors.primary }} /> : <Menu className="w-6 h-6" style={{ color: colors.primary }} />}
+            {mobileOpen ? (
+              <X className="w-6 h-6" style={{ color: colors.primary }} />
+            ) : (
+              <Menu className="w-6 h-6" style={{ color: colors.primary }} />
+            )}
           </button>
         </div>
       </div>
 
       {/* OTP Modal */}
-      {otpModalOpen && <OtpLoginModal isOpen={otpModalOpen} setIsOpen={setOtpModalOpen} user={user} setUser={setUser} />}
+      {otpModalOpen && (
+        <OtpLoginModal
+          isOpen={otpModalOpen}
+          setIsOpen={setOtpModalOpen}
+          user={user}
+          setUser={setUser}
+        />
+      )}
 
       {/* Mobile Menu */}
       <AnimatePresence>
@@ -305,7 +352,9 @@ export default function Header({ className }) {
                 exit={{ opacity: 0, y: -10 }}
                 className="mt-2 px-4 py-2 bg-white shadow-lg rounded-lg"
               >
-                <p className="text-sm font-medium text-gray-800 truncate mb-2">{user.email}</p>
+                <p className="text-sm font-medium text-gray-800 truncate mb-2">
+                  {user.email}
+                </p>
                 <button
                   onClick={handleLogout}
                   className="block w-full text-left px-3 py-2 text-sm rounded-md hover:bg-gray-100 transition-colors"
