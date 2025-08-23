@@ -44,6 +44,7 @@ import HeaderWrapper from "@/components/frontend/HeaderWrapper";
 import FrontendLayout from "@/components/frontend/FrontendLayout";
 import FooterWrapper from "@/components/frontend/FooterWrapper";
 import { WishlistProvider } from "@/context/WishlistContext";
+import { CartProvider } from "@/context/CartContext";
 
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
 const geistMono = Geist_Mono({ variable: "--font-geist-mono" });
@@ -63,12 +64,14 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body suppressHydrationWarning={true}>
         <ToastProvider>
-          <WishlistProvider>
-            <HeaderWrapper />
-            <FrontendLayout isAdmin={isAdmin}>{children}</FrontendLayout>
+          <CartProvider>
+            <WishlistProvider>
+              <HeaderWrapper />
+              <FrontendLayout isAdmin={isAdmin}>{children}</FrontendLayout>
 
-            <FooterWrapper />
-          </WishlistProvider>
+              <FooterWrapper />
+            </WishlistProvider>
+          </CartProvider>
         </ToastProvider>
       </body>
     </html>

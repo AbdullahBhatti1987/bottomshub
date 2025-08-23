@@ -28,6 +28,7 @@ import {
 import { getSocials } from "@/lib/constants/socialMedia";
 import SlugSkeleton from "@/components/frontend/SlugSkeleton";
 import { WishlistContext } from "@/context/WishlistContext";
+import { CartContext } from "@/context/CartContext";
 
 export default function ProductDetailPage() {
   const params = useParams();
@@ -44,6 +45,8 @@ export default function ProductDetailPage() {
 
   const { wishlist, addToWishlist, removeFromWishlist } =
     useContext(WishlistContext);
+
+      const { cart, addToCart, removeFromCart, updateQuantity } = useContext(CartContext);
 
   const handleMouseMove = (e) => {
     const { left, top, width, height } =
@@ -183,7 +186,6 @@ export default function ProductDetailPage() {
           </div>
 
           {/* Sizes */}
-          {/* Sizes */}
           {product?.sizes?.some((s) => s.quantity > 0) && (
             <div className="flex flex-wrap gap-2 mt-2 ">
               {product.sizes
@@ -239,14 +241,14 @@ export default function ProductDetailPage() {
           )}
 
           {/* Quantity */}
-          <div className="flex items-center gap-2 mt-3 mb-2">
+          <div className="flex items-center gap-2 mt-3 mb-2 w-2/5">
             <button
               onClick={() => setQuantity((prev) => (prev > 1 ? prev - 1 : 1))}
               className="w-12 h-12 rounded-lg bg-gray-100/50 border border-gray-400/40 flex items-center justify-center"
             >
               -
             </button>
-            <span className="w-12 h-12 flex items-center justify-center border rounded-lg">
+            <span className="flex-1 h-12 flex items-center justify-center border rounded-lg">
               {quantity}
             </span>
             <button
